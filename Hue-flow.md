@@ -111,6 +111,7 @@ alternative RDF
   <TODO:hue> 33761;
   <TODO:saturation> 254.
 ```
+
 current event data:
 ```json
 {
@@ -142,8 +143,91 @@ Does nothing here
 
 ### Transmitter
 
-Sends the data to the Solid Pod
+Serializes the data and sends it to the Solid Pod.
 
 ## Flow 2: receive update from Solid pod, persist in bridge
 
-TODO:
+### Receiver
+
+update from pod:
+
+```ttl
+<https://developers.meethue.com/woutslabbinck/lights/1> a <TODO:huelamp>;
+  dct:title "Hue color lamp 7"; # the name of the light
+  <TODO:on> false;
+  <TODO:brightness> 1;
+  <TODO:hue> 33761;
+  <TODO:saturation> 254.
+```
+
+event data:
+```json
+{
+  "timestamp": "2023-02-14T09:57:35+01:00",
+  "applicationId":"solid-philips-hue",
+  "sourceId": "http://localhost:3000/philips/",
+  "format":"text/turtle"
+}
+```
+### Mapper
+
+No mapping required, only conversion to quads
+
+even data: 
+```json
+{
+  "timestamp": "2023-02-14T09:57:35+01:00",
+  "applicationId":"solid-philips-hue",
+  "sourceId": "http://localhost:3000/philips/",
+  "format": "RDF" // RDF/JS Dataset interface?
+}
+```
+
+### Processor
+
+Decides that light 1 must be updated in the bridge resource must be updated. `"https://developers.meethue.com/woutslabbinck/"` marks the base api
+
+current event data:
+```json
+{
+  "timestamp": "2023-02-14T09:57:35+01:00",
+  "applicationId":"solid-philips-hue",
+  "sourceId": "http://localhost:3000/philips/",
+  "format":"RDF", // RDF/JS Dataset interface?
+  "targets": ["https://developers.meethue.com/woutslabbinck/"]
+}
+```
+
+### InverseMapper
+
+Converts RDF data to an update json body for the philips hue bridge.
+
+Converted data:
+```json
+{
+    "hue": 33761,
+    "on": false,
+    "bri": 1,
+    "sat" : 254
+}
+```
+
+Event data
+
+```json
+{
+  "timestamp": "2023-02-14T09:57:35+01:00",
+  "applicationId":"solid-philips-hue",
+  "sourceId": "http://localhost:3000/philips/",
+  "format":"JSON", 
+  "targets": ["https://developers.meethue.com/woutslabbinck/"]
+}
+```
+
+### Transmitter
+
+Send the JSON to `https://developers.meethue.com/woutslabbinck/lights/1`.
+
+## Remarks
+
+* Is the exact target location calculated in the processor, can the transmitter take care of that
