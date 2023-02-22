@@ -1,0 +1,32 @@
+@prefix sosa: <http://www.w3.org/ns/sosa/>.
+@prefix dct: <http://purl.org/dc/terms/>.
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#>.
+@prefix dbp: <http://dbpedia.org/property/>.
+@prefix dbr: <http://dbpedia.org/resource/>.
+@prefix saref: <https://saref.etsi.org/core/>. # v3.1.1
+
+<OpenHAB> a sosa:Platform. # TODO: actual IRI as found on openHAB?
+
+<LightController> a sosa:Actuator; # TODO: actual IRI as found on openHAB?
+    sosa:isHostedBy <OpenHAB>.
+
+<HueBulb1> a sosa:FeatureOfInterest; # TODO: actual IRI as found on openHAB?
+    dct:description "A philips Hue light.";
+    dct:title "Philips Hue bulb 1". # the name given to the lamp
+    
+<HueBulb1#state> a sosa:ActuableProperty;
+    dct:description "The state of Philips Hue bulb 1.".
+
+<exampleActuation> a sosa:Actuation;
+    dct:description "An example actuation on Philips Hue bulb 1."; # to omit in production (nothing should be done with this property)
+    sosa:madeByActuator <LightController>;
+    sosa:hasFeatureOfInterest <HueBulb1>;
+    sosa:actsOnProperty <HueBulb1#state>;
+    sosa:resultTime "2023-02-22T14:19:43Z"^^xsd:dateTime;
+    sosa:hasResult <exampleActuationResult>.
+
+<exampleActuationResult> a sosa:Result;
+    <dbr:Hue> 33761 ; # "hue" | value between 0 and 65535. (Both 0 and 65535 are red, 25500 is green and 46920 is blue.) ~ normally hue is in degrees ~ https://dbpedia.org/page/Hue
+    <dbr:Brightness> 1; # "bri" | value between 1 and 254. (1 darkest, 254 brightest) ~ https://dbpedia.org/page/Brightness
+    <dbr:Colorfulness> 254; # "sat" | value between 0 and 254. (saturation is the "colorfulness of an area judged in proportion to its brightness) ~ https://dbpedia.org/page/Colorfulness
+    saref:hasState [a saref:OnState] . # on (off [a saref:OffState]) | on=true, Off=false ~ https://saref.etsi.org/core/OnOffState
