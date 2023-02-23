@@ -1,0 +1,7 @@
+{
+  "dependencies": {
+    "@solid/community-server": "^5.1.0",
+    "@treecg/versionawareldesinldp": "^0.2.0",
+    "n3": "^1.16.3"
+  }
+}

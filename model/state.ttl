@@ -1,6 +1,6 @@
 @prefix saref: <https://saref.etsi.org/core/>.
 @prefix dct: <http://purl.org/dc/terms/>. 
-# lights
+# lights -> Is this necessary?
 
 # light 1
 <HueBulb1> 

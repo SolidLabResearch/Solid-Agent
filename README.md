@@ -58,6 +58,6 @@ Using the message paradigm allows for the compononents of the **Solid Agent** to
 ## Compatibility
 
 - [ ] OpenHAB
-  - [ ] philips Hue light
+  - [ ] philips Hue light: https://www.openhab.org/docs/tutorial/things_simple.html
     * https://www.openhab.org/docs/configuration/restdocs.html
     * https://www.openhab.org/docs/configuration/websocket.html
