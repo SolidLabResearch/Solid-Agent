@@ -14,7 +14,7 @@
     dct:description "A philips Hue light.";
     dct:title "Philips Hue bulb 1". # the name given to the lamp
     
-<HueBulb1#state> a sosa:ActuableProperty;
+<HueBulb1#state> a sosa:ActuatableProperty;
     dct:description "The state of Philips Hue bulb 1.".
 
 <exampleActuation> a sosa:Actuation;

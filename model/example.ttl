@@ -13,9 +13,16 @@
 <HueBulb1> a sosa:FeatureOfInterest; 
     dct:description "A philips Hue light.";
     dct:title "Philips Hue bulb 1". 
+
+<HueBulb2> a sosa:FeatureOfInterest; 
+    dct:description "A philips Hue light.";
+    dct:title "Philips Hue bulb 2". 
     
-<HueBulb1#state> a sosa:ActuableProperty;
+<HueBulb1#state> a sosa:ActuatableProperty;
     dct:description "The state of Philips Hue bulb 1.".
+
+<HueBulb2#state> a sosa:ActuatableProperty;
+    dct:description "The state of Philips Hue bulb 2.".
 
 <exampleActuation> a sosa:Actuation;
     dct:description "An example actuation on Philips Hue bulb 1."; 
@@ -44,3 +51,18 @@
     dbr:Brightness 1; 
     dbr:Colorfulness 254; 
     saref:hasState [a saref:OffState] . 
+
+
+<exampleActuation3> a sosa:Actuation;
+    dct:description "An example actuation on Philips Hue bulb 1."; 
+    sosa:madeByActuator <LightController>;
+    sosa:hasFeatureOfInterest <HueBulb2>;
+    sosa:actsOnProperty <HueBulb2#state>;
+    sosa:resultTime "2023-02-24T14:19:43Z"^^xsd:dateTime;
+    sosa:hasResult <exampleActuation3Result>.
+
+<exampleActuation3Result> a sosa:Result;
+    dbr:Hue 33761 ; 
+    dbr:Brightness 1; 
+    dbr:Colorfulness 254; 
+    saref:hasState [a saref:OnState] .
