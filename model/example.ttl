@@ -37,10 +37,10 @@
     sosa:hasFeatureOfInterest <HueBulb1>;
     sosa:actsOnProperty <HueBulb1#state>;
     sosa:resultTime "2023-02-23T14:19:43Z"^^xsd:dateTime;
-    sosa:hasResult <exampleActuationResult>.
+    sosa:hasResult <exampleActuation2Result>.
 
 <exampleActuation2Result> a sosa:Result;
     dbr:Hue 33761 ; 
     dbr:Brightness 1; 
     dbr:Colorfulness 254; 
-    saref:hasState [a saref:OfState] . 
+    saref:hasState [a saref:OffState] . 
