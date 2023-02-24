@@ -1,0 +1,46 @@
+@prefix sosa: <http://www.w3.org/ns/sosa/>.
+@prefix dct: <http://purl.org/dc/terms/>.
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#>.
+@prefix dbp: <http://dbpedia.org/property/>.
+@prefix dbr: <http://dbpedia.org/resource/>.
+@prefix saref: <https://saref.etsi.org/core/>. 
+
+<OpenHAB> a sosa:Platform. 
+
+<LightController> a sosa:Actuator; 
+    sosa:isHostedBy <OpenHAB>.
+
+<HueBulb1> a sosa:FeatureOfInterest; 
+    dct:description "A philips Hue light.";
+    dct:title "Philips Hue bulb 1". 
+    
+<HueBulb1#state> a sosa:ActuableProperty;
+    dct:description "The state of Philips Hue bulb 1.".
+
+<exampleActuation> a sosa:Actuation;
+    dct:description "An example actuation on Philips Hue bulb 1."; 
+    sosa:madeByActuator <LightController>;
+    sosa:hasFeatureOfInterest <HueBulb1>;
+    sosa:actsOnProperty <HueBulb1#state>;
+    sosa:resultTime "2023-02-22T14:19:43Z"^^xsd:dateTime;
+    sosa:hasResult <exampleActuationResult>.
+
+<exampleActuationResult> a sosa:Result;
+    dbr:Hue 33761 ; 
+    dbr:Brightness 1; 
+    dbr:Colorfulness 254; 
+    saref:hasState [a saref:OnState] . 
+
+<exampleActuation2> a sosa:Actuation;
+    dct:description "An example actuation on Philips Hue bulb 1."; 
+    sosa:madeByActuator <LightController>;
+    sosa:hasFeatureOfInterest <HueBulb1>;
+    sosa:actsOnProperty <HueBulb1#state>;
+    sosa:resultTime "2023-02-23T14:19:43Z"^^xsd:dateTime;
+    sosa:hasResult <exampleActuationResult>.
+
+<exampleActuation2Result> a sosa:Result;
+    dbr:Hue 33761 ; 
+    dbr:Brightness 1; 
+    dbr:Colorfulness 254; 
+    saref:hasState [a saref:OfState] . 

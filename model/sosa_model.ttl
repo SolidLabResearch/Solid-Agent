@@ -26,7 +26,7 @@
     sosa:hasResult <exampleActuationResult>.
 
 <exampleActuationResult> a sosa:Result;
-    <dbr:Hue> 33761 ; # "hue" | value between 0 and 65535. (Both 0 and 65535 are red, 25500 is green and 46920 is blue.) ~ normally hue is in degrees ~ https://dbpedia.org/page/Hue
-    <dbr:Brightness> 1; # "bri" | value between 1 and 254. (1 darkest, 254 brightest) ~ https://dbpedia.org/page/Brightness
-    <dbr:Colorfulness> 254; # "sat" | value between 0 and 254. (saturation is the "colorfulness of an area judged in proportion to its brightness) ~ https://dbpedia.org/page/Colorfulness
+    dbr:Hue 33761 ; # "hue" | value between 0 and 65535. (Both 0 and 65535 are red, 25500 is green and 46920 is blue.) ~ normally hue is in degrees ~ https://dbpedia.org/page/Hue
+    dbr:Brightness 1; # "bri" | value between 1 and 254. (1 darkest, 254 brightest) ~ https://dbpedia.org/page/Brightness
+    dbr:Colorfulness 254; # "sat" | value between 0 and 254. (saturation is the "colorfulness of an area judged in proportion to its brightness) ~ https://dbpedia.org/page/Colorfulness
     saref:hasState [a saref:OnState] . # on (off [a saref:OffState]) | on=true, Off=false ~ https://saref.etsi.org/core/OnOffState
