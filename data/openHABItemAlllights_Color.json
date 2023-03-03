@@ -1,0 +1,16 @@
+{
+    "link": "http://10.10.147.88:8080/rest/items/Alllights_Color",
+    "state": "0,0,100",
+    "editable": true,
+    "type": "Color",
+    "name": "Alllights_Color",
+    "label": "Color",
+    "category": "ColorLight",
+    "tags": [
+        "Control",
+        "Light"
+    ],
+    "groupNames": [
+        "Alllights"
+    ]
+}

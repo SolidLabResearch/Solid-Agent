@@ -37,7 +37,7 @@ async function main() {
     const baseIRI = 'http://example.org/'
     const store = await fileAsStore('./model/example.ttl', {baseIRI})
 
-    console.log('SOSA model as input\n', storeToString(store));
+    // console.log('SOSA model as input\n', storeToString(store));
     // const state = calculatePhilipsHueState(store);
     // console.log('state as output\n', storeToString(state));
 
@@ -89,7 +89,7 @@ async function main() {
         sources: [store],
     });
     const quads: Quad[] = await quadStream.toArray();
-    console.log(storeToString(new Store(quads)));
+    // console.log(storeToString(new Store(quads)));
 
     const bindingsStream = await myEngine.queryBindings(`
     SELECT * WHERE {
@@ -122,27 +122,28 @@ async function main() {
         const property = new ActuatableProperty(propertyId, {description: binding.get('propertyDescription').value})
         const actuation = new Actuation(actuationId, actuatorId, property, foi, result, time)
         console.log(storeToString(actuation.getStore()));
-
+        actuations.push(actuation)
     }
 
 
-    }
-    main()
+}
 
-    /**
-     * Convert a file as a store (given a path). Default will use text/turtle as content type
-     * @param path
-     * @param options
-     * @returns {Promise<Store>}
-     */
-    export async function fileAsStore(path: string, options?: { contentType?: string, baseIRI: string }): Promise<Store> {
-        // only baseIRI if it is passed
-        const baseIRI = options ? options.baseIRI : undefined;
-        // text/turtle default, otherwise what is passed
-        const contentType = options ? options.contentType ?? 'text/turtle' : 'text/turtle';
-        const text = readFileSync(Path.join(path), "utf8");
-        return await stringToStore(text, {contentType, baseIRI});
-    }
+main()
+
+/**
+ * Convert a file as a store (given a path). Default will use text/turtle as content type
+ * @param path
+ * @param options
+ * @returns {Promise<Store>}
+ */
+export async function fileAsStore(path: string, options?: { contentType?: string, baseIRI: string }): Promise<Store> {
+    // only baseIRI if it is passed
+    const baseIRI = options ? options.baseIRI : undefined;
+    // text/turtle default, otherwise what is passed
+    const contentType = options ? options.contentType ?? 'text/turtle' : 'text/turtle';
+    const text = readFileSync(Path.join(path), "utf8");
+    return await stringToStore(text, {contentType, baseIRI});
+}
 
 
 //     queryQuads<QueryFormatTypeInner extends QueryFormatType>(query: QueryFormatTypeInner, context?: QueryFormatTypeInner extends string ? QueryStringContextInner : QueryAlgebraContextInner): Promise<AsyncIterator<RDF.Quad> & RDF.ResultStream<RDF.Quad>>;

@@ -1,0 +1,136 @@
+{
+    "channels": [
+        {
+            "linkedItems": [
+                "Alllights_Power"
+            ],
+            "uid": "hue:group:001788214482:0:switch",
+            "id": "switch",
+            "channelTypeUID": "system:power",
+            "itemType": "Switch",
+            "kind": "STATE",
+            "label": "Power",
+            "description": "Device is operable when channel has state ON",
+            "defaultTags": [
+                "Switch",
+                "Power"
+            ],
+            "properties": {},
+            "configuration": {}
+        },
+        {
+            "linkedItems": [
+                "Alllights_Color_Temperature"
+            ],
+            "uid": "hue:group:001788214482:0:color_temperature",
+            "id": "color_temperature",
+            "channelTypeUID": "system:color-temperature",
+            "itemType": "Dimmer",
+            "kind": "STATE",
+            "label": "Color Temperature",
+            "description": "Controls the color temperature of the light from 0 (cold) to 100 (warm)",
+            "defaultTags": [
+                "Control",
+                "ColorTemperature"
+            ],
+            "properties": {},
+            "configuration": {}
+        },
+        {
+            "linkedItems": [],
+            "uid": "hue:group:001788214482:0:color_temperature_abs",
+            "id": "color_temperature_abs",
+            "channelTypeUID": "system:color-temperature-abs",
+            "itemType": "Number",
+            "kind": "STATE",
+            "label": "Color Temperature",
+            "description": "Controls the color temperature of the light in Kelvin",
+            "defaultTags": [
+                "Control",
+                "ColorTemperature"
+            ],
+            "properties": {},
+            "configuration": {}
+        },
+        {
+            "linkedItems": [
+                "Alllights_Brightness"
+            ],
+            "uid": "hue:group:001788214482:0:brightness",
+            "id": "brightness",
+            "channelTypeUID": "system:brightness",
+            "itemType": "Dimmer",
+            "kind": "STATE",
+            "label": "Brightness",
+            "description": "Controls the brightness and switches the light on and off",
+            "defaultTags": [
+                "Control",
+                "Light"
+            ],
+            "properties": {},
+            "configuration": {}
+        },
+        {
+            "linkedItems": [
+                "Alllights_Color"
+            ],
+            "uid": "hue:group:001788214482:0:color",
+            "id": "color",
+            "channelTypeUID": "system:color",
+            "itemType": "Color",
+            "kind": "STATE",
+            "label": "Color",
+            "description": "Controls the color of the light",
+            "defaultTags": [
+                "Control",
+                "Light"
+            ],
+            "properties": {},
+            "configuration": {}
+        },
+        {
+            "linkedItems": [],
+            "uid": "hue:group:001788214482:0:alert",
+            "id": "alert",
+            "channelTypeUID": "hue:alert",
+            "itemType": "String",
+            "kind": "STATE",
+            "label": "Alert",
+            "description": "The alert channel allows a temporary change to the bulb’s state.",
+            "defaultTags": [
+                "Alarm"
+            ],
+            "properties": {},
+            "configuration": {}
+        },
+        {
+            "linkedItems": [],
+            "uid": "hue:group:001788214482:0:scene",
+            "id": "scene",
+            "channelTypeUID": "hue:scene",
+            "itemType": "String",
+            "kind": "STATE",
+            "label": "Scene",
+            "description": "The scene channel allows recalling a scene to all lights that belong to the scene.",
+            "defaultTags": [],
+            "properties": {},
+            "configuration": {}
+        }
+    ],
+    "statusInfo": {
+        "status": "ONLINE",
+        "statusDetail": "NONE"
+    },
+    "editable": true,
+    "label": "All lights",
+    "bridgeUID": "hue:bridge:001788214482",
+    "configuration": {
+        "fadetime": 400.0,
+        "groupId": "0"
+    },
+    "properties": {
+        "members": "7,8,9,10,11,12"
+    },
+    "UID": "hue:group:001788214482:0",
+    "thingTypeUID": "hue:group"
+}

@@ -1,0 +1,89 @@
+{
+    "members": [
+        {
+            "link": "http://10.10.147.88:8080/rest/items/Alllights_Brightness",
+            "state": "50",
+            "stateDescription": {
+                "minimum": 0,
+                "maximum": 100,
+                "pattern": "%d %%",
+                "readOnly": false,
+                "options": []
+            },
+            "type": "Dimmer",
+            "name": "Alllights_Brightness",
+            "label": "Brightness",
+            "category": "Light",
+            "tags": [
+                "Control",
+                "Light"
+            ],
+            "groupNames": [
+                "Alllights"
+            ]
+        },
+        {
+            "link": "http://10.10.147.88:8080/rest/items/Alllights_Power",
+            "state": "ON",
+            "type": "Switch",
+            "name": "Alllights_Power",
+            "label": "Power",
+            "category": "Switch",
+            "tags": [
+                "Switch",
+                "Power"
+            ],
+            "groupNames": [
+                "Alllights"
+            ]
+        },
+        {
+            "link": "http://10.10.147.88:8080/rest/items/Alllights_Color",
+            "state": "0,0,100",
+            "type": "Color",
+            "name": "Alllights_Color",
+            "label": "Color",
+            "category": "ColorLight",
+            "tags": [
+                "Control",
+                "Light"
+            ],
+            "groupNames": [
+                "Alllights"
+            ]
+        },
+        {
+            "link": "http://10.10.147.88:8080/rest/items/Alllights_Color_Temperature",
+            "state": "0",
+            "stateDescription": {
+                "minimum": 0,
+                "maximum": 100,
+                "pattern": "%.0f",
+                "readOnly": false,
+                "options": []
+            },
+            "type": "Dimmer",
+            "name": "Alllights_Color_Temperature",
+            "label": "Color Temperature",
+            "category": "ColorLight",
+            "tags": [
+                "ColorTemperature",
+                "Control"
+            ],
+            "groupNames": [
+                "Alllights"
+            ]
+        }
+    ],
+    "link": "http://10.10.147.88:8080/rest/items/Alllights",
+    "state": "NULL",
+    "editable": true,
+    "type": "Group",
+    "name": "Alllights",
+    "label": "All lights",
+    "category": "",
+    "tags": [
+        "Equipment"
+    ],
+    "groupNames": []
+}

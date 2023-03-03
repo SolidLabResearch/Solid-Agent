@@ -1,0 +1,1045 @@
+[
+    {
+        "link": "http://10.10.147.88:8080/rest/items/VELBlindLivingRoomTV_livingZithoe",
+        "state": "0",
+        "editable": true,
+        "type": "Rollershutter",
+        "name": "VELBlindLivingRoomTV_livingZithoe",
+        "label": "livingZithoe",
+        "category": "Blinds",
+        "tags": [
+            "Point"
+        ],
+        "groupNames": [
+            "VELBlindLivingRoomTV"
+        ]
+    },
+    {
+        "link": "http://10.10.147.88:8080/rest/items/VELBlindLivingRoomDiningTable_LivingMidden",
+        "state": "0",
+        "editable": true,
+        "type": "Rollershutter",
+        "name": "VELBlindLivingRoomDiningTable_LivingMidden",
+        "label": "LivingMidden",
+        "category": "Blinds",
+        "tags": [
+            "Point"
+        ],
+        "groupNames": [
+            "VELBlindLivingRoomDiningTable"
+        ]
+    },
+    {
+        "link": "http://10.10.147.88:8080/rest/items/kwh_lift",
+        "state": "2992.30125",
+        "stateDescription": {
+            "minimum": 0,
+            "pattern": "%.0f",
+            "readOnly": false,
+            "options": []
+        },
+        "editable": true,
+        "type": "Number",
+        "name": "kwh_lift",
+        "label": "Counter",
+        "category": "energy",
+        "tags": [
+            "Measurement",
+            "Energy"
+        ],
+        "groupNames": [
+            "Vel90kwhLiftWPKookpl"
+        ]
+    },
+    {
+        "link": "http://10.10.147.88:8080/rest/items/VelbusC8EnergyMeter_Button_CH3",
+        "state": "NULL",
+        "stateDescription": {
+            "pattern": "%s",
+            "readOnly": false,
+            "options": []
+        },
+        "commandDescription": {
+            "commandOptions": [
+                {
+                    "command": "PRESSED",
+                    "label": "pressed"
+                },
+                {
+                    "command": "LONG_PRESSED",
+                    "label": "long pressed"
+                }
+            ]
+        },
+        "editable": true,
+        "type": "String",
+        "name": "VelbusC8EnergyMeter_Button_CH3",
+        "label": "WP-backupHeater",
+        "category": "energy",
+        "tags": [
+            "Measurement",
+            "Power"
+        ],
+        "groupNames": [
+            "VelbusC8EnergyMeter"
+        ]
+    },
+    {
+        "link": "http://10.10.147.88:8080/rest/items/VELBlindLivingRoomDiningTable_NachthalTrap",
+        "state": "0",
+        "editable": true,
+        "type": "Rollershutter",
+        "name": "VELBlindLivingRoomDiningTable_NachthalTrap",
+        "label": "NachthalTrap",
+        "category": "Blinds",
+        "tags": [
+            "Point"
+        ],
+        "groupNames": [
+            "VELBlindLivingRoomDiningTable"
+        ]
+    },
+    {
+        "link": "http://10.10.147.88:8080/rest/items/current_power_slpkrKind_2b",
+        "state": "0.05493247882810712",
+        "stateDescription": {
+            "minimum": 0,
+            "pattern": "%.0f",
+            "readOnly": false,
+            "options": []
+        },
+        "editable": true,
+        "type": "Number",
+        "name": "current_power_slpkrKind_2b",
+        "label": "Counter",
+        "category": "energy",
+        "tags": [
+            "Measurement",
+            "Power"
+        ],
+        "groupNames": [
+            "VelA0KwhSlprkKind"
+        ]
+    },
+    {
+        "link": "http://10.10.147.88:8080/rest/items/kwh_slpkrKind_3b",
+        "state": "0.211",
+        "stateDescription": {
+            "minimum": 0,
+            "pattern": "%.0f",
+            "readOnly": false,
+            "options": []
+        },
+        "editable": true,
+        "type": "Number",
+        "name": "kwh_slpkrKind_3b",
+        "label": "Counter",
+        "category": "energy",
+        "tags": [
+            "Measurement",
+            "Energy"
+        ],
+        "groupNames": [
+            "VelA0KwhSlprkKind"
+        ]
+    },
+    {
+        "link": "http://10.10.147.88:8080/rest/items/kwh_slpkrKind_3a",
+        "state": "0.074",
+        "stateDescription": {
+            "minimum": 0,
+            "pattern": "%.0f",
+            "readOnly": false,
+            "options": []
+        },
+        "editable": true,
+        "type": "Number",
+        "name": "kwh_slpkrKind_3a",
+        "label": "Counter",
+        "category": "energy",
+        "tags": [
+            "Measurement",
+            "Energy"
+        ],
+        "groupNames": [
+            "VelA0KwhSlprkKind"
+        ]
+    },
+    {
+        "link": "http://10.10.147.88:8080/rest/items/velbusvmb7inAddressA7_Counter_Counter4Current",
+        "state": "0.05493247882810712",
+        "stateDescription": {
+            "minimum": 0,
+            "pattern": "%.0f",
+            "readOnly": false,
+            "options": []
+        },
+        "editable": true,
+        "type": "Number",
+        "name": "velbusvmb7inAddressA7_Counter_Counter4Current",
+        "label": "Counter",
+        "category": "",
+        "tags": [
+            "Point"
+        ],
+        "groupNames": [
+            "velbusvmb7inAddressA7"
+        ]
+    },
+    {
+        "members": [],
+        "link": "http://10.10.147.88:8080/rest/items/Vel90kwhLiftWPKookpl",
+        "state": "NULL",
+        "editable": true,
+        "type": "Group",
+        "name": "Vel90kwhLiftWPKookpl",
+        "label": "Vel (90) - kwhLiftWPKookpl",
+        "category": "",
+        "tags": [
+            "Equipment"
+        ],
+        "groupNames": []
+    },
+    {
+        "link": "http://10.10.147.88:8080/rest/items/current_power_lift",
+        "state": "0.0686655985351339",
+        "stateDescription": {
+            "minimum": 0,
+            "pattern": "%.0f",
+            "readOnly": false,
+            "options": []
+        },
+        "editable": true,
+        "type": "Number",
+        "name": "current_power_lift",
+        "label": "Counter",
+        "category": "energy",
+        "tags": [
+            "Measurement",
+            "Power"
+        ],
+        "groupNames": [
+            "Vel90kwhLiftWPKookpl"
+        ]
+    },
+    {
+        "link": "http://10.10.147.88:8080/rest/items/current_power_slpkrKind_2a",
+        "state": "0.05493247882810712",
+        "stateDescription": {
+            "minimum": 0,
+            "pattern": "%.0f",
+            "readOnly": false,
+            "options": []
+        },
+        "editable": true,
+        "type": "Number",
+        "name": "current_power_slpkrKind_2a",
+        "label": "Counter",
+        "category": "energy",
+        "tags": [
+            "Measurement",
+            "Power"
+        ],
+        "groupNames": [
+            "VelA0KwhSlprkKind"
+        ]
+    },
+    {
+        "link": "http://10.10.147.88:8080/rest/items/VelbusC8EnergyMeter_Counter_Counter3",
+        "state": "7061.618",
+        "stateDescription": {
+            "minimum": 0,
+            "pattern": "%.0f",
+            "readOnly": false,
+            "options": []
+        },
+        "editable": true,
+        "type": "Number",
+        "name": "VelbusC8EnergyMeter_Counter_Counter3",
+        "label": "Heat Pump",
+        "category": "energy",
+        "tags": [
+            "Measurement",
+            "Voltage"
+        ],
+        "groupNames": [
+            "VelbusC8EnergyMeter"
+        ]
+    },
+    {
+        "link": "http://10.10.147.88:8080/rest/items/Vel50stopcSlprkKind_2a",
+        "state": "ON",
+        "editable": true,
+        "type": "Switch",
+        "name": "Vel50stopcSlprkKind_2a",
+        "label": "2a",
+        "category": "Switch",
+        "tags": [
+            "Point"
+        ],
+        "groupNames": [
+            "Vel50stopcSlprkKind"
+        ]
+    },
+    {
+        "link": "http://10.10.147.88:8080/rest/items/Vel50stopcSlprkKind_2b",
+        "state": "ON",
+        "editable": true,
+        "type": "Switch",
+        "name": "Vel50stopcSlprkKind_2b",
+        "label": "2b",
+        "category": "Switch",
+        "tags": [
+            "Point"
+        ],
+        "groupNames": [
+            "Vel50stopcSlprkKind"
+        ]
+    },
+    {
+        "link": "http://10.10.147.88:8080/rest/items/current_power_slpkrKind_3b",
+        "state": "0.05493247882810712",
+        "stateDescription": {
+            "minimum": 0,
+            "pattern": "%.0f",
+            "readOnly": false,
+            "options": []
+        },
+        "editable": true,
+        "type": "Number",
+        "name": "current_power_slpkrKind_3b",
+        "label": "Counter",
+        "category": "energy",
+        "tags": [
+            "Measurement",
+            "Power"
+        ],
+        "groupNames": [
+            "VelA0KwhSlprkKind"
+        ]
+    },
+    {
+        "link": "http://10.10.147.88:8080/rest/items/current_power_slpkrKind_3a",
+        "state": "0.05493247882810712",
+        "stateDescription": {
+            "minimum": 0,
+            "pattern": "%.0f",
+            "readOnly": false,
+            "options": []
+        },
+        "editable": true,
+        "type": "Number",
+        "name": "current_power_slpkrKind_3a",
+        "label": "Counter",
+        "category": "energy",
+        "tags": [
+            "Measurement",
+            "Power"
+        ],
+        "groupNames": [
+            "VelA0KwhSlprkKind"
+        ]
+    },
+    {
+        "link": "http://10.10.147.88:8080/rest/items/VELBlindVergaderzaal1_CH1",
+        "state": "0",
+        "editable": true,
+        "type": "Rollershutter",
+        "name": "VELBlindVergaderzaal1_CH1",
+        "label": "Vergaderzaal1",
+        "category": "Blinds",
+        "tags": [
+            "Point"
+        ],
+        "groupNames": [
+            "VELBlindVergaderzaal1"
+        ]
+    },
+    {
+        "link": "http://10.10.147.88:8080/rest/items/Alllights_Power",
+        "state": "ON",
+        "editable": true,
+        "type": "Switch",
+        "name": "Alllights_Power",
+        "label": "Power",
+        "category": "Switch",
+        "tags": [
+            "Switch",
+            "Power"
+        ],
+        "groupNames": [
+            "Alllights"
+        ]
+    },
+    {
+        "link": "http://10.10.147.88:8080/rest/items/kwh_kookplaat",
+        "state": "39.5",
+        "stateDescription": {
+            "minimum": 0,
+            "pattern": "%.0f",
+            "readOnly": false,
+            "options": []
+        },
+        "editable": true,
+        "type": "Number",
+        "name": "kwh_kookplaat",
+        "label": "Counter",
+        "category": "energy",
+        "tags": [
+            "Measurement",
+            "Energy"
+        ],
+        "groupNames": [
+            "Vel90kwhLiftWPKookpl"
+        ]
+    },
+    {
+        "link": "http://10.10.147.88:8080/rest/items/VELBlindLivingRoomKitchen_Blind1",
+        "state": "30",
+        "editable": true,
+        "type": "Rollershutter",
+        "name": "VELBlindLivingRoomKitchen_Blind1",
+        "label": "Blind 1",
+        "category": "Blinds",
+        "tags": [
+            "Point"
+        ],
+        "groupNames": [
+            "VELBlindLivingRoomKitchen"
+        ]
+    },
+    {
+        "members": [],
+        "link": "http://10.10.147.88:8080/rest/items/Vel51stopcSlpkrOudKind",
+        "state": "NULL",
+        "editable": true,
+        "type": "Group",
+        "name": "Vel51stopcSlpkrOudKind",
+        "label": "Vel (51) - stopcSlpkrOudKind",
+        "category": "",
+        "tags": [
+            "Equipment"
+        ],
+        "groupNames": []
+    },
+    {
+        "link": "http://10.10.147.88:8080/rest/items/Vel51stopcSlpkrOudKind_VirtualRelay",
+        "state": "OFF",
+        "editable": true,
+        "type": "Switch",
+        "name": "Vel51stopcSlpkrOudKind_VirtualRelay",
+        "label": "Virtual Relay",
+        "category": "Switch",
+        "tags": [
+            "Point"
+        ],
+        "groupNames": [
+            "Vel51stopcSlpkrOudKind"
+        ]
+    },
+    {
+        "link": "http://10.10.147.88:8080/rest/items/Vel51stopcSlpkrOudKind_ouders",
+        "state": "ON",
+        "editable": true,
+        "type": "Switch",
+        "name": "Vel51stopcSlpkrOudKind_ouders",
+        "label": "ouders",
+        "category": "Switch",
+        "tags": [
+            "Point"
+        ],
+        "groupNames": [
+            "Vel51stopcSlpkrOudKind"
+        ]
+    },
+    {
+        "members": [],
+        "link": "http://10.10.147.88:8080/rest/items/VelbusC8EnergyMeter",
+        "state": "NULL",
+        "editable": true,
+        "type": "Group",
+        "name": "VelbusC8EnergyMeter",
+        "label": "Velbus (C8) - Energy Meter",
+        "category": "",
+        "tags": [
+            "Equipment"
+        ],
+        "groupNames": []
+    },
+    {
+        "link": "http://10.10.147.88:8080/rest/items/Alllights_Color_Temperature",
+        "state": "0",
+        "stateDescription": {
+            "minimum": 0,
+            "maximum": 100,
+            "pattern": "%.0f",
+            "readOnly": false,
+            "options": []
+        },
+        "editable": true,
+        "type": "Dimmer",
+        "name": "Alllights_Color_Temperature",
+        "label": "Color Temperature",
+        "category": "ColorLight",
+        "tags": [
+            "ColorTemperature",
+            "Control"
+        ],
+        "groupNames": [
+            "Alllights"
+        ]
+    },
+    {
+        "link": "http://10.10.147.88:8080/rest/items/Vel51stopcSlpkrOudKind_kind1",
+        "state": "ON",
+        "editable": true,
+        "type": "Switch",
+        "name": "Vel51stopcSlpkrOudKind_kind1",
+        "label": "kind1",
+        "category": "Switch",
+        "tags": [
+            "Point"
+        ],
+        "groupNames": [
+            "Vel51stopcSlpkrOudKind"
+        ]
+    },
+    {
+        "link": "http://10.10.147.88:8080/rest/items/current_power_heatpump",
+        "state": "0.0686655985351339",
+        "stateDescription": {
+            "minimum": 0,
+            "pattern": "%.0f",
+            "readOnly": false,
+            "options": []
+        },
+        "editable": true,
+        "type": "Number",
+        "name": "current_power_heatpump",
+        "label": "Counter",
+        "category": "energy",
+        "tags": [
+            "Measurement",
+            "Power"
+        ],
+        "groupNames": [
+            "Vel90kwhLiftWPKookpl"
+        ]
+    },
+    {
+        "members": [],
+        "link": "http://10.10.147.88:8080/rest/items/Alllights",
+        "state": "NULL",
+        "editable": true,
+        "type": "Group",
+        "name": "Alllights",
+        "label": "All lights",
+        "category": "",
+        "tags": [
+            "Equipment"
+        ],
+        "groupNames": []
+    },
+    {
+        "members": [],
+        "link": "http://10.10.147.88:8080/rest/items/VELBlindLivingRoomTV",
+        "state": "NULL",
+        "editable": true,
+        "type": "Group",
+        "name": "VELBlindLivingRoomTV",
+        "label": "VEL_Blind_Living_Room_TV",
+        "category": "",
+        "tags": [
+            "Equipment"
+        ],
+        "groupNames": []
+    },
+    {
+        "members": [],
+        "link": "http://10.10.147.88:8080/rest/items/velbusvmb7inAddressA7",
+        "state": "NULL",
+        "editable": true,
+        "type": "Group",
+        "name": "velbusvmb7inAddressA7",
+        "label": "velbus:vmb7in (Address A7)",
+        "category": "",
+        "tags": [
+            "Equipment"
+        ],
+        "groupNames": []
+    },
+    {
+        "link": "http://10.10.147.88:8080/rest/items/Vel50stopcSlprkKind_3a",
+        "state": "ON",
+        "editable": true,
+        "type": "Switch",
+        "name": "Vel50stopcSlprkKind_3a",
+        "label": "3a",
+        "category": "Switch",
+        "tags": [
+            "Point"
+        ],
+        "groupNames": [
+            "Vel50stopcSlprkKind"
+        ]
+    },
+    {
+        "link": "http://10.10.147.88:8080/rest/items/Vel50stopcSlprkKind_3b",
+        "state": "ON",
+        "editable": true,
+        "type": "Switch",
+        "name": "Vel50stopcSlprkKind_3b",
+        "label": "3b",
+        "category": "Switch",
+        "tags": [
+            "Point"
+        ],
+        "groupNames": [
+            "Vel50stopcSlprkKind"
+        ]
+    },
+    {
+        "members": [],
+        "link": "http://10.10.147.88:8080/rest/items/VELBlindLivingRoomDiningTable",
+        "state": "NULL",
+        "editable": true,
+        "type": "Group",
+        "name": "VELBlindLivingRoomDiningTable",
+        "label": "VEL_Blind_Living_Room_Dining_Table",
+        "category": "",
+        "tags": [
+            "Equipment"
+        ],
+        "groupNames": []
+    },
+    {
+        "link": "http://10.10.147.88:8080/rest/items/VELBlindVergaderzaal1_CH2",
+        "state": "0",
+        "editable": true,
+        "type": "Rollershutter",
+        "name": "VELBlindVergaderzaal1_CH2",
+        "label": "Vergaderzaal1",
+        "category": "Blinds",
+        "tags": [
+            "Point"
+        ],
+        "groupNames": [
+            "VELBlindVergaderzaal1"
+        ]
+    },
+    {
+        "link": "http://10.10.147.88:8080/rest/items/C8_Basement_HeatPump",
+        "state": "0.6566946369937979",
+        "stateDescription": {
+            "minimum": 0,
+            "pattern": "%.0f",
+            "readOnly": false,
+            "options": []
+        },
+        "editable": true,
+        "type": "Number",
+        "name": "C8_Basement_HeatPump",
+        "label": "Counter",
+        "category": "energy",
+        "tags": [
+            "Measurement",
+            "Power"
+        ],
+        "groupNames": [
+            "VelbusC8EnergyMeter"
+        ]
+    },
+    {
+        "link": "http://10.10.147.88:8080/rest/items/Vel51stopcSlpkrOudKind_ouders2a",
+        "state": "ON",
+        "editable": true,
+        "type": "Switch",
+        "name": "Vel51stopcSlpkrOudKind_ouders2a",
+        "label": "ouders2a",
+        "category": "Switch",
+        "tags": [
+            "Point"
+        ],
+        "groupNames": [
+            "Vel51stopcSlpkrOudKind"
+        ]
+    },
+    {
+        "link": "http://10.10.147.88:8080/rest/items/Vel51stopcSlpkrOudKind_ouders2b",
+        "state": "ON",
+        "editable": true,
+        "type": "Switch",
+        "name": "Vel51stopcSlpkrOudKind_ouders2b",
+        "label": "ouders2b",
+        "category": "Switch",
+        "tags": [
+            "Point"
+        ],
+        "groupNames": [
+            "Vel51stopcSlpkrOudKind"
+        ]
+    },
+    {
+        "link": "http://10.10.147.88:8080/rest/items/Alllights_Color",
+        "state": "0,0,100",
+        "editable": true,
+        "type": "Color",
+        "name": "Alllights_Color",
+        "label": "Color",
+        "category": "ColorLight",
+        "tags": [
+            "Control",
+            "Light"
+        ],
+        "groupNames": [
+            "Alllights"
+        ]
+    },
+    {
+        "link": "http://10.10.147.88:8080/rest/items/kwh_total",
+        "state": "116515.46875",
+        "stateDescription": {
+            "minimum": 0,
+            "pattern": "%.0f",
+            "readOnly": false,
+            "options": []
+        },
+        "editable": true,
+        "type": "Number",
+        "name": "kwh_total",
+        "label": "Counter",
+        "category": "energy",
+        "tags": [
+            "Measurement",
+            "Energy"
+        ],
+        "groupNames": [
+            "Vel90kwhLiftWPKookpl"
+        ]
+    },
+    {
+        "link": "http://10.10.147.88:8080/rest/items/C8_Basement_Ventilationright_freeSocket",
+        "state": "0.1440691531935329",
+        "stateDescription": {
+            "minimum": 0,
+            "pattern": "%.0f",
+            "readOnly": false,
+            "options": []
+        },
+        "editable": true,
+        "type": "Number",
+        "name": "C8_Basement_Ventilationright_freeSocket",
+        "label": "Counter",
+        "category": "energy",
+        "tags": [
+            "Measurement",
+            "Power"
+        ],
+        "groupNames": [
+            "VelbusC8EnergyMeter"
+        ]
+    },
+    {
+        "link": "http://10.10.147.88:8080/rest/items/kwh_slpkrKind_2b",
+        "state": "0.029",
+        "stateDescription": {
+            "minimum": 0,
+            "pattern": "%.0f",
+            "readOnly": false,
+            "options": []
+        },
+        "editable": true,
+        "type": "Number",
+        "name": "kwh_slpkrKind_2b",
+        "label": "Counter",
+        "category": "energy",
+        "tags": [
+            "Measurement",
+            "Energy"
+        ],
+        "groupNames": [
+            "VelA0KwhSlprkKind"
+        ]
+    },
+    {
+        "link": "http://10.10.147.88:8080/rest/items/kwh_slpkrKind_2a",
+        "state": "0.349",
+        "stateDescription": {
+            "minimum": 0,
+            "pattern": "%.0f",
+            "readOnly": false,
+            "options": []
+        },
+        "editable": true,
+        "type": "Number",
+        "name": "kwh_slpkrKind_2a",
+        "label": "Counter",
+        "category": "energy",
+        "tags": [
+            "Measurement",
+            "Energy"
+        ],
+        "groupNames": [
+            "VelA0KwhSlprkKind"
+        ]
+    },
+    {
+        "members": [],
+        "link": "http://10.10.147.88:8080/rest/items/VELBlindLivingRoomKitchen",
+        "state": "NULL",
+        "editable": true,
+        "type": "Group",
+        "name": "VELBlindLivingRoomKitchen",
+        "label": "VEL_Blind_Living_Room_Kitchen",
+        "category": "",
+        "tags": [
+            "Equipment"
+        ],
+        "groupNames": []
+    },
+    {
+        "members": [],
+        "link": "http://10.10.147.88:8080/rest/items/VelA0KwhSlprkKind",
+        "state": "NULL",
+        "editable": true,
+        "type": "Group",
+        "name": "VelA0KwhSlprkKind",
+        "label": "Vel (A0) - KwhSlprkKind",
+        "category": "",
+        "tags": [
+            "Equipment"
+        ],
+        "groupNames": []
+    },
+    {
+        "members": [],
+        "link": "http://10.10.147.88:8080/rest/items/VELBlindVergaderzaal1",
+        "state": "NULL",
+        "editable": true,
+        "type": "Group",
+        "name": "VELBlindVergaderzaal1",
+        "label": "VEL_Blind_Vergaderzaal_1",
+        "category": "",
+        "tags": [
+            "Equipment"
+        ],
+        "groupNames": []
+    },
+    {
+        "link": "http://10.10.147.88:8080/rest/items/kwh_heatpump",
+        "state": "20308.3525",
+        "stateDescription": {
+            "minimum": 0,
+            "pattern": "%.0f",
+            "readOnly": false,
+            "options": []
+        },
+        "editable": true,
+        "type": "Number",
+        "name": "kwh_heatpump",
+        "label": "Counter",
+        "category": "energy",
+        "tags": [
+            "Measurement",
+            "Energy"
+        ],
+        "groupNames": [
+            "Vel90kwhLiftWPKookpl"
+        ]
+    },
+    {
+        "link": "http://10.10.147.88:8080/rest/items/Alllights_Brightness",
+        "state": "50",
+        "stateDescription": {
+            "minimum": 0,
+            "maximum": 100,
+            "pattern": "%d %%",
+            "readOnly": false,
+            "options": []
+        },
+        "editable": true,
+        "type": "Dimmer",
+        "name": "Alllights_Brightness",
+        "label": "Brightness",
+        "category": "Light",
+        "tags": [
+            "Control",
+            "Light"
+        ],
+        "groupNames": [
+            "Alllights"
+        ]
+    },
+    {
+        "link": "http://10.10.147.88:8080/rest/items/VELBlindLivingRoomTV_NIKOinkom",
+        "state": "0",
+        "editable": true,
+        "type": "Rollershutter",
+        "name": "VELBlindLivingRoomTV_NIKOinkom",
+        "label": "NIKOinkom",
+        "category": "Blinds",
+        "tags": [
+            "Point"
+        ],
+        "groupNames": [
+            "VELBlindLivingRoomTV"
+        ]
+    },
+    {
+        "link": "http://10.10.147.88:8080/rest/items/velbusvmb7inAddressA7_Counter_Counter3",
+        "state": "6.113",
+        "stateDescription": {
+            "minimum": 0,
+            "pattern": "%.0f",
+            "readOnly": false,
+            "options": []
+        },
+        "editable": true,
+        "type": "Number",
+        "name": "velbusvmb7inAddressA7_Counter_Counter3",
+        "label": "Counter",
+        "category": "",
+        "tags": [
+            "Point"
+        ],
+        "groupNames": [
+            "velbusvmb7inAddressA7"
+        ]
+    },
+    {
+        "link": "http://10.10.147.88:8080/rest/items/velbusvmb7inAddressA7_Counter_Counter4",
+        "state": "401.836",
+        "stateDescription": {
+            "minimum": 0,
+            "pattern": "%.0f",
+            "readOnly": false,
+            "options": []
+        },
+        "editable": true,
+        "type": "Number",
+        "name": "velbusvmb7inAddressA7_Counter_Counter4",
+        "label": "Counter",
+        "category": "",
+        "tags": [
+            "Point"
+        ],
+        "groupNames": [
+            "velbusvmb7inAddressA7"
+        ]
+    },
+    {
+        "link": "http://10.10.147.88:8080/rest/items/velbusvmb7inAddressA7_Counter_Counter1",
+        "state": "9.065",
+        "stateDescription": {
+            "minimum": 0,
+            "pattern": "%.0f",
+            "readOnly": false,
+            "options": []
+        },
+        "editable": true,
+        "type": "Number",
+        "name": "velbusvmb7inAddressA7_Counter_Counter1",
+        "label": "Counter",
+        "category": "",
+        "tags": [
+            "Point"
+        ],
+        "groupNames": [
+            "velbusvmb7inAddressA7"
+        ]
+    },
+    {
+        "link": "http://10.10.147.88:8080/rest/items/velbusvmb7inAddressA7_Counter_Counter2",
+        "state": "3.357",
+        "stateDescription": {
+            "minimum": 0,
+            "pattern": "%.0f",
+            "readOnly": false,
+            "options": []
+        },
+        "editable": true,
+        "type": "Number",
+        "name": "velbusvmb7inAddressA7_Counter_Counter2",
+        "label": "Counter",
+        "category": "",
+        "tags": [
+            "Point"
+        ],
+        "groupNames": [
+            "velbusvmb7inAddressA7"
+        ]
+    },
+    {
+        "link": "http://10.10.147.88:8080/rest/items/current_power_kookplaat",
+        "state": "0.0686655985351339",
+        "stateDescription": {
+            "minimum": 0,
+            "pattern": "%.0f",
+            "readOnly": false,
+            "options": []
+        },
+        "editable": true,
+        "type": "Number",
+        "name": "current_power_kookplaat",
+        "label": "Counter",
+        "category": "energy",
+        "tags": [
+            "Measurement",
+            "Power"
+        ],
+        "groupNames": [
+            "Vel90kwhLiftWPKookpl"
+        ]
+    },
+    {
+        "members": [],
+        "link": "http://10.10.147.88:8080/rest/items/Vel50stopcSlprkKind",
+        "state": "NULL",
+        "editable": true,
+        "type": "Group",
+        "name": "Vel50stopcSlprkKind",
+        "label": "Vel (50) - stopcSlprkKind",
+        "category": "",
+        "tags": [
+            "Equipment"
+        ],
+        "groupNames": []
+    },
+    {
+        "link": "http://10.10.147.88:8080/rest/items/current_power_total",
+        "state": "2.6439482961222094",
+        "stateDescription": {
+            "minimum": 0,
+            "pattern": "%.0f",
+            "readOnly": false,
+            "options": []
+        },
+        "editable": true,
+        "type": "Number",
+        "name": "current_power_total",
+        "label": "Counter",
+        "category": "energy",
+        "tags": [
+            "Measurement",
+            "Power"
+        ],
+        "groupNames": [
+            "Vel90kwhLiftWPKookpl"
+        ]
+    },
+    {
+        "link": "http://10.10.147.88:8080/rest/items/Vel50stopcSlprkKind_VirtualRelay",
+        "state": "OFF",
+        "editable": true,
+        "type": "Switch",
+        "name": "Vel50stopcSlprkKind_VirtualRelay",
+        "label": "Virtual Relay",
+        "category": "Switch",
+        "tags": [
+            "Point"
+        ],
+        "groupNames": [
+            "Vel50stopcSlprkKind"
+        ]
+    }
+]
