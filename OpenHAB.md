@@ -7,6 +7,7 @@ https://community.openhab.org/t/openhab-basics-tutorial-part-2-n-bindings-things
 Every thing has a **binding** (how to connect to the physical world) and a **channel** (how to interact with it).
 
 Hue bulb has a channel to control the color of the light (here `hue:0210:001788214482:7:color`)
+
 ### Hue lamp 1
 ```
  curl http://10.10.147.88:8080/rest/things/hue:0210:001788214482:7 -u '{API}:'
@@ -117,7 +118,7 @@ Hue lamp 1
     }
 ```
 
-All lights
+### All lights
 ```curl
  curl http://10.10.147.88:8080/rest/things/hue:0210:001788214482:0 -u '{API}:'
 ```
@@ -126,6 +127,7 @@ Light 1 to 6 are member of the group all Lights.
 This group has an item linked to it: `Alllights`.
 
 We can control all lights by the members of this group -> next section
+
 ## Item about lights
 
 https://www.openhab.org/docs/configuration/items.html#item-definition-and-syntax
@@ -179,3 +181,10 @@ http://10.10.147.88:8080/rest/items/Alllights_Brightness
 ### Color Temperature
 
 http://10.10.147.88:8080/rest/items/Alllights_Color_Temperature
+
+## Note
+
+* Configuration of lights to solid persistance state requiress manually linking the light `name` (see [item#name](https://www.openhab.org/docs/configuration/items.html#name))
+* I think using groups will be easier.
+
+TODO: model OpenHAB `Thing` Interface to persistance SSN/SOSA model
