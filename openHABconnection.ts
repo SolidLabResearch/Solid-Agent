@@ -1,6 +1,6 @@
 // Code to test the connection to openHAB stuff
 // import {config} from 'dotenv'
-import { OpenHABAgent } from './src/openHAB/OpenHABAgent'
+import { OpenHABClient } from './src/openHAB/OpenHABAgent'
 import { OpenHABAuthenticatedFetcher } from './src/openHAB/OpenHABAuthenticatedFetcher'
 require('dotenv').config()
 
@@ -29,7 +29,7 @@ async function old_main() {
 }
 
 async function main() {
-    const openHAB = new OpenHABAgent({ endPointUrl: openHABURL! + '/', accessToken: openHABToken!, itemNames: ['Bureau_rechts_Color'] })
+    const openHAB = new OpenHABClient({ endPointUrl: openHABURL! + '/', accessToken: openHABToken! })
     let lamp = await openHAB.readItem('Bureau_rechts_Color')
     console.log(lamp);
 

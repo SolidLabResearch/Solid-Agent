@@ -25,7 +25,7 @@ sudo apt-get update && sudo apt-get install openhab
 
 start openHAB manually
 ```sh
-sudo /bin/systemctl start openhab.service
+sudo systemctl start openhab.service
 ```
 
 stop openHAB manually
@@ -72,6 +72,7 @@ Thing type: `Hue Group`
 1. click on thing `All lights`
 2. click on channels
 3. add power switch (add Link to Item)
+  * created `All_lights_Power` item
 
 ### Add specific light
 
@@ -80,6 +81,7 @@ Thing type: `Extended Color Light`
 1. click on thing `Bureau rechts`
 2. click on channels
 3. add Color and Color Temperature (add Link to Item)
+  * created `Bureau_rechts_Color` and `Bureau_rechts_Color_Temperature`
 
 ## add security
 

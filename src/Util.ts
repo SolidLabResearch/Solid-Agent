@@ -128,7 +128,7 @@ async function main() {
 
 }
 
-main()
+// main()
 
 /**
  * Convert a file as a store (given a path). Default will use text/turtle as content type
