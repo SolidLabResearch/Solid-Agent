@@ -28,6 +28,20 @@ start openHAB manually
 sudo /bin/systemctl start openhab.service
 ```
 
+stop openHAB manually
+```sh
+sudo systemctl stop openhab.service 
+```
+
+check status
+```sh
+sudo systemctl status openhab.service 
+```
+enable on startup
+```sh
+sudo systemctl enable openhab.service
+```
+
 ## First steps
 
 https://www.openhab.org/docs/tutorial/first_steps.html
