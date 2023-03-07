@@ -14,7 +14,7 @@ export interface Item {
     groupNames: string[]
 }
 
-export class openHABAgent {
+export class OpenHABAgent {
     private readonly accessToken: string;
     private readonly endPoint: string;
     private readonly fetcher: OpenHABAuthenticatedFetcher;
@@ -50,7 +50,10 @@ export class openHABAgent {
      */
     public async setItem(item: Item): Promise<void> {
         const itemURL = this.itemURL(item.name)
+        console.log(itemURL);
+        
         const response = await this.fetcher.fetch(itemURL, {
+            method: "POST",
             headers: {
                 'Content-Type': 'text/plain'
             },
@@ -60,5 +63,7 @@ export class openHABAgent {
         if (response.status !== 200) {
             throw new Error(`Could not update item ${item.name} to the following state: ${item.state}`)
         }
+        console.log(await response.text());
+        
     }
 }

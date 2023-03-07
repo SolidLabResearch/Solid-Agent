@@ -19,6 +19,6 @@ export class OpenHABAuthenticatedFetcher {
     }
   
     public async getAuthorizationHeader(): Promise<string> {
-      return `Basic ${Buffer.from(this.accessToken).toString('base64')}`;
+      return `Basic ${Buffer.from(`${this.accessToken}:`).toString('base64')}`;
     }
   }
