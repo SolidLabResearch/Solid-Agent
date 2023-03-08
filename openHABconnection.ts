@@ -1,6 +1,6 @@
 // Code to test the connection to openHAB stuff
 // import {config} from 'dotenv'
-import { OpenHABClient } from './src/openHAB/OpenHABAgent'
+import { Item, OpenHABClient } from './src/openHAB/OpenHABClient'
 import { OpenHABAuthenticatedFetcher } from './src/openHAB/OpenHABAuthenticatedFetcher'
 require('dotenv').config()
 
@@ -28,34 +28,86 @@ async function old_main() {
     // openHABNames.forEach(({name, type})=> console.log(name + " " +type));    
 }
 
+async function turnLampOn(color: string, openHABClient: OpenHABClient){
+    let state = ''
+    const item: Item =         {
+            name: 'Bureau_rechts_Color', state: state,
+            link: '',
+            editable: false,
+            type: '',
+            tags: [],
+            groupNames: []
+        }
+    
+    switch (color){
+        case 'cyan':
+            state = '175,50,40'  
+            break;
+        case 'blue':
+            state = '226,50,40'  
+            break;
+        case 'red':
+            state = '0,50,40'  
+            break;
+        case 'yellow':
+            state = '62,50,40'  
+            break;
+        case 'purple':
+            state = '275,50,40'  
+            break;
+        default:
+            state = '52,50,40'    
+    }
+    item.state = state
+    
+    await openHABClient.setItem(item)
+
+}
+
+async function turnLampOff(openHABClient: OpenHABClient) {
+    const item: Item =         {
+        name: 'Bureau_rechts_Color', state: "OFF",
+        link: '',
+        editable: false,
+        type: '',
+        tags: [],
+        groupNames: []
+    }
+    await openHABClient.setItem(item)
+
+}
 async function main() {
     const openHAB = new OpenHABClient({ endPointUrl: openHABURL! + '/', accessToken: openHABToken! })
     let lamp = await openHAB.readItem('Bureau_rechts_Color')
-    console.log(lamp);
+    console.log(`current color: ${lamp.state}`);
+    // // set on
+    // await openHAB.setItem({
+    //     name: 'Bureau_rechts_Color', state: 'ON',
+    //     link: '',
+    //     editable: false,
+    //     type: '',
+    //     tags: [],
+    //     groupNames: []
+    // })
 
-    // set purple
-    await openHAB.setItem({
-        name: 'Bureau_rechts_Color', state: '269,30,11.5',
-        link: '',
-        editable: false,
-        type: '',
-        tags: [],
-        groupNames: []
-    })
-    // set on
-    await openHAB.setItem({
-        name: 'Bureau_rechts_Color', state: 'ON',
-        link: '',
-        editable: false,
-        type: '',
-        tags: [],
-        groupNames: []
-    })
-    console.log('should be on and purple');
-    lamp = await openHAB.readItem('Bureau_rechts_Color')
-    console.log(lamp);
+    // // set purple
+    // await openHAB.setItem({
+    //     name: 'Bureau_rechts_Color', state: '275,75,40',
+    //     link: '',
+    //     editable: false,
+    //     type: '',
+    //     tags: [],
+    //     groupNames: []
+    // })
+
+    // console.log('should be on and purple');
+    // lamp = await openHAB.readItem('Bureau_rechts_Color')
+    // console.log(`current color: ${lamp.state}`);
+
+    await turnLampOn("asdf", openHAB)
     await sleep(5000)
     // set off again
+    console.log('Turning lamp off.');
     await openHAB.setItem({
         name: 'Bureau_rechts_Color', state: 'OFF',
         link: '',
@@ -64,7 +116,6 @@ async function main() {
         tags: [],
         groupNames: []
     })
-    await sleep(5000)
 }
 main()
 
