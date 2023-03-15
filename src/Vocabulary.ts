@@ -17,7 +17,9 @@ export const SOSA = createUriAndTermNamespace('http://www.w3.org/ns/sosa/',
 )
 
 export const SAREF = createUriAndTermNamespace('https://saref.etsi.org/core/',
-    'hasState'
+    'hasState',
+    'OnState',
+    'OffState'
 )
 
 export const DBR = createUriAndTermNamespace('http://dbpedia.org/resource/',
