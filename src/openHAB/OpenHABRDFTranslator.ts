@@ -25,7 +25,7 @@ export class OpenHABRDFTranslator {
     public translateItemToRDF(item: Item): Quad[] {
         const quads: Quad[] = []
         // TODO: maybe later add label?
-        switch (item.type) {
+        switch (item.type.toLowerCase()) {
             case 'color':
                 const state = parseColorState(item.state)
                 const idTerm = namedNode(item.name)
@@ -36,7 +36,7 @@ export class OpenHABRDFTranslator {
                 quads.push(quad(idTerm, DBR.terms.Brightness, literal(state.brightness)))
                 break;
             default:
-                throw Error('Can not handle this type.')
+                throw Error(`Can not handle this type: "${item.type}" .`)
         }
         return quads
     }
@@ -52,7 +52,7 @@ export class OpenHABRDFTranslator {
             editable: false,
             groupNames: [],
             link: "",
-            name: "",
+            name: identifier,
             state: undefined,
             tags: [],
             type: ""
@@ -119,10 +119,10 @@ async function createColorState(quads: Quad[], queryEngine: QueryEngine): Promis
     return `${hue.value},${saturation.value},${brightness.value}`
 }
 
-// // Code that test whether a very simplified example works -> needs better tests and more error handling
+// Code that test whether a very simplified example works -> needs better tests and more error handling
 // const test = new OpenHABRDFTranslator()
 // const quads = test.translateItemToRDF({
-//     name: 'Bureau_rechts_Color', state: '275,75,1',
+//     name: 'Bureau_rechts_Color', state: '275,75,10',
 //     link: '',
 //     editable: false,
 //     type: 'color',

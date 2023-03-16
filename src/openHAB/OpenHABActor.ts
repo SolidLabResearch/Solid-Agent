@@ -29,7 +29,8 @@ export class OpenHABActor {
      */
     public async storeItem(quads: Quad[]): Promise<void> {
         // extract identifier of item -> maybe add as parameter, remember as2
-        const id = ''
+        // todo: fix
+        const id = 'Bureau_rechts_Color'
         // RDF to item
         const item = await this.translator.translateRDFToItem(quads, id)
         await this.client.setItem(item)
