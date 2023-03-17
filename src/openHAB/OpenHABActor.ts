@@ -1,6 +1,8 @@
 import {OpenHABClient} from "./OpenHABClient";
 import {OpenHABRDFTranslator} from "./OpenHABRDFTranslator";
 import {Quad} from "n3";
+import type {Readable} from 'stream';
+import {sleep} from "@treecg/versionawareldesinldp";
 
 /**
  * V1: monitor an OpenHAB platform for changes in the state of item
@@ -11,14 +13,26 @@ export class OpenHABActor {
     private client: OpenHABClient;
     private translator: OpenHABRDFTranslator
 
+    // when polling is done, the interval defines how often is polled
+    private interval: number;
+
     constructor(client: OpenHABClient, translator: OpenHABRDFTranslator) {
         this.client = client;
         this.translator = translator
+        this.interval = 5000;
     }
 
-    public monitorItem(item: string) {
+    public async monitorItem(item: string, stream: Readable) {
         // no idea yet how calling this method results in actually being subscribed.
         // Maybe by it being a stream?
+        while (true) { // TODO: make stop condition
+            const rdf = await this.retrieveItem(item)
+            stream.push({
+                from: 'openHAB', // TODO: must this be the webid?
+                data: rdf
+            })
+            await sleep(this.interval)
+        }
 
     }
 
