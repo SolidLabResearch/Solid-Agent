@@ -1,0 +1,89 @@
+@prefix as: <https://www.w3.org/ns/activitystreams#>.
+
+# Announcement from openHAB actor
+
+<#uuid> a as:Announce;
+    as:actor <openHAB>; # should be the webid of the actual actor
+    as:object <Bureau_rechts_Color> . # the items that are changed?
+
+<Bureau_rechts_Color> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://saref.etsi.org/core/OffState> .
+<Bureau_rechts_Color> <http://dbpedia.org/resource/Hue> 0 .
+<Bureau_rechts_Color> <http://dbpedia.org/resource/Colorfulness> 0 .
+<Bureau_rechts_Color> <http://dbpedia.org/resource/Brightness> 0 .
+
+# Announcement from solid Actor
+
+<#uuid> a as:Announce;
+    as:actor <solid>; # should be the webid of the actual actor
+    as:object <http://localhost:3000/state> . # state resource that has changed
+
+<Bureau_rechts_Color> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://saref.etsi.org/core/OffState> .
+<Bureau_rechts_Color> <http://dbpedia.org/resource/Hue> 0 .
+<Bureau_rechts_Color> <http://dbpedia.org/resource/Colorfulness> 0 .
+<Bureau_rechts_Color> <http://dbpedia.org/resource/Brightness> 0 .
+
+# Rules in orchestration actor
+
+## For openHAB actor
+
+{
+  ?id a as:Announce .
+  ?id as:actor <openHAB>.
+} =>
+{
+  ex:MyDemoPolicy pol:policy [
+    a fno:Execution ;
+    fno:executes ex:hasStateChanged ; # function that checks whether internal state has changed. Creates an orchestrator announce request + updates state
+    ex:param1 <solid>; # Target actor?
+    ex:param2 "ResourceToKeepInSync"; # Resource that should be updated <http://localhost:3000/state> 
+    ex:body ?id
+  ] .
+}
+
+## For solid actor
+
+{
+  ?id a as:Announce .
+  ?id as:actor <solid>.
+} =>
+{
+  ex:MyDemoPolicy pol:policy [
+    a fno:Execution ;
+    fno:executes ex:hasStateChanged ; # function that checks whether internal state has changed. Creates an orchestrator announce request + updates state
+    ex:param1 <openHAB>; # Target actor?
+    ex:param2 "openHABEndpoint"; # Endpoint that should be updated <http://localhost:8080> 
+    ex:body ?id
+  ] .
+}
+
+## For Orch actor
+
+{
+  # Orchestrator announce request
+  ?id a as:Announce .
+  ?id as:actor "Orchestratoractor".
+  ?id as:target <solid>. # Indicates The target actor to send the message to
+  ?id as:to ?target. # https://www.w3.org/TR/activitystreams-vocabulary/#dfn-to | Indicates the target that the actor should sent the update to
+} =>
+{
+  ex:MyDemoPolicy pol:policy [
+    a fno:Execution ;
+    fno:executes ex:updateSolidState ;
+    ex:body ?id
+  ] .
+}
+
+{
+  # Orchestrator announce request
+  ?id a as:Announce .
+  ?id as:actor "Orchestratoractor".
+  ?id as:target <openHAB>. # Indicates The target actor to send the message to
+  ?id as:to ?target. # https://www.w3.org/TR/activitystreams-vocabulary/#dfn-to | Indicates the target that the actor should sent the update to
+} =>
+{
+  ex:MyDemoPolicy pol:policy [
+    a fno:Execution ;
+    fno:executes ex:updateOpenHABState ;
+    ex:body ?id
+  ] .
+}
