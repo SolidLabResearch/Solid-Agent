@@ -6,15 +6,17 @@ import {SolidActor} from "./src/solid/SolidActor";
 import {Session} from "@rubensworks/solid-client-authn-isomorphic";
 import {SolidClient} from "./src/solid/SolidClient";
 import {OrchestrationAgent as v2} from "./src/agent/OrchestrationAgentV2";
+import {sleep} from "@treecg/versionawareldesinldp";
 
 require('dotenv').config()
-// community-solid-server -c memory-no-setup.json
-// also openHAB service must be run
+// run solid server: community-solid-server -c memory-no-setup.json
+// also openHAB service must be run: sudo systemctl start openhab.service
 const openHABURL = process.env.OPENHAB_URL! + '/'
 const openHABToken = process.env.OPENHAB_API_TOKEN!
 
-const config: OrchestrationAgentInterface = {
+const config = {
     item: "Bureau_rechts_Color",
+    items: ['Bureau_rechts_Color'],
     openHABActor: new OpenHABActor(new OpenHABClient({
         accessToken: openHABToken,
         endPointUrl: openHABURL
@@ -31,8 +33,12 @@ async function main_v1(){
 // main_v1()
 
 async function main_v2(){
+    // $ curl -X PUT -H 'Content-type:text/turtle' -d "<Bureau_links_Color> <http://dbpedia.org/resource/Brightness> 0 .<Bureau_links_Color> <http://dbpedia.org/resource/Colorfulness> 0 .<Bureau_links_Color> <http://dbpedia.org/resource/Hue> 0 .<Bureau_links_Color> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://saref.etsi.org/core/OffState> .<Bureau_rechts_Color> <http://dbpedia.org/resource/Brightness> 100 .<Bureau_rechts_Color> <http://dbpedia.org/resource/Colorfulness> 15 .<Bureau_rechts_Color> <http://dbpedia.org/resource/Hue> 0 .<Bureau_rechts_Color> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://saref.etsi.org/core/OnState> ." http://localhost:3000/state
     const orchestrationAgent = new v2(config)
     await orchestrationAgent.initialise();
     orchestrationAgent.startSyncService()
+    // // test stop functionality
+    // await sleep(15000)
+    // orchestrationAgent.stopService()
 }
 main_v2()

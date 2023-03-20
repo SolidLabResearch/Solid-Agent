@@ -72,7 +72,7 @@ export class OrchestrationAgent {
         }
     }
 
-    public async stopService() {
+    public stopService() {
         this.running = false;
     }
 }

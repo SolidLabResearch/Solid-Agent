@@ -5,17 +5,21 @@ import {Readable} from "stream";
 
 export class SolidActor {
     private readonly client: SolidClient;
+    // when polling is done, the interval defines how often is polled
     private interval: number;
+    private isMonitoring: boolean
 
     constructor(client: SolidClient) {
         this.client = client
         this.interval = 5000;
+        this.isMonitoring = false;
     }
 
     public async monitorResource(identifier: string, stream: Readable) {
         // no idea yet how calling this method results in actually being subscribed.
         // Maybe by it being a stream?
-        while (true) { // TODO: make stop condition
+        this.isMonitoring = true;
+        while (this.isMonitoring) {
             const rdf = await this.readResource(identifier)
             stream.push({
                 from: 'solid', // TODO: must this be the webid?
@@ -23,6 +27,9 @@ export class SolidActor {
             })
             await sleep(this.interval)
         }
+    }
+    public stopMonitoring(){
+        this.isMonitoring = false;
     }
 
     public async readResource(identifier: string): Promise<Quad[]> {

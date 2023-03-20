@@ -15,25 +15,40 @@ export class OpenHABActor {
 
     // when polling is done, the interval defines how often is polled
     private interval: number;
+    private isMonitoring: boolean
 
     constructor(client: OpenHABClient, translator: OpenHABRDFTranslator) {
         this.client = client;
-        this.translator = translator
+        this.translator = translator;
         this.interval = 5000;
+        this.isMonitoring = false;
     }
 
     public async monitorItem(item: string, stream: Readable) {
         // no idea yet how calling this method results in actually being subscribed.
         // Maybe by it being a stream?
-        while (true) { // TODO: make stop condition
-            const rdf = await this.retrieveItem(item)
-            stream.push({
-                from: 'openHAB', // TODO: must this be the webid?
-                data: rdf
-            })
+        await this.monitorItems([item], stream)
+    }
+
+    public async monitorItems(items: string[], stream: Readable){
+        // no idea yet how calling this method results in actually being subscribed.
+        // Maybe by it being a stream?
+        this.isMonitoring = true;
+        while (this.isMonitoring) {
+            for (const item of items) {
+                const rdf = await this.retrieveItem(item)
+                stream.push({
+                    from: 'openHAB', // TODO: must this be the webid?
+                    item: items,
+                    data: rdf
+                })
+            }
             await sleep(this.interval)
         }
+    }
 
+    public stopMonitoring(){
+        this.isMonitoring = false;
     }
 
     /**
@@ -42,8 +57,7 @@ export class OpenHABActor {
      * @return {Promise<void>}
      */
     public async storeItem(quads: Quad[]): Promise<void> {
-        // extract identifier of item -> maybe add as parameter, remember as2
-        // todo: fix
+        // extract identifier of item -> maybe add as parameter, remember as2 // todo: fix
         const id = 'Bureau_rechts_Color'
         // RDF to item
         const item = await this.translator.translateRDFToItem(quads, id)
