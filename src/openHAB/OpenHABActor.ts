@@ -39,7 +39,7 @@ export class OpenHABActor {
                 const rdf = await this.retrieveItem(item)
                 stream.push({
                     from: 'openHAB', // TODO: must this be the webid?
-                    item: items,
+                    item: item,
                     data: rdf
                 })
             }

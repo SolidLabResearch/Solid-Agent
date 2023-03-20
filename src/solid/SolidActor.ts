@@ -23,6 +23,7 @@ export class SolidActor {
             const rdf = await this.readResource(identifier)
             stream.push({
                 from: 'solid', // TODO: must this be the webid?
+                url: identifier,
                 data: rdf
             })
             await sleep(this.interval)

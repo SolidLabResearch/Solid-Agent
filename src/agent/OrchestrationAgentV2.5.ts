@@ -1,10 +1,12 @@
 import {OpenHABActor} from "../openHAB/OpenHABActor";
 import {SolidActor} from "../solid/SolidActor";
-import {DataFactory, Quad, Store} from "n3";
+import {DataFactory, Quad, Store, Writer} from "n3";
 import {isomorphic} from "rdf-isomorphic";
 import {storeToString, turtleStringToStore} from "@treecg/versionawareldesinldp";
-import {Readable} from "stream";
+import {Readable, Transform, TransformCallback} from "stream";
+import {v4 as uuidv4} from "uuid";
 import namedNode = DataFactory.namedNode;
+
 
 export interface OrchestrationAgentInterface {
     openHABActor: OpenHABActor
@@ -16,6 +18,7 @@ export interface OrchestrationAgentInterface {
 // This version monitors the components for changes
 // updates are pushed to a stream
 // handles multiple items
+// adds a transformer to the stream to generate AS2 notifications
 export class OrchestrationAgent {
     private readonly openHABActor: OpenHABActor;
     private readonly solidActor: SolidActor;
@@ -58,38 +61,68 @@ export class OrchestrationAgent {
         this.solidActor.monitorResource(this.solidStateResource, stream);
         this.openHABActor.monitorItems(this.items, stream);
 
-        stream.on('data', event => {
-            let updatedState = []
-            switch (event.from) {
-                case 'solid':
-                    updatedState = updateState(this.state, event.data)
-                    // Note: Does not work when the relative identifier gets updated to fixed one.
-                    //  e.g. <http://localhost:3000/Bureau_rechts_Color> instead of <Bureau_rechts_Color>
-                    //  can be solved by adding some prefix extracting item functionality
-                    if (hasChanged(updatedState, this.state)) {
-                        console.log(`${new Date().toISOString()} [${this.constructor.name}] Received event from ${event.from} actor: start updating state in openhab.`)
-                        this.state = updatedState;
-                        for (const item of this.items) {
-                            const itemQuads = extractItem(updatedState, item);
-                            this.openHABActor.storeItem(itemQuads)
-                        }
-                    } else {
-                        console.log(`${new Date().toISOString()} [${this.constructor.name}] Received event from ${event.from} actor: No change detected.`)
-                    }
-                    break;
-                case 'openHAB':
-                    updatedState = updateState(this.state, event.data);
-                    if (hasChanged(updatedState, this.state)) {
-                        console.log(`${new Date().toISOString()} [${this.constructor.name}] Received event from ${event.from} actor: start updating state in solid.`)
-                        this.state = updatedState;
-                        this.solidActor.writeResource(this.solidStateResource, updatedState)
-                    } else {
-                        console.log(`${new Date().toISOString()} [${this.constructor.name}] Received event from ${event.from} actor: No change detected.`)
-                    }
-                    break;
-                default:
+        const transformer = new Transform({
+            objectMode: true,
+            transform(chunk: any, encoding: BufferEncoding, callback: TransformCallback) {
+                switch (chunk.from) {
+                    case 'solid':
+                        chunk.announcement = `
+@prefix as: <https://www.w3.org/ns/activitystreams#>.
+<${uuidv4()}> a as:Announce;
+    as:actor <solid> ;
+    as:object <${chunk.url}>. 
+${new Writer().quadsToString(chunk.data)}`
+                        this.push(chunk)
+                        break;
+                    case 'openHAB':
+                        chunk.announcement = `
+@prefix as: <https://www.w3.org/ns/activitystreams#>.
+<${uuidv4()}> a as:Announce;
+    as:actor <openHAB> ;
+    as:object <${chunk.item}>. 
+${new Writer().quadsToString(chunk.data)}`
+                        this.push(chunk)
+                        break;
+                    default:
+                }
+                callback();
             }
         })
+        stream.pipe(transformer)
+            .on('data', event => {
+                let updatedState = []
+                turtleStringToStore(event.announcement).then(store =>
+                    console.log(storeToString(store)))
+                switch (event.from) {
+                    case 'solid':
+                        updatedState = updateState(this.state, event.data)
+                        // Note: Does not work when the relative identifier gets updated to fixed one.
+                        //  e.g. <http://localhost:3000/Bureau_rechts_Color> instead of <Bureau_rechts_Color>
+                        //  can be solved by adding some prefix extracting item functionality
+                        if (hasChanged(updatedState, this.state)) {
+                            console.log(`${new Date().toISOString()} [${this.constructor.name}] Received event from ${event.from} actor: start updating state in openhab.`)
+                            this.state = updatedState;
+                            for (const item of this.items) {
+                                const itemQuads = extractItem(updatedState, item);
+                                this.openHABActor.storeItem(itemQuads)
+                            }
+                        } else {
+                            console.log(`${new Date().toISOString()} [${this.constructor.name}] Received event from ${event.from} actor: No change detected.`)
+                        }
+                        break;
+                    case 'openHAB':
+                        updatedState = updateState(this.state, event.data);
+                        if (hasChanged(updatedState, this.state)) {
+                            console.log(`${new Date().toISOString()} [${this.constructor.name}] Received event from ${event.from} actor: start updating state in solid.`)
+                            this.state = updatedState;
+                            this.solidActor.writeResource(this.solidStateResource, updatedState)
+                        } else {
+                            console.log(`${new Date().toISOString()} [${this.constructor.name}] Received event from ${event.from} actor: No change detected.`)
+                        }
+                        break;
+                    default:
+                }
+            })
 
     }
 
@@ -109,6 +142,7 @@ export class OrchestrationAgent {
 function hasChanged(state1: Quad[], state2: Quad[]): boolean {
     return !isomorphic(state1, state2)
 }
+
 /**
  * Update the RDF state of items with a given item. (idempotent and safe function)
  *
