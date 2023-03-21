@@ -5,14 +5,17 @@ import {isomorphic} from "rdf-isomorphic";
 import {storeToString, turtleStringToStore} from "@treecg/versionawareldesinldp";
 import {Readable, Transform, TransformCallback} from "stream";
 import {v4 as uuidv4} from "uuid";
+import {EyeJsReasoner} from "koreografeye";
+import {extractPolicies} from "koreografeye/dist/policy/Extractor";
+import {getLogger} from 'log4js';
 import namedNode = DataFactory.namedNode;
-
 
 export interface OrchestrationAgentInterface {
     openHABActor: OpenHABActor
     solidActor: SolidActor,
     solidStateResource: string
     items: string[]
+    rules: string[]
 }
 
 // This version monitors the components for changes
@@ -27,6 +30,7 @@ export class OrchestrationAgent {
 
     private state: Quad[];
     private running = false;
+    private rules: string[];
 
     constructor(config: OrchestrationAgentInterface) {
         this.solidActor = config.solidActor
@@ -34,6 +38,7 @@ export class OrchestrationAgent {
         this.solidStateResource = config.solidStateResource
         this.items = config.items
         this.state = []
+        this.rules = config.rules
     }
 
     public async initialise() {
@@ -88,42 +93,59 @@ ${new Writer().quadsToString(chunk.data)}`
                 callback();
             }
         })
-        stream.pipe(transformer)
-            .on('data', event => {
-                let updatedState = []
-                turtleStringToStore(event.announcement).then(store =>
-                    console.log(storeToString(store)))
-                switch (event.from) {
-                    case 'solid':
-                        updatedState = updateState(this.state, event.data)
-                        // Note: Does not work when the relative identifier gets updated to fixed one.
-                        //  e.g. <http://localhost:3000/Bureau_rechts_Color> instead of <Bureau_rechts_Color>
-                        //  can be solved by adding some prefix extracting item functionality
-                        if (hasChanged(updatedState, this.state)) {
+
+        const test = stream.pipe(transformer)
+
+            test.on('data', async event => {
+                // reasoner has to be put here, otherwise it would always have all messages as input? // todo: ask Jesse, Patrick or Jos
+                // reason -> data is a list and does not get cleared during `cleanup` -> maybe create issue
+                const reasoner = new EyeJsReasoner([
+                    "--quiet",
+                    "--nope",
+                    "--pass"
+                ])
+                const result = await reasoner.reason(await turtleStringToStore(event.announcement), this.rules)
+                const resultString = storeToString(result)
+                const regexApplied = resultString.replace(/file:\/\/\//g, "")
+                const policies = await extractPolicies(await turtleStringToStore(regexApplied), 'no_idea', {}, getLogger())
+
+                for (const policy of Object.values(policies)) {
+                    switch (policy.target) {
+                        case 'http://example.org/hasStateChanged':
+                            const updatedState = updateState(this.state, event.data)
+                            if (hasChanged(updatedState, this.state)) {
+                                console.log(`${new Date().toISOString()} [${this.constructor.name}] Received event from ${event.from} actor: status was changed, so sending message to myself now.`)
+                                test.push({
+                                    from: 'Orchestrator',
+                                    data: updatedState, // add updated state as data
+                                    announcement: `
+@prefix as: <https://www.w3.org/ns/activitystreams#>.
+<${uuidv4()}> a as:Announce;
+as:actor <orchestrator> ;
+as:target <${policy.args['http://example.org/param1']!.value}>;
+as:to <${policy.args['http://example.org/param2']!.value}>.
+${new Writer().quadsToString(updatedState)}` // add updated state as data
+                                })
+                            } else {
+                                console.log(`${new Date().toISOString()} [${this.constructor.name}] Received event from ${event.from} actor: No change detected.`)
+                            }
+                            break;
+                        case 'http://example.org/updateOpenHABState':
                             console.log(`${new Date().toISOString()} [${this.constructor.name}] Received event from ${event.from} actor: start updating state in openhab.`)
-                            this.state = updatedState;
+                            this.state = event.data; // event data is the new state
                             for (const item of this.items) {
-                                const itemQuads = extractItem(updatedState, item);
+                                const itemQuads = extractItem(event.data, item);
                                 this.openHABActor.storeItem(itemQuads)
                             }
-                        } else {
-                            console.log(`${new Date().toISOString()} [${this.constructor.name}] Received event from ${event.from} actor: No change detected.`)
-                        }
-                        break;
-                    case 'openHAB':
-                        updatedState = updateState(this.state, event.data);
-                        if (hasChanged(updatedState, this.state)) {
+                            break;
+                        case 'http://example.org/updateSolidState':
                             console.log(`${new Date().toISOString()} [${this.constructor.name}] Received event from ${event.from} actor: start updating state in solid.`)
-                            this.state = updatedState;
-                            this.solidActor.writeResource(this.solidStateResource, updatedState)
-                        } else {
-                            console.log(`${new Date().toISOString()} [${this.constructor.name}] Received event from ${event.from} actor: No change detected.`)
-                        }
-                        break;
-                    default:
+                            this.state = event.data; // event data is the new state
+                            this.solidActor.writeResource(this.solidStateResource, event.data)
+                            break;
+                    }
                 }
             })
-
     }
 
     public stopService() {

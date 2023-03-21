@@ -35,7 +35,7 @@
     a fno:Execution ;
     fno:executes ex:hasStateChanged ; # function that checks whether internal state has changed. Creates an orchestrator announce request + updates state
     ex:param1 <solid>; # Target actor?
-    ex:param2 "ResourceToKeepInSync"; # Resource that should be updated <http://localhost:3000/state> 
+    ex:param2 "ResourceToKeepInSync"; # Resource that should be updated <http://localhost:3000/state>
     ex:body ?id
   ] .
 }
@@ -51,7 +51,7 @@
     a fno:Execution ;
     fno:executes ex:hasStateChanged ; # function that checks whether internal state has changed. Creates an orchestrator announce request + updates state
     ex:param1 <openHAB>; # Target actor?
-    ex:param2 "openHABEndpoint"; # Endpoint that should be updated <http://localhost:8080> 
+    ex:param2 "openHABEndpoint"; # Endpoint that should be updated <http://localhost:8080>
     ex:body ?id
   ] .
 }
@@ -61,7 +61,7 @@
 {
   # Orchestrator announce request
   ?id a as:Announce .
-  ?id as:actor "Orchestratoractor".
+  ?id as:actor <orchestrator>.
   ?id as:target <solid>. # Indicates The target actor to send the message to
   ?id as:to ?target. # https://www.w3.org/TR/activitystreams-vocabulary/#dfn-to | Indicates the target that the actor should sent the update to
 } =>
@@ -69,14 +69,16 @@
   ex:MyDemoPolicy pol:policy [
     a fno:Execution ;
     fno:executes ex:updateSolidState ;
-    ex:body ?id
+    ex:body ?id ;
+    ex:to ?target
   ] .
-}
+}.
+
 
 {
   # Orchestrator announce request
   ?id a as:Announce .
-  ?id as:actor "Orchestratoractor".
+  ?id as:actor <orchestrator> .
   ?id as:target <openHAB>. # Indicates The target actor to send the message to
   ?id as:to ?target. # https://www.w3.org/TR/activitystreams-vocabulary/#dfn-to | Indicates the target that the actor should sent the update to
 } =>
@@ -84,6 +86,7 @@
   ex:MyDemoPolicy pol:policy [
     a fno:Execution ;
     fno:executes ex:updateOpenHABState ;
-    ex:body ?id
+    ex:body ?id ;
+    ex:to ?target
   ] .
-}
+}.

@@ -1,4 +1,4 @@
-import {EyeJsReasoner, EyeReasoner} from "koreografeye";
+import {EyeJsReasoner} from "koreografeye";
 import {storeToString, turtleStringToStore} from "@treecg/versionawareldesinldp";
 
 const ruleString = `@prefix as: <https://www.w3.org/ns/activitystreams#>.
@@ -36,15 +36,14 @@ async function run() {
         "--nope" ,
         "--pass"
     ])
-    const reasonerEye = new EyeReasoner('/usr/local/bin/eye', [
-        "--quiet" ,
-        "--nope" ,
-        "--pass"
-    ])
-    const resultString = await reasoner.reason(await turtleStringToStore(announcementString),[ruleString])
-    console.log(storeToString(resultString))
-    const attempt2 = await reasonerEye.reason(await turtleStringToStore(announcementString),[ruleString])
-    console.log(storeToString(attempt2))
+    const result = await reasoner.reason(await turtleStringToStore(announcementString),[ruleString])
+    const resultString = storeToString(result)
+
+    const regexApplied = resultString.replace(/file:\/\/\//g,"")
+    console.log(storeToString(result))
+    console.log(regexApplied)
+    // todo apply reasoning
+
 /*
 Result contains `file:///` due to working with relative URIs :(
 Can be fixed due to regex, but will be ugly

@@ -1,0 +1,18 @@
+@prefix as: <https://www.w3.org/ns/activitystreams#>.
+@prefix pol:  <https://www.example.org/ns/policy#> .
+@prefix fno:  <https://w3id.org/function/ontology#> .
+@prefix ex:   <http://example.org/> .
+
+{
+  ?id a as:Announce .
+  ?id as:actor <openHAB>.
+} =>
+{
+  ex:MyDemoPolicy pol:policy [
+    a fno:Execution ;
+    fno:executes ex:hasStateChanged ; # function that checks whether internal state has changed. Creates an orchestrator announce request + updates state
+    ex:param1 <solid>; # Target actor?
+    ex:param2 <http://localhost:3000/state> ; # Resource that should be updated <http://localhost:3000/state>
+    ex:body ?id
+  ] .
+}.

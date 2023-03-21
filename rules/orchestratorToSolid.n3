@@ -1,0 +1,20 @@
+@prefix as: <https://www.w3.org/ns/activitystreams#>.
+@prefix pol:  <https://www.example.org/ns/policy#> .
+@prefix fno:  <https://w3id.org/function/ontology#> .
+@prefix ex:   <http://example.org/> .
+
+{
+  # Orchestrator announce request
+  ?id a as:Announce .
+  ?id as:actor <orchestrator>.
+  ?id as:target <solid>. # Indicates The target actor to send the message to
+  ?id as:to ?target. # https://www.w3.org/TR/activitystreams-vocabulary/#dfn-to | Indicates the target that the actor should sent the update to
+} =>
+{
+  ex:MyDemoPolicy pol:policy [
+    a fno:Execution ;
+    fno:executes ex:updateSolidState ;
+    ex:body ?id ;
+    ex:to ?target
+  ] .
+}.
