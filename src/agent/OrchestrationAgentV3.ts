@@ -1,6 +1,6 @@
 import {OpenHABActor} from "../openHAB/OpenHABActor";
 import {SolidActor} from "../solid/SolidActor";
-import {DataFactory, Quad, Writer} from "n3";
+import {Quad, Store, Writer} from "n3";
 import {storeToString, turtleStringToStore} from "@treecg/versionawareldesinldp";
 import {Readable, Transform, TransformCallback} from "stream";
 import {v4 as uuidv4} from "uuid";
@@ -21,13 +21,15 @@ export interface OrchestrationAgentInterface {
 // updates are pushed to a stream
 // handles multiple items
 // adds a transformer to the stream to generate AS2 notifications
+// proper reasoner added
+// proper policy executer added (still hardcoded tho)
 export class OrchestrationAgent {
-    private readonly openHABActor: OpenHABActor;
-    private readonly solidActor: SolidActor;
-    private readonly items: string[];
+    public readonly openHABActor: OpenHABActor; //TODO: make private again -> after fno plugins work properly
+    public readonly solidActor: SolidActor; //TODO: make private again -> after fno plugins work properly
+    public readonly items: string[]; //TODO: make private again -> after fno plugins work properly
     private readonly solidStateResource: string;
 
-    private state: Quad[];
+    public state: Quad[]; //TODO: make private again -> after fno plugins work properly
     private running = false;
     private rules: string[];
 
@@ -54,7 +56,11 @@ export class OrchestrationAgent {
         console.log(`${new Date().toISOString()} [${this.constructor.name}] Succesfully initialised ${this.items.length} items.`)
     }
 
-    public async startSyncService() {
+    public updateState(state: Quad[]): void {
+        this.state = state
+    }
+
+    public startSyncService() {
         this.running = true
         const stream = new Readable({
             objectMode: true,
@@ -65,99 +71,160 @@ export class OrchestrationAgent {
         this.solidActor.monitorResource(this.solidStateResource, stream);
         this.openHABActor.monitorItems(this.items, stream);
 
-        const addActorAnnouncements = new Transform({
-            objectMode: true,
-            transform(chunk: any, encoding: BufferEncoding, callback: TransformCallback) {
-                switch (chunk.from) {
-                    case 'solid':
-                        chunk.announcement = `
-@prefix as: <https://www.w3.org/ns/activitystreams#>.
-<${uuidv4()}> a as:Announce;
-    as:actor <solid> ;
-    as:object <${chunk.url}>. 
-${new Writer().quadsToString(chunk.data)}`
-                        this.push(chunk)
-                        break;
-                    case 'openHAB':
-                        chunk.announcement = `
-@prefix as: <https://www.w3.org/ns/activitystreams#>.
-<${uuidv4()}> a as:Announce;
-    as:actor <openHAB> ;
-    as:object <${chunk.item}>. 
-${new Writer().quadsToString(chunk.data)}`
-                        this.push(chunk)
-                        break;
-                    default:
-                }
-                callback();
-            }
-        })
+        const reasonerstep = new ReasoningTransform(this.rules);
+        const policyExtractTransform = new PolicyExtractTransform()
+        const policyExecuteTransform = new PolicyExecuteTransform(stream, this)
 
-        const test = stream.pipe(addActorAnnouncements)
-
-        test.on('data', async event => {
-            // reasoner has to be put here, otherwise it would always have all messages as input?
-            // reason -> data is a list and does not get cleared during `cleanup` -> maybe create issue
-            const reasoner = new EyeJsReasoner([
-                "--quiet",
-                "--nope",
-                "--pass"
-            ])
-            const result = await reasoner.reason(await turtleStringToStore(event.announcement), this.rules)
-            const resultString = storeToString(result)
-            const regexApplied = resultString.replace(/file:\/\/\//g, "")
-            const extractedPolicies = await extractPolicies(await turtleStringToStore(regexApplied), 'no_idea', {}, getLogger())
-            // console.log(extractedPolicies)
-            const policies = Object.values(extractedPolicies)
-
-            let extractionResult
-            for (const policy of policies) {
-                switch (policy.target) {
-                    case 'http://example.org/hasStateChanged':
-                        const updatedState = updateState(this.state, event.data)
-                        if (hasChanged(updatedState, this.state)) {
-                            console.log(`${new Date().toISOString()} [${this.constructor.name}] Received event from ${event.from} actor: state was changed, so sending message to myself now.`)
-                            test.push({
-                                from: 'Orchestrator',
-                                data: updatedState, // add updated state as data
-                                announcement: `
-@prefix as: <https://www.w3.org/ns/activitystreams#>.
-<${uuidv4()}> a as:Announce;
-as:actor <orchestrator> ;
-as:target <${policy.args['http://example.org/param1']!.value}>;
-as:to <${policy.args['http://example.org/param2']!.value}>.
-${new Writer().quadsToString(updatedState)}` // add updated state as data
-                            })
-                        } else {
-                            console.log(`${new Date().toISOString()} [${this.constructor.name}] Received event from ${event.from} actor: No change detected.`)
-                        }
-                        break;
-                    case 'http://example.org/updateOpenHABState':
-                        this.state = event.data; // event data is the new state
-                        extractionResult = await extractAnnouncementArgs((await turtleStringToStore(event.announcement)).getQuads(null, null, null, null))
-                        console.log(`${new Date().toISOString()} [${this.constructor.name}] Received event from ${event.from} actor: start updating state in ${extractionResult.targetActor} actor to location ${extractionResult.targetEndpoint}.`)
-
-                        for (const item of this.items) {
-                            const itemQuads = extractItem(event.data, item);
-                            this.openHABActor.storeItem(itemQuads)
-                        }
-                        break;
-                    case 'http://example.org/updateSolidState':
-                        extractionResult = await extractAnnouncementArgs((await turtleStringToStore(event.announcement)).getQuads(null, null, null, null))
-                        console.log(`${new Date().toISOString()} [${this.constructor.name}] Received event from ${event.from} actor: start updating state in ${extractionResult.targetActor} actor to location ${extractionResult.targetEndpoint}.`)
-                        this.state = event.data; // event data is the new state
-                        this.solidActor.writeResource(extractionResult.targetEndpoint, event.data)
-                        break;
-                    default:
-                        console.log(`${new Date().toISOString()} [${this.constructor.name}] No plugin available for identifier "${policy.target}"`)
-                }
-            }
-        })
+        stream.pipe(createAnnouncementTransform)
+            .pipe(reasonerstep)
+            .pipe(policyExtractTransform)
+            .pipe(policyExecuteTransform)
     }
 
     public stopService() {
         this.solidActor.stopMonitoring();
         this.openHABActor.stopMonitoring();
         this.running = false;
+    }
+}
+
+function fnoHasStateChanged(event: any, stream: Readable, state: Quad[]): void {
+    const policy = event.policy;
+    const updatedState = updateState(state, event.data)
+    if (hasChanged(updatedState, state)) {
+        console.log(`${new Date().toISOString()} [${fnoHasStateChanged.name}] Received event from ${event.from} actor: state was changed, so sending message to myself now.`)
+        stream.push({
+            from: 'Orchestrator',
+            data: updatedState, // add updated state as data
+            announcement: `
+@prefix as: <https://www.w3.org/ns/activitystreams#>.
+<${uuidv4()}> a as:Announce;
+as:actor <orchestrator> ;
+as:target <${policy.args['http://example.org/param1']!.value}>;
+as:to <${policy.args['http://example.org/param2']!.value}>.
+${new Writer().quadsToString(updatedState)}` // add updated state as data
+        })
+    } else {
+        console.log(`${new Date().toISOString()} [${fnoHasStateChanged.name}] Received event from ${event.from} actor: No change detected.`)
+    }
+}
+
+async function fnoUpdateOpenHABState(event: any, orchAgent: OrchestrationAgent, items: string[]): Promise<void> {
+    const extractionResult = await extractAnnouncementArgs(event.announcement)
+    console.log(`${new Date().toISOString()} [${fnoUpdateOpenHABState.name}] Received event from ${event.from} actor: start updating state in ${extractionResult.targetActor} actor to location ${extractionResult.targetEndpoint}.`)
+    orchAgent.updateState(event.data)// event data is the new state
+    for (const item of items) {
+        const itemQuads = extractItem(event.data, item);
+        orchAgent.openHABActor.storeItem(itemQuads)
+    }
+}
+
+async function fnoUpdateSolidState(event: any, orchAgent: OrchestrationAgent): Promise<void> {
+    const extractionResult = await extractAnnouncementArgs(event.announcement)
+    console.log(`${new Date().toISOString()} [${fnoUpdateSolidState.name}] Received event from ${event.from} actor: start updating state in ${extractionResult.targetActor} actor to location ${extractionResult.targetEndpoint}.`)
+    orchAgent.updateState(event.data)// event data is the new state
+    orchAgent.solidActor.writeResource(extractionResult.targetEndpoint, event.data)
+}
+
+// adds activity streams to event
+const createAnnouncementTransform = new Transform({
+    objectMode: true,
+    transform(chunk: any, encoding: BufferEncoding, callback: TransformCallback) {
+        switch (chunk.from) {
+            case 'solid':
+                chunk.announcement = `
+@prefix as: <https://www.w3.org/ns/activitystreams#>.
+<${uuidv4()}> a as:Announce;
+    as:actor <solid> ;
+    as:object <${chunk.url}>. 
+${new Writer().quadsToString(chunk.data)}`
+                this.push(chunk)
+                break;
+            case 'openHAB':
+                chunk.announcement = `
+@prefix as: <https://www.w3.org/ns/activitystreams#>.
+<${uuidv4()}> a as:Announce;
+    as:actor <openHAB> ;
+    as:object <${chunk.item}>. 
+${new Writer().quadsToString(chunk.data)}`
+                this.push(chunk)
+                break;
+            case 'Orchestrator':
+                this.push(chunk)
+                break
+            default:
+                console.log('We do not currently support following event')
+                console.log(chunk)
+        }
+        callback();
+    }
+})
+
+class ReasoningTransform extends Transform {
+    private rules: string[];
+
+    constructor(rules: string[]) {
+        super({objectMode: true})
+        this.rules = rules;
+    }
+
+    async _transform(chunk: any, encoding: BufferEncoding, callback: TransformCallback) {
+        const announcementStore = await turtleStringToStore(chunk.announcement)
+        const reasoner = new EyeJsReasoner([
+            "--quiet",
+            "--nope",
+            "--pass"
+        ])
+        const result = await reasoner.reason(announcementStore, this.rules)
+        const resultString = storeToString(result)
+        const cleanedResult = (await turtleStringToStore(resultString.replace(/file:\/\/\//g, ""))).getQuads(null, null, null, null)
+        chunk.reasoningResult = cleanedResult
+        chunk.announcement = announcementStore.getQuads(null, null, null, null)
+        this.push(chunk)
+        callback()
+    }
+}
+
+class PolicyExtractTransform extends Transform {
+    constructor() {
+        super({objectMode: true});
+    }
+    async _transform(chunk: any, encoding: BufferEncoding, callback: TransformCallback) {
+        const extractedPolicies = await extractPolicies(new Store(chunk.reasoningResult), 'no_idea', {}, getLogger())
+        const policies = Object.values(extractedPolicies)
+        for (const policy of policies) {
+            chunk.policy = policy
+            this.push(chunk)
+        }
+        callback()
+    }
+}
+
+class PolicyExecuteTransform extends Transform {
+    private stream: Readable;
+    private orchestratorAgent: OrchestrationAgent;
+
+    constructor(stream: Readable, orchestratorAgent: OrchestrationAgent) {
+        super({objectMode: true})
+        this.stream = stream;
+        this.orchestratorAgent = orchestratorAgent
+
+    }
+
+    _transform(chunk: any, encoding: BufferEncoding, callback: TransformCallback) {
+        switch (chunk.policy.target) {
+            case 'http://example.org/hasStateChanged':
+                fnoHasStateChanged(chunk, this.stream, this.orchestratorAgent.state)
+                break;
+            case 'http://example.org/updateOpenHABState':
+                fnoUpdateOpenHABState(chunk, this.orchestratorAgent, this.orchestratorAgent.items)
+                break;
+            case 'http://example.org/updateSolidState':
+                fnoUpdateSolidState(chunk, this.orchestratorAgent)
+                break;
+            default:
+                console.log(`${new Date().toISOString()} [policyExecuteTransform] No plugin available for identifier "${chunk.policy.target}"`)
+        }
+        callback()
     }
 }
