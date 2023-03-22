@@ -87,4 +87,17 @@ async function main_v3() {
     // orchestrationAgent.stopService()
 }
 
-main_v3()
+// main_v3()
+
+async function copy(){
+    const config = {
+        ...orchConfig, rules: [
+            readText('./rules/orchestratorToSolid.n3')!,
+            readText('./rules/experimentalRule.n3')!,
+        ]
+    }
+    const orchestrationAgent = new v3(config)
+    await orchestrationAgent.initialise();
+    orchestrationAgent.startSyncService()
+}
+copy()
