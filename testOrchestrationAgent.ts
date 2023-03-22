@@ -55,6 +55,7 @@ async function main_v2_5() {
             readText('./rules/solidChangedRule.n3')!,
             readText('./rules/orchestratorToOpenHAB.n3')!,
             readText('./rules/orchestratorToSolid.n3')!,
+            readText('./rules/experimentalRule.n3')!,
         ]
     }
     const orchestrationAgent = new v2_5(config)

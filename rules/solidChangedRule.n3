@@ -16,3 +16,18 @@
     ex:body ?id
   ] .
 } .
+
+# Rule that updates another random solid resource
+{
+  ?id a as:Announce .
+  ?id as:actor <solid>.
+} =>
+{
+  ex:asdf pol:policy [
+    a fno:Execution ;
+    fno:executes ex:hasStateChanged ;
+    ex:param1 <solid>;
+    ex:param2 <http://localhost:3000/test> ;
+    ex:body ?id
+  ] .
+} .

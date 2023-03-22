@@ -1,6 +1,6 @@
 import {OpenHABActor} from "../openHAB/OpenHABActor";
 import {SolidActor} from "../solid/SolidActor";
-import {Quad, Writer} from "n3";
+import {DataFactory, Quad, Writer} from "n3";
 import {storeToString, turtleStringToStore} from "@treecg/versionawareldesinldp";
 import {Readable, Transform, TransformCallback} from "stream";
 import {v4 as uuidv4} from "uuid";
