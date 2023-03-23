@@ -87,6 +87,7 @@
     a fno:Execution ;
     fno:executes ex:updateOpenHABState ;
     ex:body ?id ;
-    ex:to ?target
+    as:to ?target;
+    as:target <openHAB>
   ] .
 }.

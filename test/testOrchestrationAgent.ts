@@ -1,13 +1,13 @@
-import {OrchestrationAgent as v1} from "./src/agent/OrchestrationAgentV1";
-import {OpenHABActor} from "./src/openHAB/OpenHABActor";
-import {OpenHABClient} from "./src/openHAB/OpenHABClient";
-import {OpenHABRDFTranslator} from "./src/openHAB/OpenHABRDFTranslator";
-import {SolidActor} from "./src/solid/SolidActor";
+import {OrchestrationAgent as v1} from "../src/agent/OrchestrationAgentV1";
+import {OpenHABActor} from "../src/openHAB/OpenHABActor";
+import {OpenHABClient} from "../src/openHAB/OpenHABClient";
+import {OpenHABRDFTranslator} from "../src/openHAB/OpenHABRDFTranslator";
+import {SolidActor} from "../src/solid/SolidActor";
 import {Session} from "@rubensworks/solid-client-authn-isomorphic";
-import {SolidClient} from "./src/solid/SolidClient";
-import {OrchestrationAgent as v2} from "./src/agent/OrchestrationAgentV2";
-import {OrchestrationAgent as v3} from "./src/agent/OrchestrationAgentV3";
-import {OrchestrationAgent as v2_5} from "./src/agent/OrchestrationAgentV2.5";
+import {SolidClient} from "../src/solid/SolidClient";
+import {OrchestrationAgent as v2} from "../src/agent/OrchestrationAgentV2";
+import {OrchestrationAgent as v3} from "../src/agent/OrchestrationAgentV3";
+import {OrchestrationAgent as v2_5} from "../src/agent/OrchestrationAgentV2.5";
 import {readText} from "koreografeye/dist/util";
 
 require('dotenv').config()
@@ -77,7 +77,7 @@ async function main_v3() {
             readText('./rules/solidChangedRule.n3')!,
             readText('./rules/orchestratorToOpenHAB.n3')!,
             readText('./rules/orchestratorToSolid.n3')!,
-            readText('./rules/experimentalRule.n3')!,
+            // readText('./rules/experimentalRule.n3')!,
         ]
     }
     const orchestrationAgent = new v3(config)

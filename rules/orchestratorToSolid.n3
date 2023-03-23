@@ -15,6 +15,7 @@
     a fno:Execution ;
     fno:executes ex:updateSolidState ;
     ex:body ?id ;
-    ex:to ?target
+    as:to ?target;
+    as:target <solid>
   ] .
 }.

@@ -1,6 +1,6 @@
-import {OpenHABActor} from "./src/openHAB/OpenHABActor";
-import {OpenHABClient} from "./src/openHAB/OpenHABClient";
-import {OpenHABRDFTranslator} from "./src/openHAB/OpenHABRDFTranslator";
+import {OpenHABActor} from "../src/openHAB/OpenHABActor";
+import {OpenHABClient} from "../src/openHAB/OpenHABClient";
+import {OpenHABRDFTranslator} from "../src/openHAB/OpenHABRDFTranslator";
 import {Writer} from "n3";
 import {sleep, turtleStringToStore} from "@treecg/versionawareldesinldp";
 require('dotenv').config()

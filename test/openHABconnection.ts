@@ -1,7 +1,7 @@
 // Code to test the connection to openHAB stuff
 // import {config} from 'dotenv'
-import { Item, OpenHABClient } from './src/openHAB/OpenHABClient'
-import { OpenHABAuthenticatedFetcher } from './src/openHAB/OpenHABAuthenticatedFetcher'
+import { Item, OpenHABClient } from '../src/openHAB/OpenHABClient'
+import { OpenHABAuthenticatedFetcher } from '../src/openHAB/OpenHABAuthenticatedFetcher'
 require('dotenv').config()
 
 const openHABURL = process.env.OPENHAB_URL
@@ -25,7 +25,7 @@ async function old_main() {
 
     // const response = await fetcher.fetch(itemAPI(openHABURL!))
     // const openHABNames: Thing[] = await response.json()
-    // openHABNames.forEach(({name, type})=> console.log(name + " " +type));    
+    // openHABNames.forEach(({name, type})=> console.log(name + " " +type));
 }
 
 async function turnLampOn(color: string, openHABClient: OpenHABClient){
@@ -38,28 +38,28 @@ async function turnLampOn(color: string, openHABClient: OpenHABClient){
             tags: [],
             groupNames: []
         }
-    
+
     switch (color){
         case 'cyan':
-            state = '175,50,40'  
+            state = '175,50,40'
             break;
         case 'blue':
-            state = '226,50,40'  
+            state = '226,50,40'
             break;
         case 'red':
-            state = '0,50,40'  
+            state = '0,50,40'
             break;
         case 'yellow':
-            state = '62,50,40'  
+            state = '62,50,40'
             break;
         case 'purple':
-            state = '275,50,40'  
+            state = '275,50,40'
             break;
         default:
-            state = '52,50,40'    
+            state = '52,50,40'
     }
     item.state = state
-    
+
     await openHABClient.setItem(item)
 
 }

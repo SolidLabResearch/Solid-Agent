@@ -4,10 +4,11 @@ import {Quad, Store, Writer} from "n3";
 import {storeToString, turtleStringToStore} from "@treecg/versionawareldesinldp";
 import {Readable, Transform, TransformCallback, Writable} from "stream";
 import {v4 as uuidv4} from "uuid";
-import {EyeJsReasoner} from "koreografeye";
+import {EyeJsReasoner, Reasoner} from "koreografeye";
 import {extractPolicies} from "koreografeye/dist/policy/Extractor";
 import {getLogger} from 'log4js';
 import {extractAnnouncementArgs, extractItem, hasChanged, updateState} from "./Util";
+import {AS} from "@solid/community-server";
 
 export interface OrchestrationAgentInterface {
     openHABActor: OpenHABActor
@@ -23,6 +24,8 @@ export interface OrchestrationAgentInterface {
 // adds a transformer to the stream to generate AS2 notifications
 // proper reasoner added
 // proper policy executer added (still hardcoded tho)
+// TODO: add documentation
+// TODO describe event interface
 export class OrchestrationAgent {
     public readonly openHABActor: OpenHABActor; //TODO: make private again -> after fno plugins work properly
     public readonly solidActor: SolidActor; //TODO: make private again -> after fno plugins work properly
@@ -125,8 +128,9 @@ ${new Writer().quadsToString(updatedState)}` // add updated state as data
  * @param items
  */
 async function fnoUpdateOpenHABState(event: any, orchAgent: OrchestrationAgent, items: string[]): Promise<void> {
-    const extractionResult = await extractAnnouncementArgs(event.announcement)
-    console.log(`${new Date().toISOString()} [${fnoUpdateOpenHABState.name}] Received event from ${event.from} actor: start updating state in ${extractionResult.targetActor} actor to location ${extractionResult.targetEndpoint}.`)
+    const targetActor = event.policy.args[AS.namespace +'target']!.value
+    const targetLocation = event.policy.args[AS.namespace +'to']!.value
+    console.log(`${new Date().toISOString()} [${fnoUpdateOpenHABState.name}] Received event from ${event.from} actor: start updating state in ${targetActor} actor to location ${targetLocation}.`)
     orchAgent.updateState(event.data)// event data is the new state
     for (const item of items) {
         const itemQuads = extractItem(event.data, item);
@@ -141,10 +145,11 @@ async function fnoUpdateOpenHABState(event: any, orchAgent: OrchestrationAgent, 
  * @param orchAgent
  */
 async function fnoUpdateSolidState(event: any, orchAgent: OrchestrationAgent): Promise<void> {
-    const extractionResult = await extractAnnouncementArgs(event.announcement)
-    console.log(`${new Date().toISOString()} [${fnoUpdateSolidState.name}] Received event from ${event.from} actor: start updating state in ${extractionResult.targetActor} actor to location ${extractionResult.targetEndpoint}.`)
+    const targetActor = event.policy.args[AS.namespace +'target']!.value
+    const targetLocation = event.policy.args[AS.namespace +'to']!.value
+    console.log(`${new Date().toISOString()} [${fnoUpdateSolidState.name}] Received event from ${event.from} actor: start updating state in ${targetActor} actor to location ${targetLocation}.`)
     orchAgent.updateState(event.data)// event data is the new state
-    orchAgent.solidActor.writeResource(extractionResult.targetEndpoint, event.data)
+    orchAgent.solidActor.writeResource(targetLocation, event.data)
 }
 
 // adds activity streams to event
@@ -193,16 +198,24 @@ ${new Writer().quadsToString(chunk.data)}`
  */
 class ReasoningTransform extends Transform {
     private rules: string[];
-
+    private reasoner: Reasoner;
     constructor(rules: string[]) {
         super({objectMode: true})
         this.rules = rules;
+        this.reasoner = new EyeJsReasoner([
+            "--quiet",
+            "--nope",
+            "--pass"
+        ])
     }
 
     async _transform(chunk: any, encoding: BufferEncoding, callback: TransformCallback) {
         const announcementStore = new Store(chunk.announcement)
         // Can be optimised in koreografeye by cleaning the data array after each run (can be implemented in the cleanup method)
         // then only one reasoner must ever be made
+        //     public cleanup(): void {
+        // ++      this.data= []
+        //     }
         const reasoner = new EyeJsReasoner([
             "--quiet",
             "--nope",
@@ -210,8 +223,9 @@ class ReasoningTransform extends Transform {
         ])
         const result = await reasoner.reason(announcementStore, this.rules)
         const resultString = storeToString(result)
-        const cleanedResult = (await turtleStringToStore(resultString.replace(/file:\/\/\//g, ""))).getQuads(null, null, null, null)
-        chunk.reasoningResult = cleanedResult
+        const cleaned = resultString.replace(/file:\/\/\//g, "")
+        const cleanedStore = await turtleStringToStore(cleaned)
+        chunk.reasoningResult = cleanedStore.getQuads(null, null, null, null)
         callback(null, chunk)
     }
 }

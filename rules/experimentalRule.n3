@@ -3,19 +3,50 @@
 @prefix fno:  <https://w3id.org/function/ontology#> .
 @prefix ex:   <http://example.org/> .
 
+## Rule that updates another random solid resource
+#{
+#  ?id a as:Announce .
+#  ?id as:actor <solid>.
+#} =>
+#{
+#  ex:MyDemoPolic pol:policy [
+#    a fno:Execution ;
+#    fno:executes ex:hasStateChanged ;
+#    ex:param1 <solid>;
+#    ex:param2 <http://localhost:3000/random> ;
+#    ex:body ?id
+#  ] .
+#} .
+#
+## Rule that updates another random solid resource
+#{
+#  ?id a as:Announce .
+#  ?id as:actor <solid>.
+#} =>
+#{
+#  ex:asdf pol:policy [
+#    a fno:Execution ;
+#    fno:executes ex:hasStateChanged ;
+#    ex:param1 <solid>;
+#    ex:param2 <http://localhost:3000/test> ;
+#    ex:body ?id
+#  ] .
+#} .
+#
+
 # Rule that updates another random solid resource
 {
   ?id a as:Announce .
   ?id as:actor <solid>.
 } =>
 {
-  ex:MyDemoPolic pol:policy [
+  ex:asdfe pol:policy [
     a fno:Execution ;
-    fno:executes ex:hasStateChanged ;
-    ex:param1 <solid>;
-    ex:param2 <http://localhost:3000/random> ;
-    ex:body ?id
-  ] .
+    fno:executes ex:updateSolidState ;
+    ex:body ?id ;
+    as:to <http://localhost:3000/random>;
+    as:target <solid>  
+    ] .
 } .
 
 # Rule that updates another random solid resource
@@ -26,9 +57,9 @@
 {
   ex:asdf pol:policy [
     a fno:Execution ;
-    fno:executes ex:hasStateChanged ;
-    ex:param1 <solid>;
-    ex:param2 <http://localhost:3000/test> ;
-    ex:body ?id
+    fno:executes ex:updateSolidState ;
+    ex:body ?id ;
+    as:to <http://localhost:3000/test>;
+    as:target <solid> 
   ] .
 } .
