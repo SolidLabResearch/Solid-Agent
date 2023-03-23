@@ -56,7 +56,7 @@ async function main_v2_5() {
             readText('./rules/solidChangedRule.n3')!,
             readText('./rules/orchestratorToOpenHAB.n3')!,
             readText('./rules/orchestratorToSolid.n3')!,
-            readText('./rules/experimentalRule.n3')!,
+            // readText('./rules/experimentalRule.n3')!,
         ]
     }
     const orchestrationAgent = new v2_5(config)
@@ -77,6 +77,7 @@ async function main_v3() {
             readText('./rules/solidChangedRule.n3')!,
             readText('./rules/orchestratorToOpenHAB.n3')!,
             readText('./rules/orchestratorToSolid.n3')!,
+            readText('./rules/experimentalRule.n3')!,
         ]
     }
     const orchestrationAgent = new v3(config)
@@ -87,7 +88,7 @@ async function main_v3() {
     // orchestrationAgent.stopService()
 }
 
-// main_v3()
+main_v3()
 
 async function copy(){
     const config = {
@@ -100,4 +101,4 @@ async function copy(){
     await orchestrationAgent.initialise();
     orchestrationAgent.startSyncService()
 }
-copy()
+// copy()
