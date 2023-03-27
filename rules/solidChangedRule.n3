@@ -13,6 +13,8 @@
     fno:executes ex:hasStateChanged ; # function that checks whether internal state has changed. Creates an orchestrator announce request + updates state
     ex:param1 <openHAB>; # Target actor?
     ex:param2 <http://localhost:8080> ; # Endpoint that should be updated <http://localhost:8080>
-    ex:body ?id
+    ex:body ?id;
+    as:to <state>;
+    as:target <orchestrator>
   ] .
 } .

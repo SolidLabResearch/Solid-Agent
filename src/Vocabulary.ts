@@ -1,5 +1,12 @@
 import {createUriAndTermNamespace} from "@solid/community-server"
 
+export const AS = createUriAndTermNamespace('https://www.w3.org/ns/activitystreams#',
+    'Announce',
+    'actor',
+    'target',
+    'object',
+    'to'
+)
 export const SOSA = createUriAndTermNamespace('http://www.w3.org/ns/sosa/',
     'Platform',
     'Actuator',

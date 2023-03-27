@@ -13,6 +13,8 @@
     fno:executes ex:hasStateChanged ; # function that checks whether internal state has changed. Creates an orchestrator announce request + updates state
     ex:param1 <solid>; # Target actor?
     ex:param2 <http://localhost:3000/state> ; # Resource that should be updated <http://localhost:3000/state>
-    ex:body ?id
+    ex:body ?id;
+    as:to <state>;
+    as:target <orchestrator>
   ] .
 }.
