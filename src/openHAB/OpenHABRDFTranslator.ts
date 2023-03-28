@@ -24,7 +24,7 @@ export class OpenHABRDFTranslator {
      */
     public translateItemToRDF(item: Item): Quad[] {
         const quads: Quad[] = []
-        // TODO: maybe later add label?
+        // maybe later add label?
         switch (item.type.toLowerCase()) {
             case 'color':
                 const state = parseColorState(item.state)

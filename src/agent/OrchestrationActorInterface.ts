@@ -63,33 +63,35 @@ export interface Event {
 
 export interface Actor {
     /**
-     * TODO: document
+     * The {@link https://solid.github.io/webid-profile/|Web ID} of the actor.
+     * The WebID Profile Document (obtained by derefencing the WebID) also contains a link
+     * to the `ldp:inbox` of the actor where it receives {@link https://www.w3.org/TR/activitystreams-core/|AS2} activities.
      */
     webID: string;
     /**
-     * TODO: document
+     * The resources from the actor to which can be subscribed.
      */
     resources: string[];
     /**
-     * TODO: document
-     * @param identifier
+     * Retrieve a resource using the actor. (RDF representation)
+     * @param identifier - The location (URL) of the resource.
      */
     readResource: (identifier: string) => Promise<Quad[]>
     /**
-     * TODO: document
-     * @param identifier
-     * @param data
+     * Write a resource to a location using the actor.
+     * @param identifier - The location (URL) of the resource.
+     * @param data - The content of the resource (in RDF).
      */
     writeResource: (identifier: string, data: Quad[]) => Promise<void>
     /**
-     * TODO: document
-     * @param identifier
-     * @param stream
+     * Subscribe to a resource.
+     * @param identifier - The location (URL) of the resource.
+     * @param stream - (optional) a stream to which updates can be pushed.
      */
     monitorResource: (identifier: string, stream?: Readable) => Promise<void>
     /**
-     * TODO: document
-     * @param stream
+     * Subscribe the resources which are configured within the actor.
+     * @param stream - (optional) a stream to which updates can be pushed.
      */
     monitorResources: (stream?: Readable) => Promise<void>
 }
