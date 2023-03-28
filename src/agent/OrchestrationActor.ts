@@ -1,33 +1,39 @@
-import {Actor, Event, OrchestrationActorInterface, PluginFunction} from "./OrchestrationActorInterface";
+import {Actor, OrchestrationActorInterface, PluginFunction} from "./OrchestrationActorInterface";
 import {Readable} from "stream";
 import {Quad} from "n3";
 import {ReasoningTransform} from "./transform/ReasoningTransform";
 import {PolicyExtractTransform} from "./transform/PolicyExtractTransform";
-import {AS} from "@solid/community-server";
+import {PolicyExecuteTransform} from "./transform/PolicyExecuteTransform";
 
 export class OrchestrationActor implements Actor {
     private actors: Record<string, Actor>;
     private plugins: Record<string, PluginFunction>;
-    private resources: Record<string, Quad[]>
+    private _resources: Record<string, Quad[]>
     private rules: string[];
-    private state: Quad[];
     private stream: Readable;
 
     private running = false;
+    private _webID = 'orchestrator' // TODO: proper configure own actor with webid
 
     public constructor(config: OrchestrationActorInterface) {
         this.actors = config.actors;
         this.plugins = config.plugins;
         this.rules = config.rules;
-        this.resources = {};
-        this.state = []
+        this._resources = {};
         this.stream = new Readable({
             objectMode: true,
             read() {
             }
         })
-        // TODO: proper configure own actor with webid
-        this.actors["orchestrator"] = this
+        this.actors[this.webID] = this
+    }
+
+    get resources(): string[] {
+        return Object.keys(this._resources)
+    }
+
+    get webID(): string {
+        return this._webID
     }
 
     monitorResource(identifier: string, stream: Readable | undefined): Promise<void> {
@@ -39,14 +45,17 @@ export class OrchestrationActor implements Actor {
     }
 
     async readResource(identifier: string): Promise<Quad[]> {
-        const resource = this.resources[identifier]
+        const resource = this._resources[identifier]
         if (!resource) throw Error(`${this.constructor.name} does not have a resource with identifier ${identifier}`)
         return resource
     }
 
 
     async writeResource(identifier: string, data: Quad[]): Promise<void> {
-        this.resources[identifier] = data;
+        this._resources[identifier] = data;
+        // const writer = new Writer();
+        // console.log('before', writer.quadsToString(this.resources[identifier] ?? []))
+        // console.log('after', writer.quadsToString(data))
     }
 
     public start() {
@@ -60,24 +69,12 @@ export class OrchestrationActor implements Actor {
 
         const reasonerTransform = new ReasoningTransform(this.rules);
         const policyExtractTransform = new PolicyExtractTransform()
-        // const policyExecuteTransform = new PolicyExecuteTransform(stream, this.policies)
+        const policyExecuteTransform = new PolicyExecuteTransform(this.stream, this.plugins, this.actors)
 
-        const extractedPolicesStream = this.stream
+        this.stream
             .pipe(reasonerTransform)
             .pipe(policyExtractTransform)
-        // .pipe(policyExecuteTransform)
-
-        // Listen to stream and execute policies? TODO: check if can be placed in {@link PolicyExecuteTransform}
-        const agent = this
-        extractedPolicesStream.on('data', (event: Event) => {
-            if (event.policy === undefined) throw Error()
-            const pluginIdentifier = event.policy.target
-            const targetActorIdentifier = event.policy.args[AS.namespace + 'target']!.value // TODO: explain why this will always be in the target (reasoningResult -> Rules)
-
-            const plugin: PluginFunction = agent.plugins[pluginIdentifier]
-            const actor: Actor = agent.actors[targetActorIdentifier]
-            plugin(event, actor, {stream: agent.stream})
-        })
+            .pipe(policyExecuteTransform)
     }
 
     public stop() {

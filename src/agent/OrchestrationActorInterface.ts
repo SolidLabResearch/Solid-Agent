@@ -62,8 +62,34 @@ export interface Event {
 }
 
 export interface Actor {
+    /**
+     * TODO: document
+     */
+    webID: string;
+    /**
+     * TODO: document
+     */
+    resources: string[];
+    /**
+     * TODO: document
+     * @param identifier
+     */
     readResource: (identifier: string) => Promise<Quad[]>
+    /**
+     * TODO: document
+     * @param identifier
+     * @param data
+     */
     writeResource: (identifier: string, data: Quad[]) => Promise<void>
+    /**
+     * TODO: document
+     * @param identifier
+     * @param stream
+     */
     monitorResource: (identifier: string, stream?: Readable) => Promise<void>
+    /**
+     * TODO: document
+     * @param stream
+     */
     monitorResources: (stream?: Readable) => Promise<void>
 }

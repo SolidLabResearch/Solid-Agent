@@ -16,20 +16,25 @@ export class OpenHABActor implements Actor {
 
     // when polling is done, the interval defines how often is polled
     private interval: number;
-    private resources: string[]
+    private _resources: string[]
     private isMonitoring: boolean
 
-    private webID: string
+    private _webID: string
 
-    constructor(client: OpenHABClient, translator: OpenHABRDFTranslator, options?: { resources: string[] }) {
+    constructor(client: OpenHABClient, translator: OpenHABRDFTranslator, options?: { resources: string[], webID?: string }) {
         this.client = client;
         this.translator = translator;
         this.interval = 5000;
         this.isMonitoring = false;
-        this.resources = options ? options.resources : [];
-        this.webID = 'openHAB'  // TODO: add real webid
+        this._resources = options ? options.resources : [];
+        this._webID = options ? options.webID ?? 'openHAB' : 'openHAB';
+    }
 
-
+    get resources(): string[] {
+        return this._resources
+    }
+    get webID(): string {
+        return this._webID
     }
 
     async monitorResource(identifier: string, stream: Readable | undefined): Promise<void> {
@@ -43,13 +48,13 @@ export class OpenHABActor implements Actor {
             const uuid = uuidv4()
             const announcement = [
                 quad(namedNode(uuid), RDF.terms.type, AS.terms.Announce),
-                quad(namedNode(uuid), AS.terms.actor, namedNode(this.webID)),
+                quad(namedNode(uuid), AS.terms.actor, namedNode(this._webID)),
                 quad(namedNode(uuid), AS.terms.object, namedNode(identifier)),
             ]
             const event: Event = {
                 activity: [...announcement, ...rdf],
                 data: rdf,
-                from: this.webID,
+                from: this._webID,
                 resourceURL: identifier
             }
             stream.push(event)
@@ -62,7 +67,8 @@ export class OpenHABActor implements Actor {
             throw Error()
         }
         for (const resourceIdentifier of this.resources) {
-            await this.monitorResource(resourceIdentifier, stream)
+            // no await otherwise it will wait on the first resource for infinite amount of time
+            this.monitorResource(resourceIdentifier, stream)
         }
     }
 
@@ -75,10 +81,8 @@ export class OpenHABActor implements Actor {
     }
 
     async writeResource(identifier: string, data: Quad[]): Promise<void> {
-        // extract ID from data
-        const itemName = await this.translator.fetchIdentifierFromRDF(data)
         // RDF to item
-        const item = await this.translator.translateRDFToItem(data, itemName)
+        const item = await this.translator.translateRDFToItem(data, identifier)
         await this.client.setItem(item)
     }
 }

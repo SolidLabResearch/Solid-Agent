@@ -13,17 +13,25 @@ export class SolidActor implements Actor {
     private readonly client: SolidClient;
     // when polling is done, the interval defines how often is polled
     private interval: number;
-    private resources: string[]
+    private _resources: string[]
     private isMonitoring: boolean
 
-    private webID: string
+    private _webID: string
 
-    constructor(client: SolidClient, options?: { resources: string[]}) {
+    constructor(client: SolidClient, options?: { resources: string[], webID?: string }) {
         this.client = client
         this.interval = 5000;
         this.isMonitoring = false;
-        this.resources = options ? options.resources : [];
-        this.webID = 'solid' // TODO: add real webid
+        this._resources = options ? options.resources : [];
+        this._webID = options ? options.webID ?? 'solid' : 'solid';
+    }
+
+    get resources(): string[] {
+        return this._resources
+    }
+
+    get webID(): string {
+        return this._webID
     }
 
     async monitorResource(identifier: string, stream?: Readable): Promise<void> {
@@ -37,13 +45,13 @@ export class SolidActor implements Actor {
             const uuid = uuidv4()
             const announcement = [
                 quad(namedNode(uuid), RDF.terms.type, AS.terms.Announce),
-                quad(namedNode(uuid), AS.terms.actor, namedNode(this.webID)),
+                quad(namedNode(uuid), AS.terms.actor, namedNode(this._webID)),
                 quad(namedNode(uuid), AS.terms.object, namedNode(identifier)),
             ]
             const event: Event = {
                 activity: [...announcement, ...rdf],
                 data: rdf,
-                from: this.webID,
+                from: this._webID,
                 resourceURL: identifier
             }
             stream.push(event)
@@ -56,7 +64,8 @@ export class SolidActor implements Actor {
             throw Error()
         }
         for (const resourceIdentifier of this.resources) {
-            await this.monitorResource(resourceIdentifier, stream)
+            // no await otherwise it will wait on the first resource for infinite amount of time
+            this.monitorResource(resourceIdentifier, stream)
         }
     }
 

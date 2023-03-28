@@ -1,5 +1,5 @@
 import {Event, PluginFunction} from "../agent/OrchestrationActorInterface";
-import {hasChanged, updateState} from "../agent/Util";
+import {extractItem, hasChanged, updateState} from "../agent/Util";
 import {RDF} from "@solid/community-server";
 import {AS} from "../Vocabulary";
 import {DataFactory} from "n3";
@@ -58,22 +58,34 @@ export const fnoHasStateChanged: PluginFunction = async function (event, actor, 
     }
 
 }
-
+/**
+ * Updates the state of the orchestration agent with the data of the event
+ * Sends an action to the openHAB actor to the items based on the state.
+ * @param event
+ * @param actor
+ * @param optional
+ */
 export const fnoUpdateOpenHABState: PluginFunction = async function (event, actor, optional): Promise<void> {
     if (event.policy === undefined) throw Error()
-    if (optional === undefined) throw Error()
-    if (optional.stream === undefined) throw Error()
 
     const targetActor = event.policy.args[AS.namespace +'target']!.value
     const targetLocation = event.policy.args[AS.namespace +'to']!.value
-    console.log(`${new Date().toISOString()} [fnoUpdateOpenHABState] Received event from ${event.from} actor: start updating state in ${targetActor} actor to location ${targetLocation}.`)
-    actor.writeResource(targetLocation, event.data)
-}
+    for (const resource of actor.resources) {
+        const itemQuads = extractItem(event.data, resource);
+        actor.writeResource(resource, itemQuads)
+        console.log(`${new Date().toISOString()} [fnoUpdateOpenHABState] Received event from ${event.from} actor: start updating state in ${targetActor} actor to location ${targetLocation} for resource ${resource}.`)
 
+    }
+}
+/**
+ * Updates the state of the orchestration agent with the data of the event
+ * Sends an action to the solid actor to the items based on the state.
+ * @param event
+ * @param actor
+ * @param optional
+ */
 export const fnoUpdateSolidState: PluginFunction = async function (event, actor, optional): Promise<void> {
     if (event.policy === undefined) throw Error()
-    if (optional === undefined) throw Error()
-    if (optional.stream === undefined) throw Error()
 
     const targetActor = event.policy.args[AS.namespace +'target']!.value
     const targetLocation = event.policy.args[AS.namespace +'to']!.value
