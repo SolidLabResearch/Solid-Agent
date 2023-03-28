@@ -18,23 +18,24 @@ import namedNode = DataFactory.namedNode;
 export const fnoHasStateChanged: PluginFunction = async function (event, actor, optional): Promise<void> {
     if (event.policy === undefined) throw Error()
     if (optional === undefined) throw Error()
-    if (optional.state === undefined) throw Error()
     if (optional.stream === undefined) throw Error()
 
     const policy = event.policy;
-    const state = optional.state;
+    const state = await actor.readResource("state")
     const stream = optional.stream;
 
     const updatedState = updateState(state, event.data)
 
     // check if state is updated
     if (hasChanged(updatedState, state)) {
-        console.log(`${new Date().toISOString()} [${fnoHasStateChanged.name}] Received event from ${event.from} actor: state was changed, so sending message to myself now.`)
+        console.log(`${new Date().toISOString()} [fnoHasStateChanged] Received event from ${event.from} actor: state was changed, so sending message to myself (orchestrator) now.`)
         // make new event for orchestrator
         const uuid = uuidv4()
         const targetActor = policy.args['http://example.org/param1']!.value
         const targetLocation = policy.args['http://example.org/param2']!.value
+
         const fromActor = 'orchestrator' // TODO: need to properly pass orchestrator to this function + must be real webid
+        const fromLocation = "state"
 
         const announcement = [
             quad(namedNode(uuid), RDF.terms.type, AS.terms.Announce),
@@ -46,39 +47,36 @@ export const fnoHasStateChanged: PluginFunction = async function (event, actor, 
             activity: [...announcement, ...updatedState],
             data: updatedState,
             from: fromActor,
-            resourceURL: "stateURL" // TODO: clarify
+            resourceURL: fromLocation
         }
+        // update state here (instead of in other two plugin functions)
+        await actor.writeResource(fromLocation, updatedState)
         // push new event to stream
-        stream.push(newEvent)
+        stream.push(newEvent) // TODO: edit orchestrator actor writeresource to add an event?
     } else {
-        console.log(`${new Date().toISOString()} [${fnoHasStateChanged.name}] Received event from ${event.from} actor: No change detected.`)
+        console.log(`${new Date().toISOString()} [fnoHasStateChanged] Received event from ${event.from} actor: No change detected.`)
     }
 
 }
 
-// TODO: implement other functions here as well
-
 export const fnoUpdateOpenHABState: PluginFunction = async function (event, actor, optional): Promise<void> {
     if (event.policy === undefined) throw Error()
     if (optional === undefined) throw Error()
-    if (optional.state === undefined) throw Error()
     if (optional.stream === undefined) throw Error()
 
     const targetActor = event.policy.args[AS.namespace +'target']!.value
     const targetLocation = event.policy.args[AS.namespace +'to']!.value
-    optional.state = event.data // TODO: make sure state can be updated!
-    console.log(`${new Date().toISOString()} [${fnoUpdateOpenHABState.name}] Received event from ${event.from} actor: start updating state in ${targetActor} actor to location ${targetLocation}.`)
-
+    console.log(`${new Date().toISOString()} [fnoUpdateOpenHABState] Received event from ${event.from} actor: start updating state in ${targetActor} actor to location ${targetLocation}.`)
+    actor.writeResource(targetLocation, event.data)
 }
 
 export const fnoUpdateSolidState: PluginFunction = async function (event, actor, optional): Promise<void> {
     if (event.policy === undefined) throw Error()
     if (optional === undefined) throw Error()
-    if (optional.state === undefined) throw Error()
     if (optional.stream === undefined) throw Error()
 
     const targetActor = event.policy.args[AS.namespace +'target']!.value
     const targetLocation = event.policy.args[AS.namespace +'to']!.value
-    optional.state = event.data // TODO: make sure state can be updated!
-    console.log(`${new Date().toISOString()} [${fnoUpdateSolidState.name}] Received event from ${event.from} actor: start updating state in ${targetActor} actor to location ${targetLocation}.`)
+    console.log(`${new Date().toISOString()} [fnoUpdateSolidState] Received event from ${event.from} actor: start updating state in ${targetActor} actor to location ${targetLocation}.`)
+    actor.writeResource(targetLocation, event.data)
 }

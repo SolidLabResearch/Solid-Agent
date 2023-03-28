@@ -25,7 +25,14 @@ export interface OrchestrationActorInterface {
     actors: Record<string, Actor>
 }
 
-export type PluginFunction = (event: Event, actor: Actor, optional?: {state?: Quad[], stream?: Readable}) => Promise<void>;
+/**
+ * The interface that each plugin function must conform to.
+ *
+ * @param event - An {@link Event} for the plugin to act to.
+ * @param actor - The {@link Actor} that will act.
+ * @param optional -
+ */
+export type PluginFunction = (event: Event, actor: Actor, optional?: { stream?: Readable }) => Promise<void>;
 
 export interface Event {
     /**

@@ -8,6 +8,7 @@ import {AS} from "@solid/community-server";
 export class OrchestrationActor implements Actor {
     private actors: Record<string, Actor>;
     private plugins: Record<string, PluginFunction>;
+    private resources: Record<string, Quad[]>
     private rules: string[];
     private state: Quad[];
     private stream: Readable;
@@ -18,12 +19,15 @@ export class OrchestrationActor implements Actor {
         this.actors = config.actors;
         this.plugins = config.plugins;
         this.rules = config.rules;
+        this.resources = {};
         this.state = []
         this.stream = new Readable({
             objectMode: true,
             read() {
             }
         })
+        // TODO: proper configure own actor with webid
+        this.actors["orchestrator"] = this
     }
 
     monitorResource(identifier: string, stream: Readable | undefined): Promise<void> {
@@ -34,13 +38,15 @@ export class OrchestrationActor implements Actor {
         return Promise.resolve(undefined);
     }
 
-    readResource(identifier: string): Promise<Quad[]> {
-        return Promise.resolve([]);
+    async readResource(identifier: string): Promise<Quad[]> {
+        const resource = this.resources[identifier]
+        if (!resource) throw Error(`${this.constructor.name} does not have a resource with identifier ${identifier}`)
+        return resource
     }
 
 
-    writeResource(identifier: string, data: Quad[]): Promise<void> {
-        return Promise.resolve(undefined);
+    async writeResource(identifier: string, data: Quad[]): Promise<void> {
+        this.resources[identifier] = data;
     }
 
     public start() {
@@ -70,7 +76,7 @@ export class OrchestrationActor implements Actor {
 
             const plugin: PluginFunction = agent.plugins[pluginIdentifier]
             const actor: Actor = agent.actors[targetActorIdentifier]
-            plugin(event, actor, {state: agent.state, stream: agent.stream})
+            plugin(event, actor, {stream: agent.stream})
         })
     }
 

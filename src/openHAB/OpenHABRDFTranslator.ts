@@ -3,13 +3,13 @@
  * map an RDF representation of the state of an item to an item state object
  */
 import {Item} from "./OpenHABClient";
-import {DataFactory, Quad, Store, Writer} from "n3";
-import namedNode = DataFactory.namedNode;
-import quad = DataFactory.quad;
+import {DataFactory, Quad, Store} from "n3";
 import {DBR, SAREF} from "../Vocabulary";
 import {RDF} from "@solid/community-server";
-import literal = DataFactory.literal;
 import {QueryEngine} from "@comunica/query-sparql";
+import namedNode = DataFactory.namedNode;
+import quad = DataFactory.quad;
+import literal = DataFactory.literal;
 
 export class OpenHABRDFTranslator {
     private queryEngine: QueryEngine;
@@ -41,13 +41,28 @@ export class OpenHABRDFTranslator {
         return quads
     }
 
+    public async fetchIdentifierFromRDF(quads: Quad[]): Promise<string>{
+        const queryBody = `
+    ?id a ?state;`
+        const bindingsStream = await this.queryEngine.queryBindings(`
+    SELECT * WHERE {
+    ${queryBody}
+  } LIMIT 100`, {
+            sources: [new Store(quads)],
+        });
+        const bindings = await bindingsStream.toArray();
+        if (bindings.length === 0) throw Error("No identifier found for given item.")
+        const id = bindings[0].get('id')
+        if (id === undefined) throw Error("Could not find identifier of the item in the RDF.")
+        return id.value
+    }
+
     /**
      * Currently can only handle changing color to item.
      * @param quads
      * @param identifier
      */
     public async translateRDFToItem(quads: Quad[], identifier: string): Promise<Item> {
-        const store = new Store(quads)
         const item: Item = {
             editable: false,
             groupNames: [],

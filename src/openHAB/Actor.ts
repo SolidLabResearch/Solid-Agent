@@ -1,16 +1,19 @@
+import {OpenHABClient} from "./OpenHABClient";
+import {OpenHABRDFTranslator} from "./OpenHABRDFTranslator";
 import {Actor, Event} from "../agent/OrchestrationActorInterface";
-import {SolidClient} from "./SolidClient";
 import {Readable} from "stream";
 import {DataFactory, Quad} from "n3";
-import {sleep} from "@treecg/versionawareldesinldp";
 import {v4 as uuidv4} from "uuid";
 import {RDF} from "@solid/community-server";
 import {AS} from "../Vocabulary";
+import {sleep} from "@treecg/versionawareldesinldp";
 import namedNode = DataFactory.namedNode;
 import quad = DataFactory.quad;
 
-export class SolidActor implements Actor {
-    private readonly client: SolidClient;
+export class OpenHABActor implements Actor {
+    private client: OpenHABClient;
+    private translator: OpenHABRDFTranslator
+
     // when polling is done, the interval defines how often is polled
     private interval: number;
     private resources: string[]
@@ -18,15 +21,18 @@ export class SolidActor implements Actor {
 
     private webID: string
 
-    constructor(client: SolidClient, options?: { resources: string[]}) {
-        this.client = client
+    constructor(client: OpenHABClient, translator: OpenHABRDFTranslator, options?: { resources: string[] }) {
+        this.client = client;
+        this.translator = translator;
         this.interval = 5000;
         this.isMonitoring = false;
         this.resources = options ? options.resources : [];
-        this.webID = 'solid' // TODO: add real webid
+        this.webID = 'openHAB'  // TODO: add real webid
+
+
     }
 
-    async monitorResource(identifier: string, stream?: Readable): Promise<void> {
+    async monitorResource(identifier: string, stream: Readable | undefined): Promise<void> {
         if (stream === undefined) {
             throw Error()
         }
@@ -60,11 +66,19 @@ export class SolidActor implements Actor {
         }
     }
 
-    public async readResource(identifier: string): Promise<Quad[]> {
-        return await this.client.readResource(identifier);
+    async readResource(identifier: string): Promise<Quad[]> {
+        // maybe some parsing of identifier?
+        const item = await this.client.readItem(identifier)
+        // item to RDF
+        const quads = this.translator.translateItemToRDF(item)
+        return quads
     }
 
-    public async writeResource(identifier: string, quads: Quad[]): Promise<void> {
-        await this.client.writeResource(identifier, quads);
+    async writeResource(identifier: string, data: Quad[]): Promise<void> {
+        // extract ID from data
+        const itemName = await this.translator.fetchIdentifierFromRDF(data)
+        // RDF to item
+        const item = await this.translator.translateRDFToItem(data, itemName)
+        await this.client.setItem(item)
     }
 }
