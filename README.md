@@ -68,9 +68,9 @@ The openHAB actor sends an AS announcement to the Orchestration agent because it
     as:object <Bureau_rechts_Color> .
 
 <Bureau_rechts_Color> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://saref.etsi.org/core/OffState> .
-<Bureau_rechts_Color> <http://dbpedia.org/resource/Hue> 270 .
-<Bureau_rechts_Color> <http://dbpedia.org/resource/Colorfulness> 50 .
-<Bureau_rechts_Color> <http://dbpedia.org/resource/Brightness> 10 .
+<Bureau_rechts_Color> <http://dbpedia.org/resource/Hue> 272 .
+<Bureau_rechts_Color> <http://dbpedia.org/resource/Colorfulness> 60 .
+<Bureau_rechts_Color> <http://dbpedia.org/resource/Brightness> 21 .
 ```
 
 The Orchestration actor has the following rules in its engine:
@@ -112,9 +112,9 @@ This means the following announcement is sent from the orchestrator actor to its
 ```turtle
 @prefix as: <https://www.w3.org/ns/activitystreams#>.
 <21586d1f-75e8-421a-a42b-4ec306db1d38> a as:Announce;
-as:actor <orchestrator> ;
-as:target <solid>;
-as:to <http://localhost:3000/state>.
+    as:actor <orchestrator> ;
+    as:target <solid>;
+    as:to <http://localhost:3000/state>.
 <Bureau_rechts_Color> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://saref.etsi.org/core/OnState> .
 <Bureau_rechts_Color> <http://dbpedia.org/resource/Hue> 272 .
 <Bureau_rechts_Color> <http://dbpedia.org/resource/Colorfulness> 60 .
