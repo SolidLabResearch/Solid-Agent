@@ -1,75 +1,60 @@
 import {SolidClient} from "./src/solid/SolidClient";
 import {Session} from "@rubensworks/solid-client-authn-isomorphic";
-import {Actor, MessageClient} from "./src/orchestration/OrchestrationActorInterface";
 import {Readable} from "stream";
 import {Quad, Writer} from "n3";
 import {SolidNotificationClient} from "./src/subscribe/SolidNotificationClient";
+import {OpenHABActor, SolidActor} from "./src/AbstractActor";
+import {OpenHABClient} from "./src/openHAB/OpenHABClient";
+import {GeneralSubscriptionClient} from "./src/subscribe/GeneralSubscriptionClient";
+import {OpenHABRDFTranslator} from "./src/openHAB/OpenHABRDFTranslator";
+import {Actor, PluginFunction} from "./src/orchestration/OrchestrationActorInterface";
+import {fnoHasStateChanged, fnoUpdateOpenHABState, fnoUpdateSolidState} from "./src/plugins/SmartHomeUseCase";
+import {OrchestrationActor} from "./src/orchestration/OrchestrationActor";
+import {readText} from "koreografeye/dist/util";
 
-export class SolidActor implements Actor {
-    private readonly client: SolidClient;
-    // when polling is done, the interval defines how often is polled
-    private interval: number;
-    private _resources: string[]
-    private isMonitoring: boolean
+const writer = new Writer()
+require('dotenv').config()
+// openhab actor
+const openHABURL = process.env.OPENHAB_URL! + '/'
+const openHABToken = process.env.OPENHAB_API_TOKEN!
 
-    private _webID: string
+const openHABClient = new OpenHABClient({
+    accessToken: openHABToken,
+    endPointUrl: openHABURL
+})
+const openHABSubscriptionClient = new GeneralSubscriptionClient(openHABClient, 'openHAB')
+const openHABActor = new OpenHABActor(openHABClient, openHABSubscriptionClient, new OpenHABRDFTranslator(),{resources: ['Bureau_rechts_Color','Bureau_links_Color']})
 
-    private subscriptionClient: MessageClient;
+// solid actor
+const session = new Session()
 
-    constructor(client: SolidClient, subscriptionClient: MessageClient, options?: { resources: string[], webID?: string }) {
-        this.client = client
-        this.subscriptionClient = subscriptionClient;
-        this.interval = 5000;
-        this.isMonitoring = false;
-        this._resources = options ? options.resources : [];
-        this._webID = options ? options.webID ?? 'solid' : 'solid';
-    }
+const solidClient = new SolidClient(session)
 
-    get resources(): string[] {
-        return this._resources
-    }
+// const subscriptionClient  = new GeneralSubscriptionClient(solidClient, 'solid', 10000);
+const subscriptionClient = new SolidNotificationClient(session, solidClient, 'solid')
 
-    get webID(): string {
-        return this._webID
-    }
+const solidActor = new SolidActor(solidClient, subscriptionClient, {resources: ['http://localhost:3000/state']})
 
-    async monitorResource(identifier: string, stream?: Readable): Promise<void> {
-        if (stream === undefined) {
-            throw Error()
-        }
-        const subscriptionStream = await this.subscriptionClient.subscribe(identifier);
-        subscriptionStream.on('data', data => {
-            stream.push(
-                {
-                    activity: [...data.activity, ...(data.data as Quad[])],
-                    data: data.data as Quad[],
-                    from: data.from,
-                    resourceURL: data.resourceURL
-                }
-            )
-        })
-    }
+// orchestrator actor
+const actors: Record<string, Actor> = {}
+actors[solidActor.webID] = solidActor;
+actors[openHABActor.webID] = openHABActor;
 
-    async monitorResources(stream?: Readable): Promise<void> {
-        if (stream === undefined) {
-            throw Error()
-        }
-        for (const resourceIdentifier of this.resources) {
-            // no await otherwise it will wait on the first resource for infinite amount of time
-            this.monitorResource(resourceIdentifier, stream)
-        }
-    }
-
-    public async readResource(identifier: string): Promise<Quad[]> {
-        return await this.client.readResource(identifier);
-    }
-
-    public async writeResource(identifier: string, quads: Quad[]): Promise<void> {
-        await this.client.writeResource(identifier, quads);
-    }
+const plugins: Record<string, PluginFunction> = {
+    'http://example.org/hasStateChanged': fnoHasStateChanged,
+    'http://example.org/updateSolidState': fnoUpdateSolidState,
+    'http://example.org/updateOpenHABState': fnoUpdateOpenHABState
 }
 
-async function main() {
+const rules = [
+    readText('./rules/openHABChangedRule.n3')!,
+    readText('./rules/solidChangedRule.n3')!,
+    readText('./rules/orchestratorToOpenHAB.n3')!,
+    readText('./rules/orchestratorToSolid.n3')!,
+    // readText('./rules/experimentalRule.n3')!,
+]
+const orchestraterActor = new OrchestrationActor({actors, plugins, rules})
+async function solidSubscription() {
     const session = new Session()
 
     const solidClient = new SolidClient(session)
@@ -88,6 +73,50 @@ async function main() {
         console.log(`${new Date().toISOString()} Received event from ${event.from} actor.`)
         console.log(new Writer().quadsToString(event.activity))
     })
+}
+
+// solidSubscription()
+
+async function openHABSubscription() {
+    const openHABURL = process.env.OPENHAB_URL! + '/'
+    const openHABToken = process.env.OPENHAB_API_TOKEN!
+
+    const openHABClient = new OpenHABClient({
+        accessToken: openHABToken,
+        endPointUrl: openHABURL
+    })
+    const openHABSubscriptionClient = new GeneralSubscriptionClient(openHABClient, 'openHAB')
+    const openHABActor = new OpenHABActor(openHABClient, openHABSubscriptionClient, new OpenHABRDFTranslator(),{resources: ['Bureau_rechts_Color','Bureau_links_Color']})
+    const stream = new Readable({
+        objectMode: true,
+        read() {
+        }
+    })
+    openHABActor.monitorResources(stream)
+    stream.on('data', event => {
+        console.log(`${new Date().toISOString()} Received event from ${event.from} actor.`)
+        console.log(new Writer().quadsToString(event.data))
+    })
+}
+
+// openHABSubscription()
+
+
+async function main() {
+    // init: sync state of solid pod with state of openHAB (start from state of openHAB)
+    const state: Quad[] = []
+    for (const resource of openHABActor.resources) {
+        state.push(... await openHABActor.readResource(resource))
+    }
+    await solidActor.writeResource('http://localhost:3000/state', state)
+    await orchestraterActor.writeResource("state", state)
+    // start
+    orchestraterActor.start();
+    // turn light on:
+    // curl -X PUT -H 'Content-type:text/turtle' -d "<Bureau_links_Color> <http://dbpedia.org/resource/Brightness> 10 .<Bureau_links_Color> <http://dbpedia.org/resource/Colorfulness> 50 .<Bureau_links_Color> <http://dbpedia.org/resource/Hue> 0 .<Bureau_links_Color> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://saref.etsi.org/core/OnState> .<Bureau_rechts_Color> <http://dbpedia.org/resource/Brightness> 10 .<Bureau_rechts_Color> <http://dbpedia.org/resource/Colorfulness> 60 .<Bureau_rechts_Color> <http://dbpedia.org/resource/Hue> 272 .<Bureau_rechts_Color> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://saref.etsi.org/core/OnState> ." http://localhost:3000/state
+    // turn light off:
+    // curl -X PUT -H 'Content-type:text/turtle' -d "<Bureau_links_Color> <http://dbpedia.org/resource/Brightness> 0 .<Bureau_links_Color> <http://dbpedia.org/resource/Colorfulness> 50 .<Bureau_links_Color> <http://dbpedia.org/resource/Hue> 0 .<Bureau_links_Color> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://saref.etsi.org/core/OffState> .<Bureau_rechts_Color> <http://dbpedia.org/resource/Brightness> 0 .<Bureau_rechts_Color> <http://dbpedia.org/resource/Colorfulness> 60 .<Bureau_rechts_Color> <http://dbpedia.org/resource/Hue> 272 .<Bureau_rechts_Color> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://saref.etsi.org/core/OffState> ." http://localhost:3000/state
+    console.log(writer.quadsToString(state))
 }
 
 main()
