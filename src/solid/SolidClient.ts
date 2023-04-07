@@ -2,8 +2,9 @@ import {Quad, Writer} from "n3";
 import {Session} from "@rubensworks/solid-client-authn-isomorphic";
 import {parseContentType, TEXT_TURTLE} from "@solid/community-server";
 import {turtleStringToStore} from "@treecg/versionawareldesinldp";
+import {ReadWriteClient} from "../orchestration/OrchestrationActorInterface";
 
-export class SolidClient {
+export class SolidClient implements ReadWriteClient{
     private readonly session: Session;
 
     public constructor(session: Session) {
@@ -23,6 +24,7 @@ export class SolidClient {
         return store.getQuads(null, null, null, null)
     }
 
+    public async writeResource(identifier: string, quads: unknown): Promise<void>
     public async writeResource(identifier: string, quads: Quad[]): Promise<void> {
         const text = new Writer().quadsToString(quads);
         await this.session.fetch(identifier, {

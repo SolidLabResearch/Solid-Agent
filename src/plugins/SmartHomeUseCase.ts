@@ -1,5 +1,5 @@
-import {Event, PluginFunction} from "../agent/OrchestrationActorInterface";
-import {extractItem, hasChanged, updateState} from "../agent/Util";
+import {Event, PluginFunction} from "../orchestration/OrchestrationActorInterface";
+import {extractItem, hasChanged, updateState} from "../orchestration/Util";
 import {RDF} from "@solid/community-server";
 import {AS} from "../Vocabulary";
 import {DataFactory} from "n3";
