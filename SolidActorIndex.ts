@@ -3,14 +3,15 @@ import {Session} from "@rubensworks/solid-client-authn-isomorphic";
 import {Readable} from "stream";
 import {Quad, Writer} from "n3";
 import {SolidNotificationClient} from "./src/subscribe/SolidNotificationClient";
-import {OpenHABActor, SolidActor} from "./src/AbstractActor";
 import {OpenHABClient} from "./src/openHAB/OpenHABClient";
 import {GeneralSubscriptionClient} from "./src/subscribe/GeneralSubscriptionClient";
 import {OpenHABRDFTranslator} from "./src/openHAB/OpenHABRDFTranslator";
 import {Actor, PluginFunction} from "./src/orchestration/OrchestrationActorInterface";
 import {fnoHasStateChanged, fnoUpdateOpenHABState, fnoUpdateSolidState} from "./src/plugins/SmartHomeUseCase";
 import {OrchestrationActor} from "./src/orchestration/OrchestrationActor";
-import {readText} from "koreografeye/dist/util";
+import {readText} from "koreografeye";
+import {SolidActor} from "./src/solid/SolidActor";
+import {OpenHABActor} from "./src/openHAB/OpenHabActor";
 
 const writer = new Writer()
 require('dotenv').config()
@@ -23,7 +24,7 @@ const openHABClient = new OpenHABClient({
     endPointUrl: openHABURL
 })
 const openHABSubscriptionClient = new GeneralSubscriptionClient(openHABClient, 'openHAB')
-const openHABActor = new OpenHABActor(openHABClient, openHABSubscriptionClient, new OpenHABRDFTranslator(),{resources: ['Bureau_rechts_Color','Bureau_links_Color']})
+const openHABActor = new OpenHABActor(openHABClient, openHABSubscriptionClient, new OpenHABRDFTranslator(), {resources: ['Bureau_rechts_Color', 'Bureau_links_Color']})
 
 // solid actor
 const session = new Session()
@@ -54,6 +55,7 @@ const rules = [
     // readText('./rules/experimentalRule.n3')!,
 ]
 const orchestraterActor = new OrchestrationActor({actors, plugins, rules})
+
 async function solidSubscription() {
     const session = new Session()
 
@@ -86,7 +88,7 @@ async function openHABSubscription() {
         endPointUrl: openHABURL
     })
     const openHABSubscriptionClient = new GeneralSubscriptionClient(openHABClient, 'openHAB')
-    const openHABActor = new OpenHABActor(openHABClient, openHABSubscriptionClient, new OpenHABRDFTranslator(),{resources: ['Bureau_rechts_Color','Bureau_links_Color']})
+    const openHABActor = new OpenHABActor(openHABClient, openHABSubscriptionClient, new OpenHABRDFTranslator(), {resources: ['Bureau_rechts_Color', 'Bureau_links_Color']})
     const stream = new Readable({
         objectMode: true,
         read() {
@@ -100,13 +102,13 @@ async function openHABSubscription() {
 }
 
 // openHABSubscription()
-
+// TODO: test out in office
 
 async function main() {
     // init: sync state of solid pod with state of openHAB (start from state of openHAB)
     const state: Quad[] = []
     for (const resource of openHABActor.resources) {
-        state.push(... await openHABActor.readResource(resource))
+        state.push(...await openHABActor.readResource(resource))
     }
     await solidActor.writeResource('http://localhost:3000/state', state)
     await orchestraterActor.writeResource("state", state)
