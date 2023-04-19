@@ -2,7 +2,7 @@ import {SolidActor} from "./src/solid/Actor";
 import {SolidClient} from "./src/solid/SolidClient";
 import {Session} from "@rubensworks/solid-client-authn-isomorphic";
 import {Quad, Writer} from "n3";
-import {readText} from "koreografeye/dist/util";
+import {readText} from "koreografeye";
 import {OrchestrationActor} from "./src/orchestration/OrchestrationActor";
 import {fnoHasStateChanged, fnoUpdateOpenHABState, fnoUpdateSolidState} from "./src/plugins/SmartHomeUseCase";
 import {Actor, PluginFunction} from "./src/orchestration/OrchestrationActorInterface";
