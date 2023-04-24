@@ -51,7 +51,7 @@ First install the library.
 ```sh
 npm i https://github.com/woutslabbinck/Solid-Agent --save-dev
 
-# if you run into npm errors, build the package yourself
+# build the package
 cd node_modules/solid-agent/
 tsc
 cd ../../
