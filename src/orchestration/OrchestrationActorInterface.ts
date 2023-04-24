@@ -1,6 +1,5 @@
 import {Quad} from "n3";
-import {IPolicyType} from "koreografeye/dist/util";
-import {Reasoner} from "koreografeye";
+import {IPolicyType, Reasoner} from "koreografeye";
 import {Readable} from "stream";
 
 export interface OrchestrationActorInterface {
@@ -119,7 +118,7 @@ export interface MessageClient {
  */
 export interface ReadWriteClient {
     readResource: (identifier: string) => Promise<unknown>;
-    writeResource: (identifier: string, data:unknown) => Promise<void>;
+    writeResource: (identifier: string, data: unknown) => Promise<void>;
 
 }
 

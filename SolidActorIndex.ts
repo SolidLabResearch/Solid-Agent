@@ -12,6 +12,7 @@ import {OrchestrationActor} from "./src/orchestration/OrchestrationActor";
 import {readText} from "koreografeye";
 import {SolidActor} from "./src/solid/SolidActor";
 import {OpenHABActor} from "./src/openHAB/OpenHabActor";
+import {DemoSolidAgent, SubscriptionEnum} from "./src/demo/DemoSolidAgent";
 
 const writer = new Writer()
 require('dotenv').config()
@@ -121,4 +122,40 @@ async function main() {
     console.log(writer.quadsToString(state))
 }
 
-main()
+// main()
+
+async function demo() {
+    const openHABURL = process.env.OPENHAB_URL! + '/'
+    const openHABToken = process.env.OPENHAB_API_TOKEN!
+    const demo = new DemoSolidAgent({
+        openhab: {
+            openHABResources: ['Bureau_rechts_Color', 'Bureau_links_Color'],
+            openHABToken: openHABToken,
+            openHABURL: openHABURL
+        },
+        solid: {
+            solidResources: ['http://localhost:3000/state'],
+            subscriptionType: {type: SubscriptionEnum.PUSH}
+        }
+    })
+    await demo.start()
+}
+demo()
+
+async function demoHomeLab(){
+    // Note: vpn must be on
+    const openHABURL = process.env.OPENHAB_HOMELAB_URL! + '/'
+    const openHABToken = process.env.OPENHAB_HOMELAB_API_TOKEN!
+    const demo = new DemoSolidAgent({
+        openhab: {
+            openHABResources: ['Bureau_rechts_Color', 'Bureau_links_Color'], // TODO: fill in lamp
+            openHABToken: openHABToken,
+            openHABURL: openHABURL
+        },
+        solid: {
+            solidResources: ['http://localhost:3000/homeLabState'],
+            subscriptionType: {type: SubscriptionEnum.PUSH}
+        }
+    })
+    await demo.start()
+}
