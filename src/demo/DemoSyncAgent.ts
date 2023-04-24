@@ -6,7 +6,7 @@ export class DemoSyncAgent {
     //TODO: make -> OpenHAB agent not needed here
 
     private rules = [
-        readText(path.join(__dirname,'./rules/experimentalRule.n3'))!,
+        readText(path.join(__dirname,'../../rules/experimentalRule.n3'))!,
 
     ]
 }

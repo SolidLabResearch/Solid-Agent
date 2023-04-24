@@ -35,10 +35,10 @@ export class DemoSolidAgent {
     };
 
     private rules = [
-        readText(path.join(__dirname,'./rules/openHABChangedRule.n3'))!,
-        readText(path.join(__dirname,'./rules/solidChangedRule.n3'))!,
-        readText(path.join(__dirname,'./rules/orchestratorToOpenHAB.n3'))!,
-        readText(path.join(__dirname,'./rules/orchestratorToSolid.n3'))!,
+        readText(path.join(__dirname,'../../rules/openHABChangedRule.n3'))!,
+        readText(path.join(__dirname,'../../rules/solidChangedRule.n3'))!,
+        readText(path.join(__dirname,'../../rules/orchestratorToOpenHAB.n3'))!,
+        readText(path.join(__dirname,'../../rules/orchestratorToSolid.n3'))!,
     ];
 
     private solidClient: SolidClient;
