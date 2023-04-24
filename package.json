@@ -20,6 +20,7 @@
   "scripts": {
     "build": "rm -r ./dist && npm run build:ts",
     "build:ts": "tsc",
+    "prepare": "npm run build:ts",
     "release": "npm run build && npm publish --access public"
   },
   "dependencies": {

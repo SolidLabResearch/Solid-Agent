@@ -49,7 +49,7 @@ Set up the Orchestration Actor:
 
 First install the library.
 ```sh
-npm i https://github.com/woutslabbinck/Solid-Agent.git
+npm i https://github.com/woutslabbinck/Solid-Agent --save-dev
 ```
 The following code uses a local hosted solid server (ACL public for all modes), environment variables for openHAB (the endpoint and an access token) with at least one Philips Hue Color Light item.
 
