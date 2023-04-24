@@ -1,7 +1,7 @@
 {
   "name": "solid-agent",
   "version": "0.0.0",
-  "description": " A rule-based intelligent software agent (on top of Personal Data Stores)",
+  "description": "A rule-based intelligent software agent (on top of Personal Data Stores)",
   "keywords": [
     "agent",
     "solid",
@@ -31,7 +31,7 @@
     "koreografeye": "^0.2.5",
     "n3": "^1.16.3",
     "node-fetch": "^2.6.9",
-    "solid-notification-client": "^0.0.0"
+    "solid-notification-client": "^0.0.1"
   },
   "devDependencies": {
     "uuid": "^9.0.0"

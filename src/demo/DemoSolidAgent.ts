@@ -51,6 +51,7 @@ export class DemoSolidAgent {
 
     private orchestrationActor: OrchestrationActor;
 
+    private solidStateResource: string;
     public constructor(config: {
         openhab: {
             openHABToken: string,
@@ -97,6 +98,8 @@ export class DemoSolidAgent {
             plugins: this.plugins,
             rules: this.rules
         })
+
+        this.solidStateResource = solidResources[0];
     }
 
     public async start() {
@@ -105,7 +108,7 @@ export class DemoSolidAgent {
         for (const resource of this.openHABActor.resources) {
             state.push(...await this.openHABActor.readResource(resource))
         }
-        await this.solidActor.writeResource('http://localhost:3000/state', state)
+        await this.solidActor.writeResource(this.solidStateResource, state)
         await this.orchestrationActor.writeResource("state", state)
 
         // start
