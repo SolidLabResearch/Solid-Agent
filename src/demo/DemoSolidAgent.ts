@@ -11,6 +11,7 @@ import {Session} from "@rubensworks/solid-client-authn-isomorphic";
 import {OpenHABRDFTranslator} from "../openHAB/OpenHABRDFTranslator";
 import {SolidNotificationClient} from "../subscribe/SolidNotificationClient";
 import {Quad} from "n3";
+import * as path from 'path';
 
 export enum SubscriptionEnum {
     PUSH = 'push',
@@ -34,10 +35,10 @@ export class DemoSolidAgent {
     };
 
     private rules = [
-        readText('./rules/openHABChangedRule.n3')!,
-        readText('./rules/solidChangedRule.n3')!,
-        readText('./rules/orchestratorToOpenHAB.n3')!,
-        readText('./rules/orchestratorToSolid.n3')!,
+        readText(path.join(__dirname,'./rules/openHABChangedRule.n3'))!,
+        readText(path.join(__dirname,'./rules/solidChangedRule.n3'))!,
+        readText(path.join(__dirname,'./rules/orchestratorToOpenHAB.n3'))!,
+        readText(path.join(__dirname,'./rules/orchestratorToSolid.n3'))!,
     ];
 
     private solidClient: SolidClient;
