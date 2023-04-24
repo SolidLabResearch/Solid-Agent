@@ -1,4 +1,5 @@
-import { OpenHABAuthenticatedFetcher } from "./OpenHABAuthenticatedFetcher"
+import {OpenHABAuthenticatedFetcher} from "./OpenHABAuthenticatedFetcher"
+import {ReadWriteClient} from "../orchestration/OrchestrationActorInterface";
 
 export interface Item {
     members?: string[]
@@ -14,7 +15,7 @@ export interface Item {
     groupNames: string[]
 }
 
-export class OpenHABClient {
+export class OpenHABClient implements ReadWriteClient{
     private readonly accessToken: string;
     private readonly endPoint: string;
     private readonly fetcher: OpenHABAuthenticatedFetcher;
@@ -77,4 +78,14 @@ export class OpenHABClient {
         }
         return response.json()
     }
+
+    async readResource(identifier: string): Promise<unknown> {
+        return this.readItem(identifier)
+    }
+
+    async writeResource(identifier: string, data: unknown): Promise<void> {
+        await this.setItem(data as Item)
+    }
+
+
 }

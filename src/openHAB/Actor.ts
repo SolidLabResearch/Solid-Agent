@@ -1,6 +1,6 @@
 import {OpenHABClient} from "./OpenHABClient";
 import {OpenHABRDFTranslator} from "./OpenHABRDFTranslator";
-import {Actor, Event} from "../agent/OrchestrationActorInterface";
+import {Actor, Event} from "../orchestration/OrchestrationActorInterface";
 import {Readable} from "stream";
 import {DataFactory, Quad} from "n3";
 import {v4 as uuidv4} from "uuid";

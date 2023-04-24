@@ -1,43 +1,38 @@
 import {SolidClient} from "./SolidClient";
-import {Quad} from "n3";
-import {sleep} from "@treecg/versionawareldesinldp";
+import {MessageClient} from "../orchestration/OrchestrationActorInterface";
 import {Readable} from "stream";
+import {Quad} from "n3";
+import {AbstractActor} from "../AbstractActor";
 
-export class SolidActor {
-    private readonly client: SolidClient;
-    // when polling is done, the interval defines how often is polled
-    private interval: number;
-    private isMonitoring: boolean
+export class SolidActor extends AbstractActor {
+    constructor(client: SolidClient, subscriptionClient: MessageClient, options?: { resources: string[], webID?: string }) {
+        super(client, subscriptionClient, options);
+        this._webID = options ? options.webID ?? 'solid' : 'solid';
 
-    constructor(client: SolidClient) {
-        this.client = client
-        this.interval = 5000;
-        this.isMonitoring = false;
     }
 
-    public async monitorResource(identifier: string, stream: Readable) {
-        // no idea yet how calling this method results in actually being subscribed.
-        // Maybe by it being a stream?
-        this.isMonitoring = true;
-        while (this.isMonitoring) {
-            const rdf = await this.readResource(identifier)
-            stream.push({
-                from: 'solid', // TODO: must this be the webid?
-                url: identifier,
-                data: rdf
-            })
-            await sleep(this.interval)
+    async monitorResource(identifier: string, stream?: Readable): Promise<void> {
+        if (stream === undefined) {
+            throw Error()
         }
-    }
-    public stopMonitoring(){
-        this.isMonitoring = false;
+        const subscriptionStream = await this.subscriptionClient.subscribe(identifier);
+        subscriptionStream.on('data', data => {
+            stream.push(
+                {
+                    activity: [...data.activity, ...(data.data as Quad[])],
+                    data: data.data as Quad[],
+                    from: data.from,
+                    resourceURL: data.resourceURL
+                }
+            )
+        })
     }
 
-    public async readResource(identifier: string): Promise<Quad[]> {
-        return await this.client.readResource(identifier);
+    async readResource(identifier: string): Promise<Quad[]> {
+        return await this.readWriteClient.readResource(identifier) as Quad[];
     }
 
-    public async writeResource(identifier: string, quads: Quad[]): Promise<void> {
-        await this.client.writeResource(identifier, quads);
+    async writeResource(identifier: string, quads: Quad[]): Promise<void> {
+        await this.readWriteClient.writeResource(identifier, quads);
     }
 }

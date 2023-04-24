@@ -1,6 +1,5 @@
 import {Quad} from "n3";
-import {IPolicyType} from "koreografeye/dist/util";
-import {Reasoner} from "koreografeye";
+import {IPolicyType, Reasoner} from "koreografeye";
 import {Readable} from "stream";
 
 export interface OrchestrationActorInterface {
@@ -61,7 +60,7 @@ export interface Event {
     policy?: IPolicyType
 }
 
-export interface Actor {
+export interface Actor { // Note: maybe make an abstract class?
     /**
      * The {@link https://solid.github.io/webid-profile/|Web ID} of the actor.
      * The WebID Profile Document (obtained by derefencing the WebID) also contains a link
@@ -94,4 +93,32 @@ export interface Actor {
      * @param stream - (optional) a stream to which updates can be pushed.
      */
     monitorResources: (stream?: Readable) => Promise<void>
+    // TODO: add functionality to stop monitoring resources
 }
+
+/**
+ * An interface that doesn't care about which messaging strategy (push/pull-based) is used in the implementation.
+ * It uses subscribe to listen to a resource and close to stop listening to all resources.
+ */
+export interface MessageClient {
+    /**
+     * Subscribe to a resource.
+     * @param identifier
+     */
+    subscribe: (identifier: string) => Promise<Readable>;
+    /**
+     * Close all subscriptions.
+     */
+    close: () => void
+}
+
+/**
+ * An Interface that provides Read and Write functionality to the external resource (platform).
+ *
+ */
+export interface ReadWriteClient {
+    readResource: (identifier: string) => Promise<unknown>;
+    writeResource: (identifier: string, data: unknown) => Promise<void>;
+
+}
+

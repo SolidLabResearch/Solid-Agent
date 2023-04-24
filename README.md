@@ -45,6 +45,35 @@ Set up the Orchestration Actor:
 * initialise a WebID
 * Add n3 rules (examples, see [rules](./rules))
 
+#### Code
+
+First install the library.
+```sh
+npm i https://github.com/woutslabbinck/Solid-Agent.git
+```
+The following code uses a local hosted solid server (ACL public for all modes), environment variables for openHAB (the endpoint and an access token) with at least one Philips Hue Color Light item.
+
+```javascript
+const {DemoSolidAgent, SubscriptionEnum} = require("solid-agent")
+
+// openHAB information
+const openHABURL = process.env.OPENHAB_URL + '/'
+const openHABToken = process.env.OPENHAB_API_TOKEN
+
+const demo = new DemoSolidAgent({
+  openhab: {
+    openHABResources: ['Bureau_rechts_Color', 'Bureau_links_Color'], // hue light Color items
+    openHABToken: openHABToken,
+    openHABURL: openHABURL
+  },
+  solid: {
+    solidResources: ['http://localhost:3000/state'], // solid state resource
+    subscriptionType: {type: SubscriptionEnum.PUSH}
+  }
+})
+demo.start()
+```
+
 ### Internal operations: How does the agent work now?
 
 When the agent is setup for this task,

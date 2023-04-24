@@ -25,17 +25,7 @@ export class ReasoningTransform extends Transform {
 
     async _transform(chunk: any, encoding: BufferEncoding, callback: TransformCallback) {
         const announcementStore = new Store(chunk.activity)
-        // Can be optimised in koreografeye by cleaning the data array after each run (can be implemented in the cleanup method)
-        // then only one reasoner must ever be made
-        //     public cleanup(): void {
-        // ++      this.data= []
-        //     }
-        const reasoner = new EyeJsReasoner([
-            "--quiet",
-            "--nope",
-            "--pass"
-        ])
-        const result = await reasoner.reason(announcementStore, this.rules)
+        const result = await this.reasoner.reason(announcementStore, this.rules)
         const resultString = storeToString(result)
         const cleaned = resultString.replace(/file:\/\/\//g, "")
         const cleanedStore = await turtleStringToStore(cleaned)

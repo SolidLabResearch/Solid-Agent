@@ -1,13 +1,37 @@
 {
+  "name": "solid-agent",
+  "version": "0.0.0",
+  "description": "A rule-based intelligent software agent (on top of Personal Data Stores)",
+  "keywords": [
+    "agent",
+    "solid",
+    "linked-data"
+  ],
+  "contributors": [
+    "Wout Slabbinck <wout.slabbinck@ugent.be>"
+  ],
+
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "repository": "git@github.com:woutslabbinck/Solid-Agent.git",
+  "bugs": {
+    "url": "https://github.com/woutslabbinck/Solid-Agent/issues"
+  },
+  "scripts": {
+    "build": "rm -r ./dist && npm run build:ts",
+    "build:ts": "tsc",
+    "release": "npm run build && npm publish --access public"
+  },
   "dependencies": {
     "@solid/community-server": "^5.1.0",
     "@treecg/versionawareldesinldp": "^0.2.0",
     "@types/node": "^18.14.6",
     "@types/node-fetch": "^2.6.2",
     "dotenv": "^16.0.3",
-    "koreografeye": "^0.1.0",
+    "koreografeye": "^0.2.5",
     "n3": "^1.16.3",
-    "node-fetch": "^2.6.9"
+    "node-fetch": "^2.6.9",
+    "solid-notification-client": "^0.0.1"
   },
   "devDependencies": {
     "uuid": "^9.0.0"

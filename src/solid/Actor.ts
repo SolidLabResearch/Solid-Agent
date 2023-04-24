@@ -1,4 +1,4 @@
-import {Actor, Event} from "../agent/OrchestrationActorInterface";
+import {Actor, Event} from "../orchestration/OrchestrationActorInterface";
 import {SolidClient} from "./SolidClient";
 import {Readable} from "stream";
 import {DataFactory, Quad} from "n3";
