@@ -140,15 +140,16 @@ async function demo() {
     })
     await demo.start()
 }
-demo()
 
-async function demoHomeLab(){
+// demo()
+
+async function demoHomeLab() {
     // Note: vpn must be on
     const openHABURL = process.env.OPENHAB_HOMELAB_URL! + '/'
     const openHABToken = process.env.OPENHAB_HOMELAB_API_TOKEN!
     const demo = new DemoSolidAgent({
         openhab: {
-            openHABResources: ['Bureau_rechts_Color', 'Bureau_links_Color'], // TODO: fill in lamp
+            openHABResources: ['Alllights_Color'],
             openHABToken: openHABToken,
             openHABURL: openHABURL
         },
@@ -157,5 +158,12 @@ async function demoHomeLab(){
             subscriptionType: {type: SubscriptionEnum.PUSH}
         }
     })
+    // turn light on: (color purple hue 270)
+    // curl -X PUT -H 'Content-type:text/turtle' -d "<Alllights_Color> <http://dbpedia.org/resource/Brightness> 40 .<Alllights_Color> <http://dbpedia.org/resource/Colorfulness> 50 .<Alllights_Color> <http://dbpedia.org/resource/Hue> 0 .<Alllights_Color> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://saref.etsi.org/core/OnState> ." http://localhost:3000/homeLabState
+    // turn light off:
+    // curl -X PUT -H 'Content-type:text/turtle' -d "<Alllights_Color> <http://dbpedia.org/resource/Brightness> 0 .<Alllights_Color> <http://dbpedia.org/resource/Colorfulness> 50 .<Alllights_Color> <http://dbpedia.org/resource/Hue> 0 .<Alllights_Color> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://saref.etsi.org/core/OffState> ." http://localhost:3000/homeLabState
+
     await demo.start()
 }
+
+demoHomeLab()
