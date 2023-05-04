@@ -23,7 +23,7 @@
     "release": "npm run build && npm publish --access public"
   },
   "dependencies": {
-    "@solid/community-server": "^5.1.0",
+    "@solid/community-server": "^6.0.0",
     "@treecg/versionawareldesinldp": "^0.2.0",
     "@types/node": "^18.14.6",
     "@types/node-fetch": "^2.6.2",

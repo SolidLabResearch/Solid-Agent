@@ -1,13 +1,13 @@
-import {createUriAndTermNamespace} from "@solid/community-server"
+import {createVocabulary} from "@solid/community-server"
 
-export const AS = createUriAndTermNamespace('https://www.w3.org/ns/activitystreams#',
+export const AS = createVocabulary('https://www.w3.org/ns/activitystreams#',
     'Announce',
     'actor',
     'target',
     'object',
     'to'
 )
-export const SOSA = createUriAndTermNamespace('http://www.w3.org/ns/sosa/',
+export const SOSA = createVocabulary('http://www.w3.org/ns/sosa/',
     'Platform',
     'Actuator',
     'FeatureOfInterest',
@@ -23,13 +23,13 @@ export const SOSA = createUriAndTermNamespace('http://www.w3.org/ns/sosa/',
     'hasResult'
 )
 
-export const SAREF = createUriAndTermNamespace('https://saref.etsi.org/core/',
+export const SAREF = createVocabulary('https://saref.etsi.org/core/',
     'hasState',
     'OnState',
     'OffState'
 )
 
-export const DBR = createUriAndTermNamespace('http://dbpedia.org/resource/',
+export const DBR = createVocabulary('http://dbpedia.org/resource/',
     'Hue',
     'Brightness',
     'Colorfulness'

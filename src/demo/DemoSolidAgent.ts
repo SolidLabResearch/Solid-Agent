@@ -12,16 +12,7 @@ import {OpenHABRDFTranslator} from "../openHAB/OpenHABRDFTranslator";
 import {SolidNotificationClient} from "../subscribe/SolidNotificationClient";
 import {Quad} from "n3";
 import * as path from 'path';
-
-export enum SubscriptionEnum {
-    PUSH = 'push',
-    PULL = 'pull'
-}
-
-export type SubscriptionType = {
-    type: SubscriptionEnum
-    interval?: number // (ms)
-}
+import {SubscriptionEnum, SubscriptionType} from "../subscribe/SubscriptionTypes";
 
 export class DemoSolidAgent {
     // TODO: merge code to main + add to npm when koreografeye is fixed

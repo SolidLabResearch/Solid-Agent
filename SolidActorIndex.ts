@@ -12,7 +12,11 @@ import {OrchestrationActor} from "./src/orchestration/OrchestrationActor";
 import {readText} from "koreografeye";
 import {SolidActor} from "./src/solid/SolidActor";
 import {OpenHABActor} from "./src/openHAB/OpenHabActor";
-import {DemoSolidAgent, SubscriptionEnum} from "./src/demo/DemoSolidAgent";
+import {DemoSolidAgent} from "./src/demo/DemoSolidAgent";
+import {SubscriptionEnum} from "./src/subscribe/SubscriptionTypes";
+import {DemoSyncAgent} from "./src";
+
+// CSS start command (use V6): community-solid-server -c @css:config/file-no-setup.json -f ./.data
 
 const writer = new Writer()
 require('dotenv').config()
@@ -141,7 +145,7 @@ async function demo() {
     await demo.start()
 }
 
-// demo()
+demo()
 
 async function demoHomeLab() {
     // Note: vpn must be on
@@ -166,4 +170,16 @@ async function demoHomeLab() {
     await demo.start()
 }
 
-demoHomeLab()
+// demoHomeLab()
+
+async function demoSync() {
+
+    const demo = new DemoSyncAgent({
+        solid: {
+            solidResources: ['http://localhost:3000/state'],
+            subscriptionType: {type: SubscriptionEnum.PUSH}
+        }
+    })
+    await demo.start()
+}
+// demoSync()
