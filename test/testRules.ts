@@ -1,5 +1,5 @@
 import {EyeJsReasoner} from "koreografeye";
-import {storeToString, turtleStringToStore} from "@treecg/versionawareldesinldp";
+import {storeToString, turtleStringToStore} from "../src";
 
 const ruleString = `@prefix as: <https://www.w3.org/ns/activitystreams#>.
 @prefix pol:  <https://www.example.org/ns/policy#> .

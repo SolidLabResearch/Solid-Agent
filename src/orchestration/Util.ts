@@ -1,7 +1,7 @@
 import {DataFactory, Quad, Store} from "n3";
 import {isomorphic} from "rdf-isomorphic";
 import {QueryEngine} from "@comunica/query-sparql";
-import {storeToString, turtleStringToStore} from "@treecg/versionawareldesinldp";
+import {storeToString, turtleStringToStore} from "../Util";
 import namedNode = DataFactory.namedNode;
 
 /**

@@ -1,7 +1,7 @@
 import {Quad, Writer} from "n3";
 import {Session} from "@rubensworks/solid-client-authn-isomorphic";
 import {parseContentType, TEXT_TURTLE} from "@solid/community-server";
-import {turtleStringToStore} from "@treecg/versionawareldesinldp";
+import {turtleStringToStore} from "../Util";
 import {ReadWriteClient} from "../orchestration/OrchestrationActorInterface";
 
 export class SolidClient implements ReadWriteClient{

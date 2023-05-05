@@ -24,7 +24,6 @@
   },
   "dependencies": {
     "@solid/community-server": "^6.0.0",
-    "@treecg/versionawareldesinldp": "^0.2.0",
     "@types/node": "^18.14.6",
     "@types/node-fetch": "^2.6.2",
     "dotenv": "^16.0.3",

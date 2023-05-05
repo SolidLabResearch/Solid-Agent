@@ -6,7 +6,7 @@ import {DataFactory, Quad} from "n3";
 import {v4 as uuidv4} from "uuid";
 import {RDF} from "@solid/community-server";
 import {AS} from "../Vocabulary";
-import {sleep} from "@treecg/versionawareldesinldp";
+import {sleep} from "../Util";
 import namedNode = DataFactory.namedNode;
 import quad = DataFactory.quad;
 

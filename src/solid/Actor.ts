@@ -2,7 +2,7 @@ import {Actor, Event} from "../orchestration/OrchestrationActorInterface";
 import {SolidClient} from "./SolidClient";
 import {Readable} from "stream";
 import {DataFactory, Quad} from "n3";
-import {sleep} from "@treecg/versionawareldesinldp";
+import {sleep} from "../Util";
 import {v4 as uuidv4} from "uuid";
 import {RDF} from "@solid/community-server";
 import {AS} from "../Vocabulary";

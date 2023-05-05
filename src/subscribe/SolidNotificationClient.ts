@@ -3,7 +3,7 @@ import {Session} from "@rubensworks/solid-client-authn-isomorphic";
 import {WebSocket} from 'ws'
 import {Readable} from "stream";
 import {WebSocketChannel2023} from "solid-notification-client";
-import {turtleStringToStore} from "@treecg/versionawareldesinldp";
+import {turtleStringToStore} from "../Util";
 import {createAnnouncement} from "./GeneralSubscriptionClient";
 
 export class SolidNotificationClient implements MessageClient {

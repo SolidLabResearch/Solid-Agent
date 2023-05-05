@@ -1,7 +1,7 @@
 import {Transform, TransformCallback} from "stream";
 import {EyeJsReasoner, Reasoner} from "koreografeye";
 import {Store} from "n3";
-import {storeToString, turtleStringToStore} from "@treecg/versionawareldesinldp";
+import {storeToString, turtleStringToStore} from "../../Util";
 
 /**
  * Transforms the incoming Announcement stream to a stream now containing an additional property "reasoningResult"
