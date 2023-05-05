@@ -6,6 +6,7 @@ export * from './AbstractActor' // no proper category yet
 // message clients
 export * from './subscribe/SolidNotificationClient'
 export * from './subscribe/GeneralSubscriptionClient'
+export * from './subscribe/SubscriptionTypes'
 
 // solid
 export * from './solid/SolidClient'
