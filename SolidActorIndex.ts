@@ -145,7 +145,7 @@ async function demo() {
     await demo.start()
 }
 
-demo()
+// demo()
 
 async function demoHomeLab() {
     // Note: vpn must be on
@@ -182,4 +182,4 @@ async function demoSync() {
     })
     await demo.start()
 }
-// demoSync()
+demoSync()
