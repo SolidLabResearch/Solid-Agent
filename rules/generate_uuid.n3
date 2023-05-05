@@ -1,0 +1,16 @@
+@prefix : <http://example.org/socrates#>.
+@prefix log: <http://www.w3.org/2000/10/swap/log#> .
+@prefix string: <http://www.w3.org/2000/10/swap/string#> .
+
+# A rule to generate a <urn:uuid:{uuid}> URL
+# Note: currently does not work yet with the EyeJsReasoner. Wait for status of this issue https://github.com/eyereasoner/eye-js/issues/290
+{
+
+    :test log:uuid ?Y .
+    ( "urn:uuid:" ?Y ) string:concatenation ?YT .
+    ?Z log:uri ?YT .
+}
+=>
+{
+    :Result :uuid ?Z .
+} .
