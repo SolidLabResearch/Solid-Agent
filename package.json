@@ -20,6 +20,7 @@
   "scripts": {
     "build": "rm -r ./dist && npm run build:ts",
     "build:ts": "tsc",
+    "prepare": "npm run build:ts",
     "release": "npm run build && npm publish --access public"
   },
   "dependencies": {
@@ -33,6 +34,8 @@
     "solid-notification-client": "^0.0.1"
   },
   "devDependencies": {
+    "typescript": "^5.0.4",
+    "ts-node": "^10.9.1",
     "uuid": "^9.0.0"
   }
 }
