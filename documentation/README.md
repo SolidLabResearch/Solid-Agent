@@ -12,11 +12,11 @@ Proposal see: https://docs.google.com/document/d/1sORg5e7SzgOnE7WlB7waKxvijX_eQk
 
 **Monolithic version.**
 
-The `receiver` communicates to external actors (e.g. a Solid Pod, third party API, ...) and pushes the data on a queue for the next component, the `mapper` to do its job. 
-When the data is not RDF, the `mapper` translates it to RDF and then gets pushed to a queue for the `processor`.
-The `processor` reasons over the input data and based on several **rules** decides what should be done with the data.
-If the target that data should be pushed to is an external API, the `inverseMapper` translates RDF to the required format.
-Finally, there is the `transmitter` that speaks to the world to persist the data to whatever has been decided by the processor.
+1. The `receiver` communicates to external actors (e.g. a Solid Pod, third party API, ...) and pushes the data on a queue for the next component, the `mapper` to do its job. 
+2. When the data is not RDF, the `mapper` translates it to RDF and then gets pushed to a queue for the `processor`. (Optional)
+3. The `processor` reasons over the input data and based on several **rules** decides what should be done with the data.
+4. If the recipient of the data is an external API, the `inverseMapper` translates RDF to the required format. (Optional, depends on `mapper` step)
+5. Finally, there is the `transmitter` that speaks to the world to persist the data to whatever has been decided by the processor.
 
 The idea here is to use queues between each process.
 
