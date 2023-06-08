@@ -1,0 +1,34 @@
+@prefix : <http://example.org/socrates#>.
+@prefix log: <http://www.w3.org/2000/10/swap/log#> .
+@prefix string: <http://www.w3.org/2000/10/swap/string#> .
+@prefix fno:  <https://w3id.org/function/ontology#> .
+@prefix pol:  <https://www.example.org/ns/policy#> .
+@prefix ex:   <http://example.org/> .
+@prefix ids: <https://w3id.org/idsa/core/> .
+@prefix acl: <http://www.w3.org/ns/auth/acl#>.
+{
+# Rules to create a uuid IRI (works with eye v4.26.0 https://github.com/eyereasoner/eye-js/issues/290) TODO: can only test this after https://github.com/eyereasoner/Koreografeye/pull/9 is merged
+    :test log:uuid ?Y .
+    ( "urn:uuid:" ?Y ) string:concatenation ?YT .
+    ?PolicyUUID log:uri ?YT .
+}
+=>
+{
+    # ?PolicyUUID pol:policy ?policyExecutionUUID
+    # ?policyExecutionUUID a fno:Execution ;
+    ex:MyDemoPolicy pol:policy ex:MyDemoPolicyExecution .
+    ex:MyDemoPolicyExecution
+        a fno:Execution ;
+        fno:executes ex:cronJob ;
+        ex:cronTime ?time ; # time to fire the job
+        ex:toFire ex:SomeFunction . # The function to be executed -> which can be found in the plugins
+    #    ex:toFire ?functionToFire . # The function to be executed -> which can be found in the plugins | TODO: needs UUID
+
+    ?functionToFire
+    ex:SomeFunction a fno:Execution ;
+        fno:executes ex:changeAcl ;
+        ex:agent ?webID;
+        ex:target ?resource;
+        ex:mode acl:Read;
+        ex:policyType ids:Permission . # Can be changed to GUCON | DPV | ODRL, just need something TODO:
+} .
