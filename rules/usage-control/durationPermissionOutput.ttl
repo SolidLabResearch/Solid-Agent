@@ -1,0 +1,54 @@
+@prefix : <http://example.org/socrates#>.
+@prefix acl: <http://www.w3.org/ns/auth/acl#>.
+@prefix ex: <http://example.org/>.
+@prefix fno: <https://w3id.org/function/ontology#>.
+@prefix foaf: <http://xmlns.com/foaf/0.1/>.
+@prefix func: <http://www.w3.org/2007/rif-builtin-function#>.
+@prefix ids: <https://w3id.org/idsa/core/>.
+@prefix idsc: <https://w3id.org/idsa/code/>.
+@prefix log: <http://www.w3.org/2000/10/swap/log#>.
+@prefix math: <http://www.w3.org/2000/10/swap/math#>.
+@prefix odrl: <http://www.w3.org/ns/odrl/2/>.
+@prefix pol: <https://www.example.org/ns/policy#>.
+@prefix string: <http://www.w3.org/2000/10/swap/string#>.
+@prefix time: <http://www.w3.org/2000/10/swap/time#>.
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#>.
+
+#input
+<https://w3id.org/idsa/autogen/constraint/b7d8beaf-0765-4d40-b2e9-4eddeda1c89b> a ids:Constraint.
+<https://w3id.org/idsa/autogen/constraint/b7d8beaf-0765-4d40-b2e9-4eddeda1c89b> ids:leftOperand idsc:ELAPSED_TIME.
+<https://w3id.org/idsa/autogen/constraint/b7d8beaf-0765-4d40-b2e9-4eddeda1c89b> ids:operator idsc:SHORTER_EQ.
+<https://w3id.org/idsa/autogen/constraint/b7d8beaf-0765-4d40-b2e9-4eddeda1c89b> ids:rightOperand "PT1M30.5S"^^xsd:duration.
+<https://w3id.org/idsa/autogen/permission/3b1439a1-4136-4675-b5a0-798ec3148996> a ids:Permission.
+<https://w3id.org/idsa/autogen/permission/3b1439a1-4136-4675-b5a0-798ec3148996> ids:action idsc:USE.
+<https://w3id.org/idsa/autogen/permission/3b1439a1-4136-4675-b5a0-798ec3148996> ids:constraint <https://w3id.org/idsa/autogen/constraint/b7d8beaf-0765-4d40-b2e9-4eddeda1c89b>.
+
+<https://w3id.org/idsa/autogen/permission/3b1439a1-4136-4675-b5a0-798ec3148996> ids:description "duration-usage".
+<https://w3id.org/idsa/autogen/permission/3b1439a1-4136-4675-b5a0-798ec3148996> ids:target <https://tree.linkeddatafragments.org/sytadel/ldes/ais>.
+<https://w3id.org/idsa/autogen/permission/3b1439a1-4136-4675-b5a0-798ec3148996> ids:title "Example Usage Policy".
+<https://w3id.org/idsa/autogen/permission/3b1439a1-4136-4675-b5a0-798ec3148996> odrl:assignee <https://ruben.verborgh.org/profile/#me>.
+
+#output
+# cron policy plugin design attempt 1
+<urn:uuid:c4933e60-06db-11ee-94ef-973c373c3405> pol:policy <urn:uuid:c4934040-06db-11ee-993c-cba990f7b8a5>.
+<urn:uuid:c4934040-06db-11ee-993c-cba990f7b8a5> a fno:Execution.
+<urn:uuid:c4934040-06db-11ee-993c-cba990f7b8a5> ex:cronTime "2023-06-09T15:40:36Z"^^xsd:dateTime.
+<urn:uuid:c4934040-06db-11ee-993c-cba990f7b8a5> ex:toFire <urn:uuid:c4934176-06db-11ee-8632-5fd8bf7ebe12>.
+<urn:uuid:c4934040-06db-11ee-993c-cba990f7b8a5> fno:executes ex:cronJob.
+
+# function that cron job will execute
+<urn:uuid:c4934176-06db-11ee-8632-5fd8bf7ebe12> a fno:Execution.
+<urn:uuid:c4934176-06db-11ee-8632-5fd8bf7ebe12> ex:agent <https://ruben.verborgh.org/profile/#me>.
+<urn:uuid:c4934176-06db-11ee-8632-5fd8bf7ebe12> ex:mode acl:Read.
+<urn:uuid:c4934176-06db-11ee-8632-5fd8bf7ebe12> ex:policyType ids:Prohibition.
+<urn:uuid:c4934176-06db-11ee-8632-5fd8bf7ebe12> ex:target <https://tree.linkeddatafragments.org/sytadel/ldes/ais>.
+<urn:uuid:c4934176-06db-11ee-8632-5fd8bf7ebe12> fno:executes ex:changeAcl.
+
+# acl policy plugin design attempt 1
+<urn:uuid:c4934284-06db-11ee-9769-df0aed819a51> pol:policy <urn:uuid:c4934392-06db-11ee-b19f-979e56c2da33>.
+<urn:uuid:c4934392-06db-11ee-b19f-979e56c2da33> a fno:Execution.
+<urn:uuid:c4934392-06db-11ee-b19f-979e56c2da33> ex:agent <https://ruben.verborgh.org/profile/#me>.
+<urn:uuid:c4934392-06db-11ee-b19f-979e56c2da33> ex:mode acl:Read.
+<urn:uuid:c4934392-06db-11ee-b19f-979e56c2da33> ex:policyType ids:Permission.
+<urn:uuid:c4934392-06db-11ee-b19f-979e56c2da33> ex:target <https://tree.linkeddatafragments.org/sytadel/ldes/ais>.
+<urn:uuid:c4934392-06db-11ee-b19f-979e56c2da33> fno:executes ex:changeAcl.

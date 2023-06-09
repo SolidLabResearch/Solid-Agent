@@ -1,34 +1,128 @@
 @prefix : <http://example.org/socrates#>.
-@prefix log: <http://www.w3.org/2000/10/swap/log#> .
-@prefix string: <http://www.w3.org/2000/10/swap/string#> .
-@prefix fno:  <https://w3id.org/function/ontology#> .
-@prefix pol:  <https://www.example.org/ns/policy#> .
-@prefix ex:   <http://example.org/> .
-@prefix ids: <https://w3id.org/idsa/core/> .
 @prefix acl: <http://www.w3.org/ns/auth/acl#>.
+@prefix ex:   <http://example.org/> .
+@prefix fno:  <https://w3id.org/function/ontology#> .
+@prefix foaf: <http://xmlns.com/foaf/0.1/>.
+@prefix func: <http://www.w3.org/2007/rif-builtin-function#>.
+@prefix ids: <https://w3id.org/idsa/core/> .
+@prefix idsc: <https://w3id.org/idsa/code/> .
+@prefix log: <http://www.w3.org/2000/10/swap/log#> .
+@prefix math: <http://www.w3.org/2000/10/swap/math#> .
+@prefix odrl: <http://www.w3.org/ns/odrl/2/> .
+@prefix pol:  <https://www.example.org/ns/policy#> .
+@prefix string: <http://www.w3.org/2000/10/swap/string#> .
+@prefix time: <http://www.w3.org/2000/10/swap/time#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+# Simple test cron rule for a duration usage policy for the Sytadel project: https://international-data-spaces-association.github.io/DataspaceConnector/Documentation/v6/UsageControl#duration-usage-2
+# This simple function will not have an explicit function fo fire, but does recognize the duration element as defined in idsa/odrl
 {
 # Rules to create a uuid IRI (works with eye v4.26.0 https://github.com/eyereasoner/eye-js/issues/290) TODO: can only test this after https://github.com/eyereasoner/Koreografeye/pull/9 is merged
-    :test log:uuid ?Y .
-    ( "urn:uuid:" ?Y ) string:concatenation ?YT .
-    ?PolicyUUID log:uri ?YT .
+   # cronPolicyUUID
+    :uuid1 log:uuid ?uuidStringCronPolicy .
+    ( "urn:uuid:" ?uuidStringCronPolicy ) string:concatenation ?urnUuidStringCronPolicy .
+    ?cronPolicyUUID log:uri ?urnUuidStringCronPolicy .
+
+    # cronPolicyExecutionUUID
+    :uuid2 log:uuid ?uuidStringCronPolicyExecution .
+    ( "urn:uuid:" ?uuidStringCronPolicyExecution ) string:concatenation ?urnUuidStringCronPolicyExecution .
+    ?cronPolicyExecutionUUID log:uri ?urnUuidStringCronPolicyExecution .
+
+    # functionToFireUUID
+    :uuid3 log:uuid ?uuidStringFunctionToFire.
+    ( "urn:uuid:" ?uuidStringFunctionToFire) string:concatenation ?urnUuidStringFunctionToFire.
+    ?functionToFireUUID log:uri ?urnUuidStringFunctionToFire.
+
+    # aclPolicyUUID
+    :uuid4 log:uuid ?uuidStringAclPolicyUUID .
+    ( "urn:uuid:" ?uuidStringAclPolicyUUID ) string:concatenation ?urnUuidStringAclPolicyUUID .
+    ?aclPolicyUUID log:uri ?urnUuidStringAclPolicyUUID .
+
+    # aclPolicyExecutionUUID
+    :uuid5 log:uuid ?uuidStringAclPolicyExecutionUUID .
+    ( "urn:uuid:" ?uuidStringAclPolicyExecutionUUID ) string:concatenation ?urnUuidStringAclPolicyExecutionUUID .
+    ?aclPolicyExecutionUUID log:uri ?urnUuidStringAclPolicyExecutionUUID .
+
+    # Policy
+    ?deonticSubject a ids:Permission ;
+    #    ids:description "duration-usage"^^xsd:string ; # TODO: see ?SCOPE log:notIncludes { ?Some  a <https://w3id.org/idsa/core/Permission>  } . (Patrick his message)
+        ids:target ?resource ;
+        odrl:assignee ?webID ;
+        ids:constraint ?constraint .
+
+    ?constraint a ids:Constraint ;
+        ids:leftOperand <https://w3id.org/idsa/code/ELAPSED_TIME> ;
+        ids:operator <https://w3id.org/idsa/code/SHORTER_EQ> ;
+        ids:rightOperand ?duration .
+
+    # calculation of end date of policy
+    "" time:localTime ?currentTime . # Current time
+    (?durationValue ?DType)  log:dtlit ?duration .
+    (?durationValue xsd:dayTimeDuration) log:dtlit ?durationDayTime .
+    (?currentTime ?durationDayTime) func:add-dayTimeDuration-to-dateTime ?time . # ?time is the time that the cronJob should fire
 }
 =>
 {
-    # ?PolicyUUID pol:policy ?policyExecutionUUID
-    # ?policyExecutionUUID a fno:Execution ;
-    ex:MyDemoPolicy pol:policy ex:MyDemoPolicyExecution .
-    ex:MyDemoPolicyExecution
+    # CronJob Policy function that fires ?functionToFire at `new Date() + ?duration`
+    ?cronPolicyUUID pol:policy ?cronPolicyExecutionUUID .
+    ?cronPolicyExecutionUUID
         a fno:Execution ;
         fno:executes ex:cronJob ;
         ex:cronTime ?time ; # time to fire the job
-        ex:toFire ex:SomeFunction . # The function to be executed -> which can be found in the plugins
-    #    ex:toFire ?functionToFire . # The function to be executed -> which can be found in the plugins | TODO: needs UUID
+        ex:toFire ?functionToFireUUID . # The function to be executed -> which can be found in the plugins
 
-    ?functionToFire
-    ex:SomeFunction a fno:Execution ;
+    # Cron Job function that must execute `ex:changeAcl`
+    ?functionToFireUUID a fno:Execution ;
         fno:executes ex:changeAcl ;
         ex:agent ?webID;
         ex:target ?resource;
         ex:mode acl:Read;
-        ex:policyType ids:Permission . # Can be changed to GUCON | DPV | ODRL, just need something TODO:
+        ex:policyType ids:Prohibition . # Note: Can be changed to GUCON | DPV | ODRL, just need something
+
+
+    ?aclPolicyUUID pol:policy ?aclPolicyExecutionUUID .
+    ?aclPolicyExecutionUUID
+        a fno:Execution ;
+        fno:executes ex:changeAcl ;
+        ex:agent ?webID;
+        ex:target ?resource;
+        ex:mode acl:Read;
+        ex:policyType ids:Permission . # Note: Can be changed to GUCON | DPV | ODRL, just need something
 } .
+
+
+# Example message of duration usage (see: https://international-data-spaces-association.github.io/DataspaceConnector/Documentation/v6/UsageControl#duration-usage-2)
+<https://w3id.org/idsa/autogen/permission/3b1439a1-4136-4675-b5a0-798ec3148996>
+  a <https://w3id.org/idsa/core/Permission> ;
+  ids:action <https://w3id.org/idsa/code/USE> ;
+  ids:constraint <https://w3id.org/idsa/autogen/constraint/b7d8beaf-0765-4d40-b2e9-4eddeda1c89b> ;
+  ids:description "duration-usage"^^xsd:string ;
+  ids:target <https://tree.linkeddatafragments.org/sytadel/ldes/ais> ; # The ldp:resource | ?asset must be an instance of class odrl:Asset or ids:Asset | note: as of 09/06/2023, this server does not have an acl config
+  odrl:assignee <https://ruben.verborgh.org/profile/#me> ; # ?someWebid must be an instance of class odrl:Party, which can be a WebID | Note: i took the liberty to add this here as it was not provided in the examples (https://international-data-spaces-association.github.io/DataspaceConnector/Documentation/v6/UsageControl#provide-access-2)
+  ids:title "Example Usage Policy"^^xsd:string .
+
+<https://w3id.org/idsa/autogen/constraint/b7d8beaf-0765-4d40-b2e9-4eddeda1c89b>
+  a ids:Constraint ;
+  ids:leftOperand <https://w3id.org/idsa/code/ELAPSED_TIME> ;
+  ids:operator <https://w3id.org/idsa/code/SHORTER_EQ> ;
+  ids:rightOperand "PT1M30.5S"^^xsd:duration .
+
+# is https://w3id.org/idsa/core/Permission same as http://www.w3.org/ns/odrl/2/Permission ?
+
+# action https://w3id.org/idsa/code/USE
+# To use a resource in any possible way. Includes all other actions.
+# note: This action is always evaluated at the consumer side.
+
+# operator information: https://w3id.org/idsa/code/SHORTER_EQ
+# If a temporal entity T1 is shorter or equals than another temporal entity T2, then the length or duration of T1 is shorter or their length or their duration is equal.
+# Instants and xsd:dateTimeStamp Literals have always the duration 'P0Y0M0DT0H0M0S'^^xsd:duration and therefore have always the same duration.
+
+# operand <https://w3id.org/idsa/code/ELAPSED_TIME>
+# A continuous elapsed time period which may be used for exercising of the action of the Rule.
+# Allowed operators are idsc:SHORTER, idsc:SHORTER_EQ, idsc:LONGER, idsc:LONGER_EQ, and idsc:DURATION_EQ with datatype xsd:duration.
+
+# Deontic operator (Obligation, Dispensation, Prohibition, and Permission) have ALWAYS? the following
+# * 1..n target: the asset (the resource to which the rule (deontic operator) is applied)
+# * 0..1 assigner: the one in control of the asset provisioning? Note: can it be n?
+# * 0..n assignee: the party that is assigned the deontic operator
+# * 0..n constraints: extra constraints (e.g. only 1 times use or limited amount of time available in case of usage control)

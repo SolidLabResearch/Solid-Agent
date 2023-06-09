@@ -1,0 +1,7 @@
+<https://w3id.org/idsa/autogen/permission/3b1439a1-4136-4675-b5a0-798ec3148996>
+  a <https://w3id.org/idsa/core/Permission> ;
+  ids:action <https://w3id.org/idsa/code/USE> ;
+  ids:description "provide-access"^^xsd:string ;
+  ids:target <https://tree.linkeddatafragments.org/sytadel/ldes/ais> ;
+  odrl:assignee <https://ruben.verborgh.org/profile/#me> ;
+  ids:title "Allow Data Usage"^^xsd:string .
