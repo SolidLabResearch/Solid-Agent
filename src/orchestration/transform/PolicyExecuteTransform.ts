@@ -21,14 +21,19 @@ export class PolicyExecuteTransform extends Writable {
     }
 
     _write(chunk: any, encoding: BufferEncoding, callback: TransformCallback) {
-        if (chunk.policy === undefined) throw Error()
+        try {
+            if (chunk.policy === undefined) throw Error("Policy undefined")
 
-        const pluginIdentifier = chunk.policy.target
-        const targetActorIdentifier = chunk.policy.args[AS.namespace + 'target']!.value // TODO: explain why this will always be in the target (reasoningResult -> Rules) | maybe just pass all the actors? discuss with patrick
+            const pluginIdentifier = chunk.policy.target
+            const targetActorIdentifier = chunk.policy.args[AS.namespace + 'target']!.value // TODO: explain why this will always be in the target (reasoningResult -> Rules) | maybe just pass all the actors? discuss with patrick
 
-        const plugin: PluginFunction = this.plugins[pluginIdentifier]
-        const actor: Actor = this.actors[targetActorIdentifier]
-        plugin(chunk, actor, {stream: this.stream})
+            const plugin: PluginFunction = this.plugins[pluginIdentifier]
+            const actor: Actor = this.actors[targetActorIdentifier]
+            plugin(chunk, actor, {stream: this.stream})
+        } catch (e) {
+            console.log((e as Error).message)
+        }
+
         callback()
     }
 }

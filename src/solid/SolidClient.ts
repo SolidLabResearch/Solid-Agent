@@ -4,6 +4,7 @@ import {parseContentType, TEXT_TURTLE} from "@solid/community-server";
 import {turtleStringToStore} from "../Util";
 import {ReadWriteClient} from "../orchestration/OrchestrationActorInterface";
 
+// This ReadWrite Client only deals with RDF solid Resources
 export class SolidClient implements ReadWriteClient{
     private readonly session: Session;
 

@@ -32,3 +32,4 @@ export * from './openHAB/OpenHabActor'
 // demo
 export * from './demo/DemoSyncAgent'
 export * from './demo/DemoSolidAgent'
+export * from './demo/DemoUCPAgent'

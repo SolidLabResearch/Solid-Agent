@@ -6,14 +6,18 @@ import {WebSocketChannel2023} from "solid-notification-client";
 import {turtleStringToStore} from "../Util";
 import {createAnnouncement} from "./GeneralSubscriptionClient";
 
+/**
+ * The Solid Notification Client subscribes to a resource with its identifier.
+ * When the resource is updated, it returns the current representation of the resource by fetching it with a {@link ReadWriteClient}.
+ */
 export class SolidNotificationClient implements MessageClient {
-    private session: Session;
-    private client: ReadWriteClient;
-    private webID: string;
-    private sockets: Record<string, WebSocket>;
-    private streams: Record<string, Readable>;
+    protected session: Session;
+    protected client: ReadWriteClient;
+    protected webID: string;
+    protected sockets: Record<string, WebSocket>;
+    protected streams: Record<string, Readable>;
 
-    private channel: WebSocketChannel2023;
+    protected channel: WebSocketChannel2023;
 
     public constructor(session: Session, client: ReadWriteClient, webID: string) {
         this.session = session;
@@ -36,9 +40,7 @@ export class SolidNotificationClient implements MessageClient {
     }
 
     public async subscribe(identifier: string): Promise<Readable> {
-        const features = {"accept": "text/turtle"}
-        const webSocketUrl = await this.channel.subscribe(identifier, features)
-        const socket = new WebSocket(webSocketUrl);
+        const socket = await this.connect(identifier);
         const stream = new Readable({
             objectMode: true,
             read() {
@@ -64,4 +66,15 @@ export class SolidNotificationClient implements MessageClient {
         return stream;
     }
 
+    /**
+     * Sets up a websocket for the resource
+     * @param identifier
+     * @return {Promise<void>}
+     */
+    protected async connect(identifier: string): Promise<WebSocket> {
+        const features = {"accept": "text/turtle"}
+        const webSocketUrl = await this.channel.subscribe(identifier, features)
+        const socket = new WebSocket(webSocketUrl);
+        return socket
+    }
 }

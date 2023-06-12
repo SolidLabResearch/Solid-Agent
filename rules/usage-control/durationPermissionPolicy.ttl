@@ -10,11 +10,17 @@
 @prefix string: <http://www.w3.org/2000/10/swap/string#> .
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
 
-
 <https://w3id.org/idsa/autogen/permission/3b1439a1-4136-4675-b5a0-798ec3148996>
   a <https://w3id.org/idsa/core/Permission> ;
   ids:action <https://w3id.org/idsa/code/USE> ;
-  ids:description "provide-access"^^xsd:string ;
-  ids:target <https://tree.linkeddatafragments.org/sytadel/ldes/ais> ;
-  odrl:assignee <https://ruben.verborgh.org/profile/#me> ;
-  ids:title "Allow Data Usage"^^xsd:string .
+  ids:constraint <https://w3id.org/idsa/autogen/constraint/b7d8beaf-0765-4d40-b2e9-4eddeda1c89b> ;
+  ids:description "duration-usage"^^xsd:string ;
+  ids:target <https://tree.linkeddatafragments.org/sytadel/ldes/ais> ; 
+  odrl:assignee <https://ruben.verborgh.org/profile/#me> ; 
+  ids:title "Example Usage Policy"^^xsd:string .
+
+<https://w3id.org/idsa/autogen/constraint/b7d8beaf-0765-4d40-b2e9-4eddeda1c89b>
+  a ids:Constraint ;
+  ids:leftOperand <https://w3id.org/idsa/code/ELAPSED_TIME> ;
+  ids:operator <https://w3id.org/idsa/code/SHORTER_EQ> ;
+  ids:rightOperand "PT1M30.5S"^^xsd:duration .

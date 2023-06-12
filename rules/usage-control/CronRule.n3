@@ -92,20 +92,20 @@
 
 
 # Example message of duration usage (see: https://international-data-spaces-association.github.io/DataspaceConnector/Documentation/v6/UsageControl#duration-usage-2)
-<https://w3id.org/idsa/autogen/permission/3b1439a1-4136-4675-b5a0-798ec3148996>
-  a <https://w3id.org/idsa/core/Permission> ;
-  ids:action <https://w3id.org/idsa/code/USE> ;
-  ids:constraint <https://w3id.org/idsa/autogen/constraint/b7d8beaf-0765-4d40-b2e9-4eddeda1c89b> ;
-  ids:description "duration-usage"^^xsd:string ;
-  ids:target <https://tree.linkeddatafragments.org/sytadel/ldes/ais> ; # The ldp:resource | ?asset must be an instance of class odrl:Asset or ids:Asset | note: as of 09/06/2023, this server does not have an acl config
-  odrl:assignee <https://ruben.verborgh.org/profile/#me> ; # ?someWebid must be an instance of class odrl:Party, which can be a WebID | Note: i took the liberty to add this here as it was not provided in the examples (https://international-data-spaces-association.github.io/DataspaceConnector/Documentation/v6/UsageControl#provide-access-2)
-  ids:title "Example Usage Policy"^^xsd:string .
-
-<https://w3id.org/idsa/autogen/constraint/b7d8beaf-0765-4d40-b2e9-4eddeda1c89b>
-  a ids:Constraint ;
-  ids:leftOperand <https://w3id.org/idsa/code/ELAPSED_TIME> ;
-  ids:operator <https://w3id.org/idsa/code/SHORTER_EQ> ;
-  ids:rightOperand "PT1M30.5S"^^xsd:duration .
+# <https://w3id.org/idsa/autogen/permission/3b1439a1-4136-4675-b5a0-798ec3148996>
+#   a <https://w3id.org/idsa/core/Permission> ;
+#   ids:action <https://w3id.org/idsa/code/USE> ;
+#   ids:constraint <https://w3id.org/idsa/autogen/constraint/b7d8beaf-0765-4d40-b2e9-4eddeda1c89b> ;
+#   ids:description "duration-usage"^^xsd:string ;
+# ids:target <https://tree.linkeddatafragments.org/sytadel/ldes/ais> ; # The ldp:resource | ?asset must be an instance of class odrl:Asset or ids:Asset | note: as of 09/06/2023, this server does not have an acl config
+# odrl:assignee <https://ruben.verborgh.org/profile/#me> ; # ?someWebid must be an instance of class odrl:Party, which can be a WebID | Note: i took the liberty to add this here as it was not provided in the examples (https://international-data-spaces-association.github.io/DataspaceConnector/Documentation/v6/UsageControl#provide-access-2)
+#   ids:title "Example Usage Policy"^^xsd:string .
+#
+# <https://w3id.org/idsa/autogen/constraint/b7d8beaf-0765-4d40-b2e9-4eddeda1c89b>
+#   a ids:Constraint ;
+#   ids:leftOperand <https://w3id.org/idsa/code/ELAPSED_TIME> ;
+#   ids:operator <https://w3id.org/idsa/code/SHORTER_EQ> ;
+#   ids:rightOperand "PT1M30.5S"^^xsd:duration .
 
 # is https://w3id.org/idsa/core/Permission same as http://www.w3.org/ns/odrl/2/Permission ?
 

@@ -180,6 +180,15 @@ async function demoSync() {
             subscriptionType: {type: SubscriptionEnum.PUSH}
         }
     })
+    // create state resource:
+    await fetch('http://localhost:3000/state', {
+        method: "PUT",
+        headers: {
+            "context-type": "text/turtle"
+        },
+        body: "<Bureau_links_Color> <http://dbpedia.org/resource/Brightness> 10 .<Bureau_links_Color> <http://dbpedia.org/resource/Colorfulness> 50 .<Bureau_links_Color> <http://dbpedia.org/resource/Hue> 0 .<Bureau_links_Color> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://saref.etsi.org/core/OnState> .<Bureau_rechts_Color> <http://dbpedia.org/resource/Brightness> 10 .<Bureau_rechts_Color> <http://dbpedia.org/resource/Colorfulness> 60 .<Bureau_rechts_Color> <http://dbpedia.org/resource/Hue> 272 .<Bureau_rechts_Color> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://saref.etsi.org/core/OnState> ."
+    })
     await demo.start()
 }
+
 demoSync()
