@@ -20,7 +20,7 @@ export class SolidClient implements ReadWriteClient{
         const contentTypeHeader = parseContentType(response.headers.get('content-type') ?? '')
         if (contentTypeHeader.value !== TEXT_TURTLE) throw Error('Can not parse ldp:resource as currently only "text/turtle" is supported. Content Type received: ' + contentTypeHeader.value)
         // Note: can be optimized by using https://github.com/rubensworks/rdf-parse.js
-        const store = await turtleStringToStore(await response.text())
+        const store = await turtleStringToStore(await response.text(), identifier)
         return store.getQuads(null, null, null, null)
     }
 
