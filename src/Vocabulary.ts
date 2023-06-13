@@ -34,3 +34,10 @@ export const DBR = createVocabulary('http://dbpedia.org/resource/',
     'Brightness',
     'Colorfulness'
 )
+
+export const XSD = createVocabulary('http://www.w3.org/2001/XMLSchema#',
+    'positiveInteger',
+    'integer',
+    'dateTime',
+    'duration'
+);

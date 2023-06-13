@@ -8,6 +8,7 @@ import {Session} from "@rubensworks/solid-client-authn-isomorphic";
 import {SubscriptionEnum, SubscriptionType} from "../subscribe/SubscriptionTypes";
 import {GeneralSubscriptionClient} from "../subscribe/GeneralSubscriptionClient";
 import {SolidContainerNotificationClient} from "../subscribe/SolidContainerNotificationClient";
+import {fnoCronPlugin} from "../plugins/CronPlugin";
 
 export class DemoUCPAgent {
     private actors: Record<string, Actor> = {};
@@ -18,7 +19,7 @@ export class DemoUCPAgent {
     ]
 
     private plugins: Record<string, PluginFunction> = {
-        // 'http://example.org/updateSolidState': fnoUpdateSolidState,
+        'http://example.org/cronJob': fnoCronPlugin,
     };
 
     private solidClient: SolidClient;
@@ -38,7 +39,7 @@ export class DemoUCPAgent {
         const session = config.solid.session ?? new Session()
         const solidWebID = 'solid'
 
-        // initialize solid actor
+        // initialize solid actor: (one that can listen to new resources created in a container)
         this.solidClient = new SolidClient(session);
         this.solidSubscriptionClient = solidSubscriptionType?.type === SubscriptionEnum.PUSH ?
             new SolidContainerNotificationClient(session, this.solidClient, solidWebID) :

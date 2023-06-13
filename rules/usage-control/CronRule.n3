@@ -1,4 +1,5 @@
 @prefix : <http://example.org/socrates#>.
+@prefix as: <https://www.w3.org/ns/activitystreams#> .
 @prefix acl: <http://www.w3.org/ns/auth/acl#>.
 @prefix ex:   <http://example.org/> .
 @prefix fno:  <https://w3id.org/function/ontology#> .
@@ -67,7 +68,8 @@
     ?cronPolicyUUID pol:policy ?cronPolicyExecutionUUID .
     ?cronPolicyExecutionUUID
         a fno:Execution ;
-        fno:executes ex:cronJob ;
+        as:target <orchestrator> ; # Which actor must execute the following step
+        fno:executes ex:cronJob ; # object is the name of the function to be executed
         ex:cronTime ?time ; # time to fire the job
         ex:toFire ?functionToFireUUID . # The function to be executed -> which can be found in the plugins
 

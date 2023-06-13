@@ -23,4 +23,5 @@
   a ids:Constraint ;
   ids:leftOperand <https://w3id.org/idsa/code/ELAPSED_TIME> ;
   ids:operator <https://w3id.org/idsa/code/SHORTER_EQ> ;
-  ids:rightOperand "PT1M30.5S"^^xsd:duration .
+  ids:rightOperand "PT1S"^^xsd:duration .
+#   ids:rightOperand "PT1M30.5S"^^xsd:duration .
