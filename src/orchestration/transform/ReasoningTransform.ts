@@ -1,6 +1,6 @@
 import {Transform, TransformCallback} from "stream";
 import {EyeJsReasoner, Reasoner} from "koreografeye";
-import {Store, Writer} from "n3";
+import {Store} from "n3";
 import {storeToString, turtleStringToStore} from "../../Util";
 
 /**
@@ -30,7 +30,6 @@ export class ReasoningTransform extends Transform {
         const cleaned = resultString.replace(/file:\/\/\//g, "")
         const cleanedStore = await turtleStringToStore(cleaned)
         chunk.reasoningResult = cleanedStore.getQuads(null, null, null, null)
-        console.log(new Writer().quadsToString(cleanedStore.getQuads(null, null, null, null)))
         callback(null, chunk)
     }
 }

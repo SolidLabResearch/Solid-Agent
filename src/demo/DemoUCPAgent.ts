@@ -9,6 +9,7 @@ import {SubscriptionEnum, SubscriptionType} from "../subscribe/SubscriptionTypes
 import {GeneralSubscriptionClient} from "../subscribe/GeneralSubscriptionClient";
 import {SolidContainerNotificationClient} from "../subscribe/SolidContainerNotificationClient";
 import {fnoCronPlugin} from "../plugins/CronPlugin";
+import {fnoChangeAcl} from "../plugins/AclPlugin";
 
 export class DemoUCPAgent {
     private actors: Record<string, Actor> = {};
@@ -20,6 +21,7 @@ export class DemoUCPAgent {
 
     private plugins: Record<string, PluginFunction> = {
         'http://example.org/cronJob': fnoCronPlugin,
+        'http://example.org/changeAcl': fnoChangeAcl
     };
 
     private solidClient: SolidClient;

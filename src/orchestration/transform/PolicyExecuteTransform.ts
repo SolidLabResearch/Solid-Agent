@@ -31,7 +31,7 @@ export class PolicyExecuteTransform extends Writable {
             const actor: Actor = this.actors[targetActorIdentifier]
             plugin(chunk, actor, {stream: this.stream})
         } catch (e) {
-            console.log((e as Error).message)
+            console.log(`${new Date().toISOString()} [PolicyExecuteTransform] ${(e as Error).message}`)
         }
 
         callback()
