@@ -59,16 +59,6 @@ export class DemoUCPAgent {
     }
 
     public async start() {
-        // const stream = new Readable({
-        //     objectMode: true,
-        //     read() {
-        //     }
-        // })
-        // await this.solidActor.monitorResource(this.solidActor.resources[0], stream)
-        // console.log(this.solidActor.resources[0])
-        // stream.on('data', (event) => {
-        //     console.log(new Writer().quadsToString(event.data))
-        // })
         // start
         this.orchestrationActor.start();
     }
