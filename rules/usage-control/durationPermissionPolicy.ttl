@@ -15,13 +15,13 @@
   ids:action <https://w3id.org/idsa/code/USE> ;
   ids:constraint <https://w3id.org/idsa/autogen/constraint/b7d8beaf-0765-4d40-b2e9-4eddeda1c89b> ;
   ids:description "duration-usage"^^xsd:string ;
-  ids:target <https://tree.linkeddatafragments.org/sytadel/ldes/ais> ; 
-  odrl:assignee <https://ruben.verborgh.org/profile/#me> ; 
+  ids:target <http://localhost:3000/ldes> ;
+  odrl:assignee <https://woslabbi.pod.knows.idlab.ugent.be/profile/card#me> ;
   ids:title "Example Usage Policy"^^xsd:string .
 
 <https://w3id.org/idsa/autogen/constraint/b7d8beaf-0765-4d40-b2e9-4eddeda1c89b>
   a ids:Constraint ;
   ids:leftOperand <https://w3id.org/idsa/code/ELAPSED_TIME> ;
   ids:operator <https://w3id.org/idsa/code/SHORTER_EQ> ;
-  ids:rightOperand "PT1S"^^xsd:duration .
+  ids:rightOperand "PT30S"^^xsd:duration .
 #   ids:rightOperand "PT1M30.5S"^^xsd:duration .

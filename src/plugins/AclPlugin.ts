@@ -1,5 +1,8 @@
 import {PluginFunction} from "../orchestration/OrchestrationActorInterface";
-import {Store} from "n3";
+import {DataFactory, Quad_Object, Store} from "n3";
+import {ACL, RDF} from "@solid/community-server";
+import {IDSA} from "../Vocabulary";
+import namedNode = DataFactory.namedNode;
 
 export const fnoChangeAcl: PluginFunction = async function (event, actor, optional): Promise<void> {
     if (event.policy === undefined) throw Error()
@@ -9,11 +12,43 @@ export const fnoChangeAcl: PluginFunction = async function (event, actor, option
     //  2. default has not been decided on how to add that, so default will be ./ (in case the resource is a container/LDES)
 
     const aclStore = new Store()
+    // WAC, §4.3: "The `acl:agent` predicate denotes an agent being given the access permission."
+    // https://solid.github.io/web-access-control-spec/#access-subjects
     const aclAgent = event.policy.args['http://example.org/agent']!
+    // WAC, §4.3: "The `acl:mode` predicate denotes a class of operations that the agents can perform on a resource."
+    // https://solid.github.io/web-access-control-spec/#access-modes
     const mode = event.policy.args['http://example.org/mode']! // Note: currently only handles on of the modes at random, need a proper way to deal with this.
+    // WAC, §4.1: "The `acl:accessTo` predicate denotes the resource to which access is being granted"
+    // https://solid.github.io/web-access-control-spec/#access-objects
+    const resource = event.policy.args['http://example.org/target']!
+    // The deontic concept: `ids:Permission` or `ids:Prohobition`
     const policyType = event.policy.args['http://example.org/policyType']!
 
+    // control ACL for agent
+    const agentAuthorization = namedNode(resource.value + '#AgentAuthorization') // hash value should be uuid in future?
+    aclStore.addQuad(agentAuthorization, RDF.terms.type, ACL.terms.Authorization)
+    aclStore.addQuad(agentAuthorization, ACL.terms.agent, namedNode(actor.webID))
+    aclStore.addQuad(agentAuthorization, ACL.terms.mode, ACL.terms.Control)
+    aclStore.addQuad(agentAuthorization, ACL.terms.accessTo, resource as Quad_Object)
+    aclStore.addQuad(agentAuthorization, ACL.terms.default, resource as Quad_Object)
 
+    // ACL generated through Koreografeye Policy
+    switch (policyType.value) {
+        case IDSA.Permission:
+            const policyAuthorization = namedNode(resource.value + "PolicyAuthorization") // hash value should be uuid in future?
+            aclStore.addQuad(policyAuthorization, RDF.terms.type, ACL.terms.Authorization)
+            aclStore.addQuad(policyAuthorization, ACL.terms.agent, aclAgent as Quad_Object)
+            aclStore.addQuad(policyAuthorization, ACL.terms.mode, mode as Quad_Object)
+            aclStore.addQuad(policyAuthorization, ACL.terms.accessTo, resource as Quad_Object)
+            aclStore.addQuad(policyAuthorization, ACL.terms.default, resource as Quad_Object)
+            break;
+        case IDSA.Prohibition:
+            break;
+        default:
+            throw Error(`fnoChangeAcl cannot deal with following policy Type: ${policyType.value}`)
+    }
+
+    await actor.writeResource(resource.value + '.acl', aclStore.getQuads(null, null, null, null))
 }
 
 /*
