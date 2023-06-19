@@ -60,3 +60,15 @@ To demonstrate this configuration of the Solid Agent, following steps must be ex
     ```
 [//]: # (   TODO: explain that http://localhost:3123/solid/profile/card#me needs a priori `acl:Control` access on the target resource)
 
+### How it works
+
+1. The policy has been added to the container (can be done by executing step 3)
+2. A notification is sent to the Solid Actor, which then fetches the newly added policy (`policy1`)
+3. An N3 reasoner (EyeJs) is run with as input the policy and the rules (which is in the `CronRule.n3` in this case)
+4. As a conclusion of this reasoning task, we get two Koreografeye Policies. An Acl Policy and a CronJob Policy (with as body an Acl Policy). 
+    * The ACL Plugin changes the acl of `resource` so that the `odrl:assignee` now has `acl:Read` access to `resource`.
+    * The Cronjob Plugin starts a timer, so that in 30 seconds a prohibition ACL plugin is executed
+5. After the 30 seconds have passed, the CronJob starts the prohibition execution
+    * The Acl Plugin changes the acl of `resource` so that the `odrl:assignee` now has no access anymore to `resource`.
+   
+![](./Solid-Agent-UCP%20use%20case%20(flow).png)
