@@ -76,7 +76,7 @@
     # Cron Job function that must execute `ex:changeAcl`
     ?functionToFireUUID a fno:Execution ;
         fno:executes ex:changeAcl ;
-        as:target <solid> ; # Which actor must execute the following step
+        as:target <http://localhost:3123/solid/profile/card#me> ; # Which actor must execute the following step
         ex:agent ?webID;
         ex:target ?resource;
         ex:mode acl:Read;
@@ -86,7 +86,7 @@
     ?aclPolicyUUID pol:policy ?aclPolicyExecutionUUID .
     ?aclPolicyExecutionUUID
         a fno:Execution ;
-        as:target <solid> ; # Which actor must execute the following step
+        as:target <http://localhost:3123/solid/profile/card#me> ; # Which actor must execute the following step
         fno:executes ex:changeAcl ;
         ex:agent ?webID;
         ex:target ?resource;

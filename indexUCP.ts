@@ -1,4 +1,4 @@
-import {createAccount, DemoUCPAgent, getAuthenticatedSession, instantiateCSS, SubscriptionEnum} from "./src";
+import {createAccount, DemoUCPAgent, getAuthenticatedSession, instantiateCSS, sleep, SubscriptionEnum} from "./src";
 
 const baseURL = "http://localhost:3000/"
 const policyContainer = baseURL + "policies/"
@@ -33,6 +33,7 @@ async function ucpInitialisation() {
 
     // create account for agent
     await createAccount(agentBaseUrl, {email: solidAgentMail, password: solidAgentWW, podName: solidAgentPodName})
+    await sleep(500)
 }
 
 async function ucpDemo() {
@@ -40,21 +41,27 @@ async function ucpDemo() {
 
     // initialise resource + policy container
     await ucpInitialisation()
-
+    // testing auth
+    const session = await getAuthenticatedSession({
+        webId: solidAgentWebID,
+        email: solidAgentMail,
+        password: solidAgentWW
+    })
+    console.log(`Account (${solidAgentWebID}) created and logged in`, session.info.isLoggedIn)
+    // const res = await session.fetch(resource+'.acl')
+    // console.log(await res.text())
     const demo = new DemoUCPAgent({
         solid: {
             solidResources: [policyContainer],
-            subscriptionType: {type: SubscriptionEnum.PUSH}
+            subscriptionType: {type: SubscriptionEnum.PUSH},
+            session: session
         }
     })
     // note: listening to the policies container works through using SolidContainerNotificationClient -> Though no reasoning is executed right now (12/06/2023).
     //  -> fixed by changing the rule and by updating koreografeye to v0.3.2
     await demo.start()
 
-    // // testing auth
-    const session = await getAuthenticatedSession({webId: solidAgentWebID, email: solidAgentMail, password: solidAgentWW})
-    const res = await session.fetch(`${agentBaseUrl}${solidAgentPodName}/profile/`)
-    console.log("Testing Solid Actor Authentication. Status:",res.status)
+
     // curl --data "@/home/wouts/Documents/repos/Agent/Solid-Agent/rules/usage-control/durationPermissionPolicy.ttl" http://localhost:3000/ -H "content-type: text/turtle"
 }
 
@@ -64,4 +71,4 @@ ucpDemo()
 // step 2: set up demoUCPAgent (running this code)
 // $ npx ts-node indexUCP.ts
 // step 3: send curl request of durationPermissionPolicy
-// $ curl --data "@./rules/usage-control/durationPermissionPolicy.ttl" http://localhost:3000/ -H "content-type: text/turtle"
+// $ curl --data "@./rules/usage-control/durationPermissionPolicy.ttl" http://localhost:3000/policies -H "content-type: text/turtle"

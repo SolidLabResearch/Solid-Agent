@@ -10,7 +10,6 @@ export const fnoChangeAcl: PluginFunction = async function (event, actor, option
     // Note: currently makes two shortcuts done for the demo use case at 21/06:
     //  1. The acl will be overwritten with the required ACL + control acl for the orchestration/solid actor
     //  2. default has not been decided on how to add that, so default will be ./ (in case the resource is a container/LDES)
-
     const aclStore = new Store()
     // WAC, §4.3: "The `acl:agent` predicate denotes an agent being given the access permission."
     // https://solid.github.io/web-access-control-spec/#access-subjects
@@ -49,6 +48,8 @@ export const fnoChangeAcl: PluginFunction = async function (event, actor, option
     }
 
     await actor.writeResource(resource.value + '.acl', aclStore.getQuads(null, null, null, null))
+    console.log(`${new Date().toISOString()} [fnoChangeAcl] ACL for resource ${resource.value} updated.`)
+
 }
 
 /*

@@ -39,14 +39,14 @@ export class DemoUCPAgent {
     }) {
         const {solidResources, subscriptionType: solidSubscriptionType} = config.solid
         const session = config.solid.session ?? new Session()
-        const solidWebID = 'solid'
+        const solidWebID = config.solid.session?.info.webId ?? 'solid'
 
         // initialize solid actor: (one that can listen to new resources created in a container)
         this.solidClient = new SolidClient(session);
         this.solidSubscriptionClient = solidSubscriptionType?.type === SubscriptionEnum.PUSH ?
             new SolidContainerNotificationClient(session, this.solidClient, solidWebID) :
             new GeneralSubscriptionClient(this.solidClient, solidWebID, solidSubscriptionType?.interval); // Note: pull does not work yet
-        this.solidActor = new SolidActor(this.solidClient, this.solidSubscriptionClient, {resources: solidResources})
+        this.solidActor = new SolidActor(this.solidClient, this.solidSubscriptionClient, {resources: solidResources, webID:solidWebID})
 
         // initialize orchestrationActor
         this.actors[solidWebID] = this.solidActor;
