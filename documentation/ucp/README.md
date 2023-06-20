@@ -67,8 +67,11 @@ To demonstrate this configuration of the Solid Agent, following steps must be ex
     The first approach sends an HTTP POST request to the policy container with as content the duration policy as in the example above.
     The second approach executes the same duration policy using a typescript script.
     It is a bit easier to adapt the WebID, target resource or the duration time, and additionally it logs to the console what will happen.
-        
 
+Following screencast shows how it works when we send a policy
+
+![](./demo-Duration-UCP.mp4)
+[//]: # (TODO: elaborate the screencast )
 ### How it works
 
 In this section, I will try to explain in a bit more detail what happens internally in the [DemoUCPAgent.ts](../../src/demo/DemoUCPAgent.ts).
@@ -83,6 +86,7 @@ In this section, I will try to explain in a bit more detail what happens interna
     * The Acl Plugin changes the acl of `resource` so that the `odrl:assignee` now has no access anymore to `resource`.
    
 ![](./Solid-Agent-UCP%20use%20case%20(flow).png)
+
 
 ## Limitations/Assumptions
 
