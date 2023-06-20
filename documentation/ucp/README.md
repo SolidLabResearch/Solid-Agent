@@ -70,7 +70,8 @@ To demonstrate this configuration of the Solid Agent, following steps must be ex
 
 Following screencast shows how it works when we send a policy
 
-![](./demo-Duration-UCP.mp4)
+![Screencast](https://raw.githubusercontent.com/woutslabbinck/Solid-Agent/58da48d3bf0cadf113a26911f5304456288e4441/documentation/ucp/demo-Duration-UCP.mp4)
+
 [//]: # (TODO: elaborate the screencast )
 ### How it works
 
@@ -86,7 +87,6 @@ In this section, I will try to explain in a bit more detail what happens interna
     * The Acl Plugin changes the acl of `resource` so that the `odrl:assignee` now has no access anymore to `resource`.
    
 ![](./Solid-Agent-UCP%20use%20case%20(flow).png)
-
 
 ## Limitations/Assumptions
 
