@@ -42,27 +42,38 @@ To enforce Usage Control Policies, two plugins ([AclPlugin](../../src/plugins/Ac
 
 To demonstrate this configuration of the Solid Agent, following steps must be executed:
 
-1.  Start a CSS at port 3000
+1.  Start a [Community Solid Server (CSS)](https://github.com/CommunitySolidServer/CommunitySolidServer) at port 3000
     ```shell
     # A Solid server that stores its resources on memory and uses WAC for authorization
     npx community-solid-server -c memory-no-setup.json
     # Alternatively, one with stores its resources on the file system can be used
     npx community-solid-server -c @css:config/file-no-setup.json -f ./.data
     ```
-2.  Start the code to run the DemoUCPAgent
+    The root storage of this Solid server is at [http://localhost:3000/](http://localhost:3000/) 
+2.  Start the code to run the [DemoUCPAgent.ts](../../src/demo/DemoUCPAgent.ts)
     ```shell
     npx ts-node indexUCP.ts
     ```
-[//]: # (   TODO: elaborate on what this actually does)
-3.  Send a UCP to the policy container at `http://localhost:3000/policies/`
+    This code starts a [CSS](http://localhost:3123/) for the solid actor where it also creates an account so the Solid Actor has a [WebID](http://localhost:3123/solid/profile/card#me).
+    Furthermore, it creates the [policy container](http://localhost:3000/policies/) and creates a [simple RDF resource](http://localhost:3000/ldes) which is used as target resource.
+    When this initialisation sequence is executed, the code finally starts the [DemoUCPAgent.ts](../../src/demo/DemoUCPAgent.ts).
+3.  Send a **duration usage-restricted access** UCP to the policy container.
     ```shell
+    # Approach one with a curl request
     curl --data "@./rules/usage-control/durationPermissionPolicy.ttl" http://localhost:3000/policies -H "content-type: text/turtle"
+    # Second approach with the UcpSendPolicy.ts script
+    npx ts-node UcpSendPolicy.ts
     ```
-[//]: # (   TODO: explain that http://localhost:3123/solid/profile/card#me needs a priori `acl:Control` access on the target resource)
+    The first approach sends an HTTP POST request to the policy container with as content the duration policy as in the example above.
+    The second approach executes the same duration policy using a typescript script.
+    It is a bit easier to adapt the WebID, target resource or the duration time, and additionally it logs to the console what will happen.
+        
 
 ### How it works
 
-1. The policy has been added to the container (can be done by executing step 3)
+In this section, I will try to explain in a bit more detail what happens internally in the [DemoUCPAgent.ts](../../src/demo/DemoUCPAgent.ts).
+
+1. The policy has been added to the policy container (can be done by executing step 3)
 2. A notification is sent to the Solid Actor, which then fetches the newly added policy (`policy1`)
 3. An N3 reasoner (EyeJs) is run with as input the policy and the rules (which is in the `CronRule.n3` in this case)
 4. As a conclusion of this reasoning task, we get two Koreografeye Policies. An Acl Policy and a CronJob Policy (with as body an Acl Policy). 
@@ -72,3 +83,22 @@ To demonstrate this configuration of the Solid Agent, following steps must be ex
     * The Acl Plugin changes the acl of `resource` so that the `odrl:assignee` now has no access anymore to `resource`.
    
 ![](./Solid-Agent-UCP%20use%20case%20(flow).png)
+
+## Limitations
+
+This demo has been made as a sprint, so some shortcuts and assumptions were taken in this prototype. 
+They are listed below with some explanation:
+
+* The **Usage Control Policy Knowledge Graph (UCP KG)** is modelled as a solid container, which furthermore requires that the solid server supports the [Solid Notifications Protocol](https://solidproject.org/TR/notifications-protocol) v0.2.0.
+  * This way, the agent can listen to any policy addition
+  * Additionally, we can then assume that the KG of UCPs is valid. 
+    The agent does not check whether the complete set of UCPs are valid or not, it will only execute them. 
+    Any conflicts in the UCP KG thus are the fault of the end user, not of the agent.
+* For each target resource (`ids:target`), the agent MUST have `acl:Control` permission.
+* The [Solid Protocol](https://solidproject.org/TR/protocol) defines two options for Authorization (§11): **Web Access Control (WAC)** and **Access Control Policy (ACP)**.
+  * The agent assumes that the Solid server hosting the target resources support WAC (and therefore Access Control List (ACL) resources).
+* The N3 rules contain built-ins that do work with the [EYE reasoner](https://github.com/eyereasoner/eye), though no guarantees can be made with other N3 reasoners.
+* As of 20/06/2023, only the *Duration-restricted Data Usage* from [IDS Usage Control Policies](https://international-data-spaces-association.github.io/DataspaceConnector/Documentation/v6/UsageControl#ids-usage-control-policies) has been implemented and tested as N3 Rule.
+  * Due to how [Koreografeye](https://github.com/eyereasoner/Koreografeye) extracts policies from the Reasoning Result, the cardinality of target resources and assignees can only be 1.
+  * The triple `<permissionIdentifier> <odrl:assignee> <webID> .` was added to the UCP to make sure we have a webID to which we can give access (though this was not described in the [Pattern examples](https://international-data-spaces-association.github.io/DataspaceConnector/Documentation/v6/UsageControl#duration-usage-2)).
+* Giving Permission equals to giving read access (`acl:Read`)
