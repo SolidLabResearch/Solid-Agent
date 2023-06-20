@@ -84,7 +84,7 @@ In this section, I will try to explain in a bit more detail what happens interna
    
 ![](./Solid-Agent-UCP%20use%20case%20(flow).png)
 
-## Limitations
+## Limitations/Assumptions
 
 This demo has been made as a sprint, so some shortcuts and assumptions were taken in this prototype. 
 They are listed below with some explanation:
@@ -100,5 +100,6 @@ They are listed below with some explanation:
 * The N3 rules contain built-ins that do work with the [EYE reasoner](https://github.com/eyereasoner/eye), though no guarantees can be made with other N3 reasoners.
 * As of 20/06/2023, only the *Duration-restricted Data Usage* from [IDS Usage Control Policies](https://international-data-spaces-association.github.io/DataspaceConnector/Documentation/v6/UsageControl#ids-usage-control-policies) has been implemented and tested as N3 Rule.
   * Due to how [Koreografeye](https://github.com/eyereasoner/Koreografeye) extracts policies from the Reasoning Result, the cardinality of target resources and assignees can only be 1.
+    A [feature request](https://github.com/eyereasoner/Koreografeye/issues/10) has been made to solve this problem at its root.
   * The triple `<permissionIdentifier> <odrl:assignee> <webID> .` was added to the UCP to make sure we have a webID to which we can give access (though this was not described in the [Pattern examples](https://international-data-spaces-association.github.io/DataspaceConnector/Documentation/v6/UsageControl#duration-usage-2)).
 * Giving Permission equals to giving read access (`acl:Read`)
