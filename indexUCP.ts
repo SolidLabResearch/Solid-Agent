@@ -1,4 +1,7 @@
 import {createAccount, DemoUCPAgent, getAuthenticatedSession, instantiateCSS, sleep, SubscriptionEnum} from "./src";
+import {DataFactory, Store, Writer} from "n3";
+import {ACL, RDF} from "@solid/community-server";
+import namedNode = DataFactory.namedNode;
 
 const baseURL = "http://localhost:3000/"
 const policyContainer = baseURL + "policies/"
@@ -20,6 +23,24 @@ async function ucpInitialisation() {
             "content-type": "text/turtle"
         },
         body: "<http://localhost:3000/ldes> a <https://w3id.org/ldes#EventStream>."
+    })
+
+    // change the ACL of the resource such that nobody has access to it and the agent can control access.
+    const aclStore = new Store()
+    const aclResourceURL = resource + '.acl'
+    const agentAuthorization = namedNode(aclResourceURL + '#AgentAuthorization') // hash value should be uuid in future?
+    aclStore.addQuad(agentAuthorization, RDF.terms.type, ACL.terms.Authorization)
+    aclStore.addQuad(agentAuthorization, ACL.terms.agent, namedNode(solidAgentWebID))
+    aclStore.addQuad(agentAuthorization, ACL.terms.mode, ACL.terms.Control)
+    aclStore.addQuad(agentAuthorization, ACL.terms.accessTo, namedNode(resource))
+    aclStore.addQuad(agentAuthorization, ACL.terms.default, namedNode(resource))
+
+    await fetch(aclResourceURL, {
+        method: "PUT",
+        headers: {
+            "content-type": "text/turtle"
+        },
+        body: new Writer().quadsToString(aclStore.getQuads(null, null, null, null))
     })
 
     // create policy container

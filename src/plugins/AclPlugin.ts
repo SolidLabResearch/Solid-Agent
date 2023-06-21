@@ -22,9 +22,11 @@ export const fnoChangeAcl: PluginFunction = async function (event, actor, option
     const resource = event.policy.args['http://example.org/target']!
     // The deontic concept: `ids:Permission` or `ids:Prohobition`
     const policyType = event.policy.args['http://example.org/policyType']!
+    // ACL resource URL
+    const aclResourceURL = resource.value + '.acl'
 
     // control ACL for agent
-    const agentAuthorization = namedNode(resource.value + '#AgentAuthorization') // hash value should be uuid in future?
+    const agentAuthorization = namedNode(aclResourceURL + '#AgentAuthorization') // hash value should be uuid in future?
     aclStore.addQuad(agentAuthorization, RDF.terms.type, ACL.terms.Authorization)
     aclStore.addQuad(agentAuthorization, ACL.terms.agent, namedNode(actor.webID))
     aclStore.addQuad(agentAuthorization, ACL.terms.mode, ACL.terms.Control)
@@ -34,7 +36,7 @@ export const fnoChangeAcl: PluginFunction = async function (event, actor, option
     // ACL generated through Koreografeye Policy
     switch (policyType.value) {
         case IDSA.Permission:
-            const policyAuthorization = namedNode(resource.value + "PolicyAuthorization") // hash value should be uuid in future?
+            const policyAuthorization = namedNode(aclResourceURL+ "PolicyAuthorization") // hash value should be uuid in future?
             aclStore.addQuad(policyAuthorization, RDF.terms.type, ACL.terms.Authorization)
             aclStore.addQuad(policyAuthorization, ACL.terms.agent, aclAgent as Quad_Object)
             aclStore.addQuad(policyAuthorization, ACL.terms.mode, mode as Quad_Object)
@@ -47,7 +49,7 @@ export const fnoChangeAcl: PluginFunction = async function (event, actor, option
             throw Error(`fnoChangeAcl cannot deal with following policy Type: ${policyType.value}`)
     }
 
-    await actor.writeResource(resource.value + '.acl', aclStore.getQuads(null, null, null, null))
+    await actor.writeResource(aclResourceURL, aclStore.getQuads(null, null, null, null))
     console.log(`${new Date().toISOString()} [fnoChangeAcl] ACL for resource ${resource.value} updated.`)
 
 }
