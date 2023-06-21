@@ -70,10 +70,25 @@ To demonstrate this configuration of the Solid Agent, following steps must be ex
 
 Following screencast shows how it works when we send a policy
 
-![Screencast](https://raw.githubusercontent.com/woutslabbinck/Solid-Agent/58da48d3bf0cadf113a26911f5304456288e4441/documentation/ucp/demo-Duration-UCP.mp4)
+[![Screencast](./demo-Duration-UCP.gif)](https://raw.githubusercontent.com/woutslabbinck/Solid-Agent/58da48d3bf0cadf113a26911f5304456288e4441/documentation/ucp/demo-Duration-UCP.mp4)
 
-[//]: # (TODO: elaborate the screencast )
-### How it works
+In this screencast, you see three windows:
+
+* On the left, we have [Penny](https://penny.vincenttunru.com/) where I've logged in with webID `https://woutslabbinck.solidcommunity.net/profile/card#me`.
+  In this window, I can now browse resources on Solid Pods while being authenticated.
+* On the top right, the Solid Agent in the `DemoUCPAgent.ts` configuration is running (see step 2)
+* On the bottom right, there is a blank terminal which will be used to send a policy to the Usage Control Policy Knowledge Graph (UCP KG) (i.e. the policy container)
+
+At the start, we are authenticated and see the storage of the Solid pod of [woutslabbinck](https://woutslabbinck.solidcommunity.net/profile/card#me). <br>
+[woutslabbinck](https://woutslabbinck.solidcommunity.net/profile/card#me) wants to access the resource at URL `http://localhost:3000/ldes`, but does not have access. <br>
+However, there is a policy from the owner of that resource that can be activated. 
+This policy allows the assignee ([woutslabbinck](https://woutslabbinck.solidcommunity.net/profile/card#me)) to have read access to the [resource](http://localhost:3000/ldes) for a period of 30 seconds ("PT30S"^^xsd:duration).<br>
+In the bottom right pane, this policy is sent to the UCP KG, which the **DemoUCPAgent** then immediately enforces. <br>
+Now, while authenticated as [woutslabbinck](https://woutslabbinck.solidcommunity.net/profile/card#me), we can see the resource in Penny. <br>
+Finally, when 30 seconds have passed, the **DemoUCPAgent** executes the final part of the policy and takes away read access control for [woutslabbinck](https://woutslabbinck.solidcommunity.net/profile/card#me), as defined in the Usage Control Policy. 
+
+
+### How does it work?
 
 In this section, I will try to explain in a bit more detail what happens internally in the [DemoUCPAgent.ts](../../src/demo/DemoUCPAgent.ts).
 
