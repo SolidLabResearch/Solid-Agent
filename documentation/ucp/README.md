@@ -40,6 +40,10 @@ To enforce Usage Control Policies, two plugins ([AclPlugin](../../src/plugins/Ac
 
 ## Demo
 
+### Prerequisites
+
+* The user has a WebID and pod.
+  You can create both for testing via the [Pod Playground of SolidLab](https://pod.playground.solidlab.be/).
 ### Installing + setting up
 
 ```shell
@@ -86,7 +90,8 @@ To demonstrate this configuration of the Solid Agent, following steps must be ex
     ```
     The first approach sends an HTTP POST request to the policy container with as content the duration policy as in the example above. <br>
     The second approach executes the same duration policy using a typescript script. <br>
-    It is a bit easier to adapt the WebID, target resource or the duration time, and additionally it logs to the console what will happen. 
+    It is a bit easier to adapt the WebID, target resource or the duration time, and additionally it logs to the console what will happen. <br>
+    E.g. The WebID can be changed by editing [line 37](https://github.com/SolidLabResearch/Solid-Agent/blob/392a822386c2feae8c2fba9325bfbd42c448344b/UcpSendPolicy.ts#L37) in `UcpSendPolicy.ts`
 4.  (Optional) To verify whether you have access to the resource for the given duration, you can authenticate with the configured WebID in [Penny](https://penny.vincenttunru.com/). <br>
     There, in the top search bar you put in the URL of the resource (`http://localhost:3000/ldes`). <br>
     Now you can verify that indeed you only have access to the resource through penny for the given duration after you have sent the UCP to the policy container.
