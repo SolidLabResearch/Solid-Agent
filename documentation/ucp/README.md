@@ -40,6 +40,26 @@ To enforce Usage Control Policies, two plugins ([AclPlugin](../../src/plugins/Ac
 
 ## Demo
 
+### Installing + setting up
+
+```shell
+# Cloning the repository
+git clone https://github.com/SolidLabResearch/Solid-Agent.git
+
+# Go to the Solid-Agent directory
+cd Solid-Agent
+
+# going to branch "feat/cron-plugin
+git checkout feat/cron-plugin
+
+# Install the dependencies
+npm i
+```
+
+Now that everything is installed and you are still in the Solid-Agent directory, you can run this demo.
+
+### Running the demo
+
 To demonstrate this configuration of the Solid Agent, following steps must be executed:
 
 1.  Start a [Community Solid Server (CSS)](https://github.com/CommunitySolidServer/CommunitySolidServer) at port 3000
@@ -54,8 +74,8 @@ To demonstrate this configuration of the Solid Agent, following steps must be ex
     ```shell
     npx ts-node indexUCP.ts
     ```
-    This code starts a [CSS](http://localhost:3123/) for the solid actor where it also creates an account so the Solid Actor has a [WebID](http://localhost:3123/solid/profile/card#me).
-    Furthermore, it creates the [policy container](http://localhost:3000/policies/) and creates a [simple RDF resource](http://localhost:3000/ldes) which is used as target resource.
+    This code starts a [CSS](http://localhost:3123/) for the solid actor where it also creates an account so the Solid Actor has a [WebID](http://localhost:3123/solid/profile/card#me). <br>
+    Furthermore, it creates the [policy container](http://localhost:3000/policies/) and creates a [simple RDF resource](http://localhost:3000/ldes) which is used as target resource. <br>
     When this initialisation sequence is executed, the code finally starts the [DemoUCPAgent.ts](../../src/demo/DemoUCPAgent.ts).
 3.  Send a **duration usage-restricted access** UCP to the policy container.
     ```shell
@@ -64,9 +84,14 @@ To demonstrate this configuration of the Solid Agent, following steps must be ex
     # Second approach with the UcpSendPolicy.ts script
     npx ts-node UcpSendPolicy.ts
     ```
-    The first approach sends an HTTP POST request to the policy container with as content the duration policy as in the example above.
-    The second approach executes the same duration policy using a typescript script.
-    It is a bit easier to adapt the WebID, target resource or the duration time, and additionally it logs to the console what will happen.
+    The first approach sends an HTTP POST request to the policy container with as content the duration policy as in the example above. <br>
+    The second approach executes the same duration policy using a typescript script. <br>
+    It is a bit easier to adapt the WebID, target resource or the duration time, and additionally it logs to the console what will happen. 
+4.  (Optional) To verify whether you have access to the resource for the given duration, you can authenticate with the configured WebID in [Penny](https://penny.vincenttunru.com/). <br>
+    There, in the top search bar you put in the URL of the resource (`http://localhost:3000/ldes`). <br>
+    Now you can verify that indeed you only have access to the resource through penny for the given duration after you have sent the UCP to the policy container.
+
+### Screencast
 
 Following screencast shows how it works when we send a policy
 
@@ -74,7 +99,7 @@ Following screencast shows how it works when we send a policy
 
 In this screencast, you see three windows:
 
-* On the left, we have [Penny](https://penny.vincenttunru.com/) where I've logged in with webID `https://woutslabbinck.solidcommunity.net/profile/card#me`.
+* On the left, we have [Penny](https://penny.vincenttunru.com/) where I've logged in with WebID `https://woutslabbinck.solidcommunity.net/profile/card#me`.
   In this window, I can now browse resources on Solid Pods while being authenticated.
 * On the top right, the Solid Agent in the `DemoUCPAgent.ts` configuration is running (see step 2)
 * On the bottom right, there is a blank terminal which will be used to send a policy to the Usage Control Policy Knowledge Graph (UCP KG) (i.e. the policy container)
@@ -120,5 +145,5 @@ They are listed below with some explanation:
 * As of 20/06/2023, only the *Duration-restricted Data Usage* from [IDS Usage Control Policies](https://international-data-spaces-association.github.io/DataspaceConnector/Documentation/v6/UsageControl#ids-usage-control-policies) has been implemented and tested as N3 Rule.
   * Due to how [Koreografeye](https://github.com/eyereasoner/Koreografeye) extracts policies from the Reasoning Result, the cardinality of target resources and assignees can only be 1.
     A [feature request](https://github.com/eyereasoner/Koreografeye/issues/10) has been made to solve this problem at its root.
-  * The triple `<permissionIdentifier> <odrl:assignee> <webID> .` was added to the UCP to make sure we have a webID to which we can give access (though this was not described in the [Pattern examples](https://international-data-spaces-association.github.io/DataspaceConnector/Documentation/v6/UsageControl#duration-usage-2)).
+  * The triple `<permissionIdentifier> <odrl:assignee> <WebID> .` was added to the UCP to make sure we have a WebID to which we can give access (though this was not described in the [Pattern examples](https://international-data-spaces-association.github.io/DataspaceConnector/Documentation/v6/UsageControl#duration-usage-2)).
 * Giving Permission equals to giving read access (`acl:Read`)
