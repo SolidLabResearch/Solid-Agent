@@ -43,11 +43,12 @@ export function updateState(state: Quad[], item: Quad[]): Quad[] {
  * Note: currently does not follow triples from the item, can be added in later versions of this function
  *
  * @param state
- * @param item
+ * @param item - name of the item.
  */
 export function extractItem(state: Quad[], item: string): Quad[] {
+    const identifier = itemNameToIRI(item)
     const store = new Store(state)
-    return store.getQuads(namedNode(item), null, null, null)
+    return store.getQuads(namedNode(identifier), null, null, null)
 }
 
 /**
@@ -111,3 +112,16 @@ rdf:type saref:OnState .`
 }
 
 // testUpdateState()
+
+// Note: problems will arise when there are multiple items with the same name stored in the same state (e.g. two openhab platforms with the same state resource)
+// Note: hardcoded function to translate the item name to the IRI of the item
+//  f(item.name) -> urn:openhab:item.name
+export function itemNameToIRI(itemName: string): string {
+    return "urn:openhab:" + itemName
+}
+
+// Note: hardcoded function to translate the IRI of the item to the item name
+//  f(urn:openhab:item.name) -> item.name
+export function IRItoItemName(iri: string): string {
+    return iri.split("urn:openhab:")[1] // will fail if the urn scheme is wrong
+}

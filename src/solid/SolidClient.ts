@@ -4,6 +4,7 @@ import {parseContentType, TEXT_TURTLE} from "@solid/community-server";
 import {turtleStringToStore} from "../Util";
 import {ReadWriteClient} from "../orchestration/OrchestrationActorInterface";
 
+// This ReadWrite Client only deals with RDF solid Resources
 export class SolidClient implements ReadWriteClient{
     private readonly session: Session;
 
@@ -20,7 +21,9 @@ export class SolidClient implements ReadWriteClient{
         const contentTypeHeader = parseContentType(response.headers.get('content-type') ?? '')
         if (contentTypeHeader.value !== TEXT_TURTLE) throw Error('Can not parse ldp:resource as currently only "text/turtle" is supported. Content Type received: ' + contentTypeHeader.value)
         // Note: can be optimized by using https://github.com/rubensworks/rdf-parse.js
-        const store = await turtleStringToStore(await response.text())
+        // Note: adding base IRI breaks the solid philips hue demo due to the identifiers <Bureau_rechts_Color> vs <http://localhost:3000/Bureau_rechts_Color>
+        // TODO: best fix is to use real identifiers
+        const store = await turtleStringToStore(await response.text(), identifier)
         return store.getQuads(null, null, null, null)
     }
 

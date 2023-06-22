@@ -2,6 +2,9 @@
 export * from './Vocabulary'
 export * from './Util'
 export * from './AbstractActor' // no proper category yet
+export * from './util/CSSSetUp'
+export * from './util/TimeStampUtil'
+export * from './util/CSSAuthentication'
 
 // message clients
 export * from './subscribe/SolidNotificationClient'
@@ -32,3 +35,4 @@ export * from './openHAB/OpenHabActor'
 // demo
 export * from './demo/DemoSyncAgent'
 export * from './demo/DemoSolidAgent'
+export * from './demo/DemoUCPAgent'

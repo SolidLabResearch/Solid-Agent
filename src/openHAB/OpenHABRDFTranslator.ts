@@ -7,6 +7,7 @@ import {DataFactory, Quad, Store} from "n3";
 import {DBR, SAREF} from "../Vocabulary";
 import {RDF} from "@solid/community-server";
 import {QueryEngine} from "@comunica/query-sparql";
+import {IRItoItemName} from "../orchestration/Util";
 import namedNode = DataFactory.namedNode;
 import quad = DataFactory.quad;
 import literal = DataFactory.literal;
@@ -24,11 +25,15 @@ export class OpenHABRDFTranslator {
      */
     public translateItemToRDF(item: Item): Quad[] {
         const quads: Quad[] = []
+
+        // Note: hardcoded function to translate the item name to the IRI of the item
+        //  f(item.name) -> urn:openhab:item.name
+        const identifier = "urn:openhab:" + item.name
         // maybe later add label?
         switch (item.type.toLowerCase()) {
             case 'color':
                 const state = parseColorState(item.state)
-                const idTerm = namedNode(item.name)
+                const idTerm = namedNode(identifier)
                 const type = state.onOff ? SAREF.terms.OnState : SAREF.terms.OffState
                 quads.push(quad(idTerm, RDF.terms.type, type))
                 quads.push(quad(idTerm, DBR.terms.Hue, literal(state.hue)))
@@ -41,7 +46,7 @@ export class OpenHABRDFTranslator {
         return quads
     }
 
-    public async fetchIdentifierFromRDF(quads: Quad[]): Promise<string>{
+    public async fetchIdentifierFromRDF(quads: Quad[]): Promise<string> {
         const queryBody = `
     ?id a ?state;`
         const bindingsStream = await this.queryEngine.queryBindings(`
@@ -63,11 +68,14 @@ export class OpenHABRDFTranslator {
      * @param identifier
      */
     public async translateRDFToItem(quads: Quad[], identifier: string): Promise<Item> {
+
+        // calculate itemName -> if there are quads, we should convert the urn to the actual name of the item
+        const itemName = quads.length > 0 ? IRItoItemName(quads[0].subject.value) : identifier
         const item: Item = {
             editable: false,
             groupNames: [],
             link: "",
-            name: identifier,
+            name: itemName,
             state: undefined,
             tags: [],
             type: ""
