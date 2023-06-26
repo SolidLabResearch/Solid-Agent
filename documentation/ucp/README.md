@@ -134,12 +134,26 @@ In this section, I will try to explain in a bit more detail what happens interna
     * The Acl Plugin changes the acl of `resource` so that the **End User** now has no access anymore to `resource`.
         * Now, the **End User** does not have access to the `resource` anymore
 
-These steps are also described in the following UML Sequence diagram:
+These steps are also visualised in the following UML Sequence diagram:
 ![](./Solid-agent-UCP%20use%20case%20(high%20level%20UML).png)  
 
 
 <!-- ![](./Solid-Agent-UCP%20use%20case%20(flow).png) -->
 
+### Low Level explanation
+
+This section explains the execution flow within the Demo UCP initialisation of the Solid Agent, which is based on the [Koreografeye](https://github.com/eyereasoner/Koreografeye) [architecture](https://github.com/eyereasoner/Koreografeye/blob/main/documentation/architecture.md).
+
+In this setting, the Solid Agent consists of two actors: 
+
+* **Solid Actor**: This actor is an Interface Actor (see [architecture S. Kirrane](https://papers.ssrn.com/sol3/papers.cfm?abstract_id=3945443)) which interacts with Solid Resources and the other Orchestration Actor.
+* **Orchestration Actor**: Executes the Koreografeye execution flow in a streaming way and interacts with other actors within the Solid Agent.
+
+
+Explain stub
+
+Create stub
+![stub](./Solid-agent-UCP%20use%20case%20(low%20level%20UML).png)
 ## Limitations/Assumptions
 
 This demo has been made as a sprint, so some shortcuts and assumptions were taken in this prototype. 
