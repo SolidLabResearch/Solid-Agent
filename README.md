@@ -192,6 +192,6 @@ to be synchronised with the state of the philips hue light controlled by the ope
 
 ## Feedback and questions
 
-Do not hesitate to [report a bug](https://github.com/woutslabbinck/Solid-Agent/issues).
+Do not hesitate to [report a bug](https://github.com/SolidLabResearch/Solid-Agent/issues).
 
-Further questions can also be asked to [Wout Slabbinck](wout.slabbinck@ugent.be) (developer and maintainer of this repository) or [Patrick Hochstenbach](Patrick.Hochstenbach@UGent.be) (developer and maintainer of [Koreografeye](https://github.com/eyereasoner/Koreografeye)).
+Further questions can also be asked to [Wout Slabbinck](mailto:wout.slabbinck@ugent.be) (developer and maintainer of this repository) or [Patrick Hochstenbach](mailto:Patrick.Hochstenbach@UGent.be) (developer and maintainer of [Koreografeye](https://github.com/eyereasoner/Koreografeye)).
