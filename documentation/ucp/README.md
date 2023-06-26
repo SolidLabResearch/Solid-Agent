@@ -134,8 +134,11 @@ In this section, I will try to explain in a bit more detail what happens interna
     * The Acl Plugin changes the acl of `resource` so that the **End User** now has no access anymore to `resource`.
         * Now, the **End User** does not have access to the `resource` anymore
 
-![](./Solid-agent-UCP%20use%20case%20(high%20level%20UML).png)   
-![](./Solid-Agent-UCP%20use%20case%20(flow).png)
+These steps are also described in the following UML Sequence diagram:
+![](./Solid-agent-UCP%20use%20case%20(high%20level%20UML).png)  
+
+
+<!-- ![](./Solid-Agent-UCP%20use%20case%20(flow).png) -->
 
 ## Limitations/Assumptions
 
