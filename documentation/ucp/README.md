@@ -149,11 +149,35 @@ In this setting, the Solid Agent consists of two actors:
 * **Solid Actor**: This actor is an Interface Actor (see [architecture S. Kirrane](https://papers.ssrn.com/sol3/papers.cfm?abstract_id=3945443)) which interacts with Solid Resources and the other Orchestration Actor.
 * **Orchestration Actor**: Executes the Koreografeye execution flow in a streaming way and interacts with other actors within the Solid Agent.
 
+1. The **Solid Actor** is configured to subscribe to a container, more specific: the Policy Container.
+   * Each time an resource is added to that container, the actor is notified. Then, the actor fetches the `resource` and passes it to the **Orchestration Actor**
+2. The first step of the **Orchestration Actor** is the **Reasoning step**. 
+   * The EYE reasoner is executed with as premise the [CronRule](../../rules/usage-control/CronRule.n3) and the `resource` (a duration UCP).
+   * The conclusion in this case consists of two [Koreografeye policies](https://github.com/eyereasoner/Koreografeye/blob/main/documentation/architecture.md), which are defined in RDF
+     * A CronJob policy where ...
+     * An ACL policy where ...
+   * The whole conclusion is passed to next step: the **Policy Extractor**
+3. The **Policy Extractor** ...
+   * 
+4. The **Policy Executor** ...
+   * 
 
-Explain stub
-
-Create stub
+TODO: Create stub
 ![stub](./Solid-agent-UCP%20use%20case%20(low%20level%20UML).png)
+
+#### Comparison with Koreografeye
+
+TODO: rewrite
+The general approach of the Solid Agent follows the *reason, extract, execute* approach of Koreografeye. 
+However, it extends/applies Koreografeye with continuous operation.
+Let me elaborate on this: You configure Koreografeye with plugins you want to use, and to fire/execute it. You pass data and rules and they have been executed.
+With the Solid Agent, it is possible to listen to a given resource (or container like an `ldp:inbox` container or in this case the policy container) (not limited to Solid) and apply the whole Koreografeye flow on every change in that resource.
+
+Furthermore, Plugins currently have an extra argument (and optional third) compared to the plugins of koreografeye: 
+TODO: Elaborate and explain how this can be aligned (with the componentsjs structure)
+
+TODO: when this whole section is finished -> Discuss with Patrick if it makes sense what I am proposing (backwards compatibility)
+
 ## Limitations/Assumptions
 
 This demo has been made as a sprint, so some shortcuts and assumptions were taken in this prototype. 
