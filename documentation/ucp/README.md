@@ -3,7 +3,7 @@
 ## Use case: Temporal Usage Control Policy execution for Solid Resources
 
 The [International Data Space Association (IDSA)](https://internationaldataspaces.org/) defines several [IDS Usage Control Policies](https://international-data-spaces-association.github.io/DataspaceConnector/Documentation/v6/UsageControl).
-**The Duration-restricted Data Usage policy** is a temporal UCP which allows data usage for a specified time period.
+**The Duration-restricted Data Usage policy** is a temporal UCP which allows data usage for a specified period.
 
 Below is an example of such a policy.
 
@@ -36,7 +36,7 @@ This policy states that an assignee (`https://woslabbi.pod.knows.idlab.ugent.be/
 At the time of writing, however, no implementations exist that allow you to use an IDSA UCP to define access control over [Solid](https://solidproject.org/TR/protocol) resources.
 
 To enforce Usage Control Policies, two plugins ([AclPlugin](../../src/plugins/AclPlugin.ts) and [CronPlugin](../../src/plugins/CronPlugin.ts)) were implemented and an example rule ([CronRule](../../rules/usage-control/CronRule.n3)) was crafted for the [Solid Agent](../../README.md).
-[DemoUCPAgent.ts](../../src/demo/DemoUCPAgent.ts) contains a class **DemoUCPAgent** which configures the Solid Agent with these plugins and rule.
+[DemoUCPAgent.ts](../../src/demo/DemoUCPAgent.ts) contains a class **DemoUCPAgent** which configures the Solid Agent with these plugins and this rule.
 
 ## Demo
 
@@ -64,7 +64,7 @@ Now that everything is installed and you are still in the Solid-Agent directory,
 
 ### Running the demo
 
-To demonstrate this configuration of the Solid Agent, following steps must be executed:
+To demonstrate this configuration of the Solid Agent, the following steps must be executed:
 
 1.  Start a [Community Solid Server (CSS)](https://github.com/CommunitySolidServer/CommunitySolidServer) at port 3000
     ```shell
@@ -90,15 +90,15 @@ To demonstrate this configuration of the Solid Agent, following steps must be ex
     ```
     The first approach sends an HTTP POST request to the policy container with as content the duration policy as in the example above. <br>
     The second approach executes the same duration policy using a typescript script. <br>
-    It is a bit easier to adapt the WebID, target resource or the duration time, and additionally it logs to the console what will happen. <br>
+    It is a bit easier to adapt the WebID, target resource or the duration time, and additionally, it logs to the console what will happen. <br>
     E.g. The WebID can be changed by editing [line 37](https://github.com/SolidLabResearch/Solid-Agent/blob/392a822386c2feae8c2fba9325bfbd42c448344b/UcpSendPolicy.ts#L37) in `UcpSendPolicy.ts`
 4.  (Optional) To verify whether you have access to the resource for the given duration, you can authenticate with the configured WebID in [Penny](https://penny.vincenttunru.com/). <br>
     There, in the top search bar you put in the URL of the resource (`http://localhost:3000/ldes`). <br>
-    Now you can verify that indeed you only have access to the resource through penny for the given duration after you have sent the UCP to the policy container.
+    Now you can verify that indeed you only have access to the resource through Penny for the given duration after you have sent the UCP to the policy container.
 
 ### Screencast
 
-Following screencast shows how it works when we send a policy
+The following screencast shows how it works when we send a policy.
 
 [![Screencast](./demo-Duration-UCP.gif)](https://raw.githubusercontent.com/woutslabbinck/Solid-Agent/58da48d3bf0cadf113a26911f5304456288e4441/documentation/ucp/demo-Duration-UCP.mp4)
 
@@ -129,16 +129,61 @@ In this section, I will try to explain in a bit more detail what happens interna
 4. As a conclusion of this reasoning task, we get two Koreografeye Policies. An Acl Policy and a CronJob Policy (with as function to fire an Acl Policy). 
     * The ACL Plugin changes the acl of `resource` so that the **End User** (`odrl:assignee`) now has `acl:Read` access to `resource`.
         * At this point, the **End User** has access to the `resource`
-    * The Cronjob Plugin starts a timer, so that in 30 seconds a prohibition ACL plugin is executed
+    * The Cronjob Plugin starts a timer so that in 30 seconds a prohibition ACL plugin is executed
 5. After the 30 seconds have passed, the CronJob starts the prohibition execution
     * The Acl Plugin changes the acl of `resource` so that the **End User** now has no access anymore to `resource`.
         * Now, the **End User** does not have access to the `resource` anymore
 
-These steps are also described in the following UML Sequence diagram:
+These steps are also visualised in the following UML sequence diagram:
 ![](./Solid-agent-UCP%20use%20case%20(high%20level%20UML).png)  
 
 
 <!-- ![](./Solid-Agent-UCP%20use%20case%20(flow).png) -->
+
+### Low-Level explanation
+
+This section explains the execution flow within the Demo UCP initialisation of the Solid Agent, which is based on the [Koreografeye](https://github.com/eyereasoner/Koreografeye) [architecture](https://github.com/eyereasoner/Koreografeye/blob/main/documentation/architecture.md).
+
+In this setting, the Solid Agent consists of two actors: 
+
+* **Solid Actor**: This actor is an Interface Actor (see [architecture S. Kirrane](https://papers.ssrn.com/sol3/papers.cfm?abstract_id=3945443)) which interacts with Solid Resources and the other Orchestration Actor.
+* **Orchestration Actor**: Executes the Koreografeye execution flow in a streaming way and interacts/orchestrates with other actors within the Solid Agent.
+
+1. The **Solid Actor** is configured to subscribe to a container, more specifically: the Policy Container.
+   * Each time a resource is added to that container, the actor is notified. Then, the actor fetches the `resource` and passes it to the **Orchestration Actor**.
+2. The first step of the **Orchestration Actor** is the reasoning step, executed by the **Reasoner**. 
+   * In the **Reasoner**, the EYE reasoner is executed with as premise the [CronRule](../../rules/usage-control/CronRule.n3) and the `resource` (a duration UCP).
+   * The conclusion, in this case, consists of two [Koreografeye policies](https://github.com/eyereasoner/Koreografeye/blob/main/documentation/architecture.md), which are defined in RDF
+     * A CronJob policy that contains the description that an ACL policy MUST be executed in 30 seconds from t<sub>now</sub>.
+     * An ACL policy that contains the description that the ACL auxiliary resource of the `resource` MUST be updated so that the **End User** has `acl:Read` permission.
+   * The whole conclusion is passed to the next step: the **Policy Extractor**.
+3. The **Policy Extractor** extracts the two Koreografeye policies from the conclusion. 
+    Then it passes them both asynchronously to the next step the **Policy Executor**.
+4. The **Policy Executor** receives a policy and executes it. Per policy, it fetches the plugin (based on the `fno:executes` predicate) and runs the plugin with as arguments the policy and an actor
+   * The [fnoChangeAcl](../../src/plugins/AclPlugin.ts) changes the ACL auxiliary resource of `resource` using the Solid Actor to `acl:Read` for the WebID of **End User**.
+   * The [fnoCronPlugin](../../src/plugins/CronPlugin.ts) fires a new policy, in this case removing `acl:Read` access for **End User** of `resource`, in t<sub>now</sub> + 30 seconds to the orchestrator.
+5. The **Orchestration Actor** is run again with as input the policy retrieved from the *fnoCronPlugin*.
+   * The **Reasoner** will not infer anything new, though as the conclusion also contains the input, there is an ACL policy (Prohibition) present. The conclusion is passed to the **Policy Extractor**.
+   * The **Policy Extractor** extracts the ACL policy and passes it to the **Policy Executor**.
+   * The **Policy Executor** fetches the fnoChangeAcl plugin which gets executed: now the **End User** does not have `acl:Read` access to `resource` anymore.
+
+This flow is also visualized in the following UML sequence diagram: 
+
+![stub](./Solid-agent-UCP%20use%20case%20(low%20level%20UML).png)
+
+#### Comparison with Koreografeye
+
+The general approach of the Solid Agent follows the *reason, extract, execute* approach of Koreografeye. 
+However, it extends Koreografeye by continuously running.
+Let me elaborate on this: in Koreografeye, first, you reason over data (RDF) and rules (N3) and as a result, you get a conclusion (RDF). Then you execute the policies by using this conclusion and plugins.
+With the Solid Agent, it is possible to listen to a given resource (or container like an `ldp:inbox` container or in this case the policy container) (not limited to Solid) and apply the whole Koreografeye flow on every change in that resource.
+
+Furthermore, the Solid Agent plugins currently have an extra argument (and optional third) compared to the plugins of Koreografeye.
+This extra argument is the **actor** which should be used in the plugin to execute an (authenticated) interface call.
+E.g. The Solid Actor can be used to send authenticated requests to a Solid Pod.
+In Koreografeye, this is handled by parsing a `.env` file.
+
+The plugins used in this demo can, however, be used stand-alone by wrapping them in a class and extending the `PolicyPlugin` abstract class.
 
 ## Limitations/Assumptions
 
@@ -148,7 +193,7 @@ They are listed below with some explanation:
 * The **Usage Control Policy Knowledge Graph (UCP KG)** is modelled as a solid container, which furthermore requires that the solid server supports the [Solid Notifications Protocol](https://solidproject.org/TR/notifications-protocol) v0.2.0.
   * This way, the agent can listen to any policy addition
   * Additionally, we can then assume that the KG of UCPs is valid. 
-    The agent does not check whether the complete set of UCPs are valid or not, it will only execute them. 
+    The agent does not check whether the complete set of UCPs is valid or not, it will only execute them. 
     Any conflicts in the UCP KG thus are the fault of the end user, not of the agent.
 * For each target resource (`ids:target`), the agent MUST have `acl:Control` permission.
 * The [Solid Protocol](https://solidproject.org/TR/protocol) defines two options for Authorization (§11): **Web Access Control (WAC)** and **Access Control Policy (ACP)**.
