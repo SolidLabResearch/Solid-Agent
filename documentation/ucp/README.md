@@ -119,18 +119,20 @@ Finally, when 30 seconds have passed, the **DemoUCPAgent** executes the final pa
 
 In this section, I will try to explain in a bit more detail what happens internally in the [DemoUCPAgent.ts](../../src/demo/DemoUCPAgent.ts).
 
-1. The policy has been added to the **UCP Knowledge Graph** (i.e. the policy container) by the **Resource Owner**
+1. The **End User** fetches the resource sends an authenticated HTTP GET request to the `resource` (1.1), but is not authorized to access the resource so a HTTP Response with status code 401 is returned (1.2).
+2. The policy has been added to the **UCP Knowledge Graph** (i.e. the policy container) by the **Resource Owner**
     * In the demo, this is done by executing step 3.
-2. A notification is sent to the **Solid Agent**, which then fetches the newly added policy (`policy1`)
-3. In the **Solid Agent**, an N3 reasoner (EyeJs) is run with as input the policy and the rules (which is in the `CronRule.n3` in this case)
-4. As a conclusion of this reasoning task, we get two Koreografeye Policies. An Acl Policy and a CronJob Policy (with as function to fire an Acl Policy). 
-    * The ACL Plugin changes the acl of `resource` so that the **End User** (`odrl:assignee`) now has `acl:Read` access to `resource`.
+3. A notification is sent to the **Solid Agent** (3.1), which then fetches the newly added policy (`policy1`) (3.2 & 3.3).
+4. In the **Solid Agent**, an N3 reasoner (EyeJs) is run with as input the policy and the rules (which is in the `CronRule.n3` in this case).
+5. As a conclusion of this reasoning task, we get two Koreografeye Policies. An Acl Policy and a CronJob Policy (with as function to fire an Acl Policy).
+    * The ACL Plugin changes the acl of `resource` so that the **End User** (`odrl:assignee`) now has `acl:Read` access to `resource` (5.2).
         * At this point, the **End User** has access to the `resource`
-    * The Cronjob Plugin starts a timer so that in 30 seconds a prohibition ACL plugin is executed
-5. After the 30 seconds have passed, the CronJob starts the prohibition execution
+    * The Cronjob Plugin starts a timer so that in 30 seconds a prohibition ACL plugin is executed (5.3)
+6. The **End User** fetches the resource sends an authenticated HTTP GET request to the `resource` (6.1), now the contents of the resource are returned (6.2).
+7. After the 30 seconds have passed, the CronJob starts the prohibition execution
     * The Acl Plugin changes the acl of `resource` so that the **End User** now has no access anymore to `resource`.
         * Now, the **End User** does not have access to the `resource` anymore
-
+8. The **End User** fetches the resource sends an authenticated HTTP GET request to the `resource` (8.1), but is not authorized to access the resource so a HTTP Response with status code 401 is returned (8.2).
 These steps are also visualised in the following UML sequence diagram:
 ![](./Solid-agent-UCP%20use%20case%20(high%20level%20UML).png)  
 
