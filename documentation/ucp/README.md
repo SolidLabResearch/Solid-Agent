@@ -169,21 +169,21 @@ In this setting, the Solid Agent consists of two actors:
 
 This flow is also visualized in the following UML sequence diagram: 
 
-TODO: Create visualisation
 ![stub](./Solid-agent-UCP%20use%20case%20(low%20level%20UML).png)
 
 #### Comparison with Koreografeye
 
-TODO: rewrite
 The general approach of the Solid Agent follows the *reason, extract, execute* approach of Koreografeye. 
-However, it extends/applies Koreografeye with continuous operation.
-Let me elaborate on this: You configure Koreografeye with plugins you want to use, and to fire/execute it. You pass data and rules and they have been executed.
+However, it extends Koreografeye by continuously running.
+Let me elaborate on this: in Koreografeye, first you reason over data (RDF) and rules (N3) and as a result, you get a conclusion (RDF). Then you execute the policies by using this conclusion and plugins.
 With the Solid Agent, it is possible to listen to a given resource (or container like an `ldp:inbox` container or in this case the policy container) (not limited to Solid) and apply the whole Koreografeye flow on every change in that resource.
 
-Furthermore, Plugins currently have an extra argument (and optional third) compared to the plugins of koreografeye: 
-TODO: Elaborate and explain how this can be aligned (with the componentsjs structure)
+Furthermore, in the Solid Agent plugins currently have an extra argument (and optional third) compared to the plugins of koreografeye.
+This extra argument is the **actor** which should be used in the plugin to execute an (authenticated) interface call.
+E.g. The Solid Actor can be used to send authenticated requests to a Solid Pod.
+In Koreografeye, this is handled by parsing a `.env` file.
 
-TODO: when this whole section is finished -> Discuss with Patrick if it makes sense what I am proposing (backwards compatibility)
+The plugins used in this demo can however be used stand alone by wrapping it in a class and extending the `PolicyPlugin` abstract class.
 
 ## Limitations/Assumptions
 
