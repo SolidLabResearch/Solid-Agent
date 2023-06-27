@@ -134,7 +134,7 @@ In this section, I will try to explain in a bit more detail what happens interna
     * The Acl Plugin changes the acl of `resource` so that the **End User** now has no access anymore to `resource`.
         * Now, the **End User** does not have access to the `resource` anymore
 
-These steps are also visualised in the following UML Sequence diagram:
+These steps are also visualised in the following UML sequence diagram:
 ![](./Solid-agent-UCP%20use%20case%20(high%20level%20UML).png)  
 
 
@@ -147,22 +147,29 @@ This section explains the execution flow within the Demo UCP initialisation of t
 In this setting, the Solid Agent consists of two actors: 
 
 * **Solid Actor**: This actor is an Interface Actor (see [architecture S. Kirrane](https://papers.ssrn.com/sol3/papers.cfm?abstract_id=3945443)) which interacts with Solid Resources and the other Orchestration Actor.
-* **Orchestration Actor**: Executes the Koreografeye execution flow in a streaming way and interacts with other actors within the Solid Agent.
+* **Orchestration Actor**: Executes the Koreografeye execution flow in a streaming way and interacts/orchestrates with other actors within the Solid Agent.
 
 1. The **Solid Actor** is configured to subscribe to a container, more specific: the Policy Container.
-   * Each time an resource is added to that container, the actor is notified. Then, the actor fetches the `resource` and passes it to the **Orchestration Actor**
-2. The first step of the **Orchestration Actor** is the **Reasoning step**. 
-   * The EYE reasoner is executed with as premise the [CronRule](../../rules/usage-control/CronRule.n3) and the `resource` (a duration UCP).
+   * Each time a resource is added to that container, the actor is notified. Then, the actor fetches the `resource` and passes it to the **Orchestration Actor**.
+2. The first step of the **Orchestration Actor** is the reasoning step, executed by the **Reasoner**. 
+   * In the **Reasoner**, the EYE reasoner is executed with as premise the [CronRule](../../rules/usage-control/CronRule.n3) and the `resource` (a duration UCP).
    * The conclusion in this case consists of two [Koreografeye policies](https://github.com/eyereasoner/Koreografeye/blob/main/documentation/architecture.md), which are defined in RDF
-     * A CronJob policy where ...
-     * An ACL policy where ...
-   * The whole conclusion is passed to next step: the **Policy Extractor**
-3. The **Policy Extractor** ...
-   * 
-4. The **Policy Executor** ...
-   * 
+     * A CronJob policy that contains the description that an ACL policy MUST be executed in 30 seconds from t<sub>now</sub>.
+     * An ACL policy that contains the description that the ACL auxiliary resource of the `resource` MUST be updated so that the **End User** has `acl:Read` permission.
+   * The whole conclusion is passed to next step: the **Policy Extractor**.
+3. The **Policy Extractor** extracts the two Koreografeye policies from the conclusion. 
+    Then it passes them both asynchronously to the next step the **Policy Executor**.
+4. The **Policy Executor** receives a policy and executes it. Per policy, it fetches the plugin (based on the `fno:executes` predicate) and runs the plugin with as arguments the policy and an actor
+   * The [fnoChangeAcl](../../src/plugins/AclPlugin.ts) changes the ACL auxiliary resource of `resource` using the Solid Actor to `acl:Read` for the WebID of **End User**.
+   * The [fnoCronPlugin](../../src/plugins/CronPlugin.ts) fires a new policy, in this case removing `acl:Read` access for **End User** of `resource`, in t<sub>now</sub> + 30 seconds to the orchestrator.
+5. The **Orchestration Actor** is run again with as input the policy retrieved from the *fnoCronPlugin*.
+   * The **Reasoner** will not infer anything new, though as the conclusion also contains the input, there is an ACL policy (Prohibition) present. The conclusion is passed to the **Policy Extractor**.
+   * The **Policy Extractor** extracts the ACL policy and passes it to the **Policy Executor**.
+   * The **Policy Executor** fetches the fnoChangeAcl plugin which gets executed: now the **End User** does not have `acl:Read` access to `resource` anymore.
 
-TODO: Create stub
+This flow is also visualized in the following UML sequence diagram: 
+
+TODO: Create visualisation
 ![stub](./Solid-agent-UCP%20use%20case%20(low%20level%20UML).png)
 
 #### Comparison with Koreografeye
