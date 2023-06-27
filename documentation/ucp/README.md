@@ -53,9 +53,6 @@ git clone https://github.com/SolidLabResearch/Solid-Agent.git
 # Go to the Solid-Agent directory
 cd Solid-Agent
 
-# going to branch "feat/cron-plugin
-git checkout feat/cron-plugin
-
 # Install the dependencies
 npm i
 ```
