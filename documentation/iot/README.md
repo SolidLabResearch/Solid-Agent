@@ -36,8 +36,15 @@ tsc
 cd ../../
 ```
 
-The following code uses a local hosted solid server (ACL public for all modes), environment variables for openHAB (the endpoint and an access token) with at least one Philips Hue Color Light item.
+Set up a local hosted Solid Server
 
+```shell
+npx community-solid-server -c memory-no-setup.json
+```
+This sets up a local Community Solid Server, listening on port 3000: [http://localhost:3000/](http://localhost:3000/).
+
+
+The following code uses a local hosted solid server (ACL public for all modes), environment variables for openHAB (the endpoint and an access token) with at least one Philips Hue Color Light item.
 ```javascript
 const {DemoSolidAgent, SubscriptionEnum} = require("solid-agent")
 
@@ -72,7 +79,21 @@ The Orchestrator Agent, receives this announcement and processes it as follows:
 
 This flow is executed with [Koreografeye](https://github.com/eyereasoner/Koreografeye).
 
-### Example flow: OpenHAB light its colored was changed using the openhab platform
+### Screencast: updating the color of the lights
+
+TODO: elaborate high level what happens when we update the state resource
+1. film demo
+2. Explain what is happening
+3. Explain high level
+4. Explain low level
+
+![](../../img/23-07-04_Philips-hue-solid(UML-high-level).png)
+
+### Example flow: OpenHAB light its color was changed using the openhab platform
+
+TODO: elaborate low level what happens when we update the state resource
+
+![](../../img/23-07-04_Philips-hue-solid(UML-low-level).png)
 
 The openHAB actor sends an AS announcement to the Orchestration agent because its color has changed to purple:
 
