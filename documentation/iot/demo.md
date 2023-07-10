@@ -27,7 +27,7 @@ npm i
 
 ## Running the demo
 
-To demonstrate this configuration of the Solid Agent, the following steps must be executed:
+To demonstrate this configuration of the Solid Agent, the following steps must be executed:l
 
 1.  Start a [Community Solid Server (CSS)](https://github.com/CommunitySolidServer/CommunitySolidServer) at port 3000
     ```shell
@@ -69,19 +69,22 @@ To demonstrate this configuration of the Solid Agent, the following steps must b
 
 The following screencast shows how it works when the lights are updated via either the solid state resource or the openhab lights.
 
-![TODO: film and maybe edit video]()
+[![Screencast](./Philips-hue%20demo.gif)](https://raw.githubusercontent.com/SolidLabResearch/Solid-Agent/docs/readme-philips-hue/documentation/iot/Philips-hue%20demo.mp4)
 
-In this screencast, you see ... windows:
+In this screencast, you see four windows:
+* On the top left, there is a terminal used to run the `DemoSolidAgent.ts`.
+* On the bottom left, the two IoT devices, more specifically two [Philips Hue Smart light bulbs](https://www.philips-hue.com/en-us/products/smart-light-bulbs), are shown.
+* On the top right, there is a terminal used to run the Solid Server and to send the HTTP requests to change the status of either the solid resource or the openHAB items directly.
+* On the bottom right, there is a web browser which has two tabs open: the openHAB GUI and [Penny](https://penny.vincenttunru.com/).
 
-* https://www.dev47apps.com/obs/usage.html
-
-At any time the state can be checked both at the state resource or at the openhab API
-* webcam laptop: two lamps - desk lamp left and desk lamp right
-* terminal: where I send the curl requests
-* browser: solid resource
-* browser: openhab?
-
-
+At the start, we set up the Community Solid Server at port 3000.
+When the server is running, the Solid Agent is started. It listens PULL-based to the openHAB items (polling every 5 seconds) and PUSH-based to the state resource on the CSS (`http://localhost:3000/state`) by listening via a WebSocket (using the [Solid Notification Protocol](https://solidproject.org/TR/notifications-protocol)).
+Now, the environment is ready, so we send an update (PUT) HTTP request to the state resource with as body [RDF to turn the lights on (left red and right purple)](../../data/lights_on.ttl). 
+The Solid Agent receives a notification that the state resource has changed, so it sends two requests to indeed turn the lights on with the given configuration.
+Next, a similar request is sent to the state resource. This time, however, it is an update request to turn the lights off. Which, thanks to the Solid Agent, leads to the lights being shut off again.
+To show that the Solid Agent is also configured properly in the other direction, a request to the left light is send to the openHAB API to turn it on.
+And we can see that it is updated (Penny window) and the left light indeed turns on.
+Finally, the lights are turned Off by updating the state resource again.
 
 Office checklist:
 
