@@ -1,0 +1,12 @@
+@prefix saref: <https://saref.etsi.org/core/>.
+@prefix dbpedia: <http://dbpedia.org/resource/>.
+
+<urn:openhab:Bureau_links_Color> a saref:OnState ;
+  dbpedia:Brightness 10 ;
+  dbpedia:Colorfulness 50 ;
+  dbpedia:Hue 0 .
+
+<urn:openhab:Bureau_rechts_Color> a saref:OnState ;
+  dbpedia:Brightness 10 ;
+  dbpedia:Colorfulness 60 ;
+  dbpedia:Hue 272 .
