@@ -3,7 +3,7 @@ import {Session} from "@rubensworks/solid-client-authn-isomorphic";
 import {WebSocket} from 'ws'
 import {Readable} from "stream";
 import {WebSocketChannel2023} from "solid-notification-client";
-import {turtleStringToStore} from "../Util";
+import {sleep, turtleStringToStore} from "../Util";
 import {createAnnouncement} from "./GeneralSubscriptionClient";
 
 /**
@@ -46,6 +46,16 @@ export class SolidNotificationClient implements MessageClient {
             read() {
             }
         })
+
+        while (socket.readyState === WebSocket.CONNECTING){
+            await sleep(100)
+        }
+        if (socket.readyState !== WebSocket.OPEN){
+            throw Error('Connection of websocket is not open. Something went wrong')
+        }
+        console.log(`${new Date().toISOString()} [${this.constructor.name}] Websocket connection set up at: '${socket.url}'.`)
+        console.log(`${new Date().toISOString()} [${this.constructor.name}] Now listening to '${identifier}'.`)
+
         socket.onmessage = async (message) => {
             const notificationStore = await turtleStringToStore(message.data.toString())
             const notificationData = notificationStore.getQuads(null, null, null, null)
@@ -60,6 +70,10 @@ export class SolidNotificationClient implements MessageClient {
                 resourceURL: identifier
             }
             stream.push(event)
+        }
+
+        socket.onerror = () => {
+            console.log(`${new Date().toISOString()} [${this.constructor.name}] Websocket closed without warning'.`)
         }
         this.streams[identifier] = stream
         this.sockets[identifier] = socket
