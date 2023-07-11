@@ -57,25 +57,38 @@ Multiple combinations and configurations allows for a multitude of use cases to 
 
 Currently, three use cases have been worked out and configured:
 
-* [Synchronising the state Smart Home with a personal data store](#synchronising-the-state-smart-home-with-a-personal-data-store)
-* [Temporal Usage Control Policy execution for Solid Resources](#temporal-usage-control-policy-execution-for-solid-resources)
-* [The Solid RDF Resource Synchronisation Use Case](#the-solid-rdf-resource-synchronisation-use-case)
+- [Solid Agent](#solid-agent)
+  - [Use cases](#use-cases)
+    - [Synchronising the state Smart Home with a personal data store](#synchronising-the-state-smart-home-with-a-personal-data-store)
+    - [Temporal Usage Control Policy execution for Solid Resources](#temporal-usage-control-policy-execution-for-solid-resources)
+  - [Feedback and questions](#feedback-and-questions)
 
 ### Synchronising the state Smart Home with a personal data store
 
-TODO: elaborate
+The Solid Protocol, an example of a personal data store, defines how to interact with a Solid pod.
+To integrate a Smart Home system with Solid, there are a couple options: 
+1. Use a reference implementation (e.g. the [CSS](https://github.com/CommunitySolidServer/CommunitySolidServer) or the [NNS](https://github.com/nodeSolidServer/node-solid-server)) and transform the code so the server speaks to the Smart Home Devices directly
+   * While technically possible, this results in a vendor lock-in. When people want to use a Smart Home solution with Solid, they have to use this specific Solid Server implementation. And this is against the idea of the Solid Protocol: It doesn't matter what server you use. As long as this server follows the protocol, interoperability is guaranteed.
+2. An application can be build that implements smart home integration and the Solid Protocol
+   * The problem here lies in the **availability**. As soon as you are not running the application, the integration will stop.
 
-[More information](./documentation/iot)
+A third option is to use an **Intelligent Software Web Agent**, which is what we have done here. <br>
+We have created an openHAB actor so that the **Solid Agent** can be configured to synchronize the state with the [openHAB](https://www.openhab.org/) platform and a state resource stored on a Solid pod.<br>
+More information on how to run the agent yourself and how it's built can be found [here](./documentation/iot).
 
 ### Temporal Usage Control Policy execution for Solid Resources
 
-TODO: elaborate
 
-[More information](./documentation/ucp)
+Sharing data with other people, apps, and other agents is common in the Solid ecosystem. 
+But you might not always want to share the data forever. 
+You might want to share specific data for a limited amount of time. 
 
-### The Solid RDF Resource Synchronisation Use Case
+For this reason, the **Solid Agent** is configured to allow end users to give temporary access to a Solid resource.<br>
+More information on how to run the agent yourself and how it's built can be found [here](./documentation/ucp).
 
-TODO: elaborate 
+<!-- ### The Solid RDF Resource Synchronisation Use Case
+
+TODO: elaborate  -->
 
 ## Feedback and questions
 
