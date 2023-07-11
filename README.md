@@ -57,11 +57,9 @@ Multiple combinations and configurations allows for a multitude of use cases to 
 
 Currently, three use cases have been worked out and configured:
 
-- [Solid Agent](#solid-agent)
-  - [Use cases](#use-cases)
-    - [Synchronising the state Smart Home with a personal data store](#synchronising-the-state-smart-home-with-a-personal-data-store)
-    - [Temporal Usage Control Policy execution for Solid Resources](#temporal-usage-control-policy-execution-for-solid-resources)
-  - [Feedback and questions](#feedback-and-questions)
+* [Synchronising the state Smart Home with a personal data store](#synchronising-the-state-smart-home-with-a-personal-data-store)
+* [Temporal Usage Control Policy execution for Solid Resources](#temporal-usage-control-policy-execution-for-solid-resources)
+* [The Solid RDF Resource Synchronisation Use Case](#the-solid-rdf-resource-synchronisation-use-case)
 
 ### Synchronising the state Smart Home with a personal data store
 
@@ -86,9 +84,10 @@ You might want to share specific data for a limited amount of time.
 For this reason, the **Solid Agent** is configured to allow end users to give temporary access to a Solid resource.<br>
 More information on how to run the agent yourself and how it's built can be found [here](./documentation/ucp).
 
-<!-- ### The Solid RDF Resource Synchronisation Use Case
+### The Solid RDF Resource Synchronisation Use Case
 
-TODO: elaborate  -->
+The Solid Agent configured to copy the contents of an RDF resource to another RDF resource. <br>
+See [DemoSyncAgent](./src/demo/DemoSyncAgent.ts) for more information.
 
 ## Feedback and questions
 
