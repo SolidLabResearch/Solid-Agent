@@ -72,7 +72,7 @@ To integrate a Smart Home system with Solid, there are a couple options:
 
 A third option is to use an **Intelligent Software Web Agent**, which is what we have done here. <br>
 We have created an openHAB actor so that the **Solid Agent** can be configured to synchronize the state with the [openHAB](https://www.openhab.org/) platform and a state resource stored on a Solid pod.<br>
-More information on how to run the agent yourself and how it's built can be found [here](./documentation/iot).
+More information on how to run the agent yourself and how it's built can be found [here](./documentation/iot/README.md).
 
 ### Temporal Usage Control Policy execution for Solid Resources
 
@@ -82,7 +82,7 @@ But you might not always want to share the data forever.
 You might want to share specific data for a limited amount of time. 
 
 For this reason, the **Solid Agent** is configured to allow end users to give temporary access to a Solid resource.<br>
-More information on how to run the agent yourself and how it's built can be found [here](./documentation/ucp).
+More information on how to run the agent yourself and how it's built can be found [here](./documentation/ucp/README.md).
 
 ### The Solid RDF Resource Synchronisation Use Case
 
