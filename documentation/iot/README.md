@@ -2,6 +2,9 @@
 
 ## Use case: Synchronising the state of a smart home with a personal data store
 
+The Solid Protocol, an example of a personal data store, defines how to interact with a Solid pod. <br>
+To integrate a Smart Home system with Solid, we have created an openHAB actor so that the **Solid Agent** can be configured to synchronize the state with the [openHAB](https://www.openhab.org/) platform and a state resource stored on a Solid pod.
+
 ## Demo
 
 ### Prerequisites
