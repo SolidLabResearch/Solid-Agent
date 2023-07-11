@@ -1,194 +1,93 @@
 # Solid Agent
 
-The solid agent is rule-based intelligent software agent.
+The Solid Agentis rule-based intelligent software agent.
 It consists of a network of different actors working together.
 Each actor is (part of) a component of the **hybrid web agent architecture** proposed in [Intelligent software web agents: A gap analysis](https://www.sciencedirect.com/science/article/pii/S1570826821000342) by Sabrina Kirrane.
-The following actors are already implemented this library:
+The five components proposed in that architecture are the following:
+* **Interface component**: This component communicates with the environment. It can both _sense_ and _actuate_. The basis communication protocol is HTTP as it is a web agent.
+* **Reactive component**: This component consists of Condition-Action-Rules. As input it uses a Condition and it retuns an Action based on the set of rules.
+* **Deliberative component**: Takes in a goal and as output an action. This is not implemented yet as the Solid Agent does not support goal encoding.
+* **Learning component**: A component that can learn from past experiences to become more effective over time. The Solid Agent does not contain any learning elements yet.
+* **Controller component**: Responsible for interpreting the perceptions from the sensors and passing them to another component (e.g. reactive or deliberative) that can handle such an event.
+  As a result, it retrieves an action/execution plan. Which it then executes through an execution engine, which might be passed back to the environment via the _actuate_ in the Interface component.
 
+The Solid Agent consists of multiple independent actors that each implement one or more of these components to form a Minimum Viable Product of a configurable **hybrid web agent**.
+Currently, the following actors are implemented:
+
+<!--
 * The **Orchestration Actor**:
-  * _Controller component_
-  * _Reactive component_
+  * _Controller component_: Each time an event comes in, through one of the sensing actors, the event is passed to the reactive component.
+    When there is a conclusion, it will be executed by the **Policy Executer**
+  * _Reactive component_: condition-action rules are defined in the set of **n3 Rules**. 
+    Each time an event comes in, the **reasoning engine** is run using both the given event, the set of rules.
+    An action would be the conclusion, which in Koreografeye would be a policy to be executed.
   * _Interface component_
 * The **openHAB Actor**:
   * _Interface component_
 * The **Solid Actor**:
   * _Interface component_
+!-->
+
+* The **Orchestration Actor**:
+  * _Controller component_: A component that passes events to the _reactive component_.
+    When a conclusion (action to be taken) is retrieved from the _reactive component_, 
+    it processes the action and executes it, possibly by passing instructions to other actors so it can be enacted in the environment of the agent.
+  * _Reactive component_: A component that handles events by reasoning over them with **condition-action** rules.
+  * _Interface component_: A component that deals with interactions with the environment.
+   It is used to configure the **Orchestration Actor** and communicate with other actors within the network.
+* The **openHAB Actor**:
+  * _Interface component_: A component that deals with interactions with the environment.
+    It is used to communicate with other actors within the network and to interact with the openHAB platform through its API.
+* The **Solid Actor**:
+  * _Interface component_: A component that deals with interactions with the environment.
+    It is used to communicate with other actors within the network and to interact with the Solid pods through the Solid Protocol.
 
 
 A complete overview of the current Solid Agent Architecture can be seen in following figure.
 
-![Agent Architecture](./img/Agent-Architecture.png)
+![Agent Architecture](./img/23-07-04_Philips-hue-solid(Architecture).png)
 
-## Use case: Synchronising the state of a smart home with a personal data store 
+It is clear that the agent consists of different components that each can stand on their own.
+This is done to improve modularity and for future research into **Multi-Agent Systems** (MAS). 
+At the moment each actor can be seen as a standalone agent itself with a simple goal. 
+Multiple combinations and configurations allows for a multitude of use cases to be prototyped.
 
-![setup](./img/setup_v2.png)
-### Initialising the agent
 
-Set up the Solid Actor:
+## Use cases
 
-* initialise a WebID
-* configure several resources to watch
-  * the mechanism for watching: on change/periodically
-  * the actor to which AS announcements are send to (e.g. the Orchestration actor)
+Currently, three use cases have been worked out and configured:
 
-Set up the OpenHAB Actor:
+* [Synchronising the state Smart Home with a personal data store](#synchronising-the-state-smart-home-with-a-personal-data-store)
+* [Temporal Usage Control Policy execution for Solid Resources](#temporal-usage-control-policy-execution-for-solid-resources)
+* [The Solid RDF Resource Synchronisation Use Case](#the-solid-rdf-resource-synchronisation-use-case)
 
-* initialise a WebID
-* configure the openHAB endpoint
-* provide an [access token](https://www.openhab.org/docs/configuration/apitokens.html)
-* configure the items to watch
-    * the mechanism for watching: on change/periodically
-    * the actor to which AS announcements are send to (e.g. the Orchestration actor)
+### Synchronising the state Smart Home with a personal data store
 
-Set up the Orchestration Actor:
+The Solid Protocol, an example of a personal data store, defines how to interact with a Solid pod.
+To integrate a Smart Home system with Solid, there are a couple options: 
+1. Use a reference implementation (e.g. the [CSS](https://github.com/CommunitySolidServer/CommunitySolidServer) or the [NNS](https://github.com/nodeSolidServer/node-solid-server)) and transform the code so the server speaks to the Smart Home Devices directly
+   * While technically possible, this results in a vendor lock-in. When people want to use a Smart Home solution with Solid, they have to use this specific Solid Server implementation. And this is against the idea of the Solid Protocol: It doesn't matter what server you use. As long as this server follows the protocol, interoperability is guaranteed.
+2. An application can be build that implements smart home integration and the Solid Protocol
+   * The problem here lies in the **availability**. As soon as you are not running the application, the integration will stop.
 
-* initialise a WebID
-* Add n3 rules (examples, see [rules](./rules))
+A third option is to use an **Intelligent Software Web Agent**, which is what we have done here. <br>
+We have created an openHAB actor so that the **Solid Agent** can be configured to synchronize the state with the [openHAB](https://www.openhab.org/) platform and a state resource stored on a Solid pod.<br>
+More information on how to run the agent yourself and how it's built can be found [here](./documentation/iot).
 
-#### Code
+### Temporal Usage Control Policy execution for Solid Resources
 
-First install the library.
-```sh
-npm i https://github.com/woutslabbinck/Solid-Agent --save-dev
 
-# build the package
-cd node_modules/solid-agent/
-tsc
-cd ../../
-```
+Sharing data with other people, apps, and other agents is common in the Solid ecosystem. 
+But you might not always want to share the data forever. 
+You might want to share specific data for a limited amount of time. 
 
-The following code uses a local hosted solid server (ACL public for all modes), environment variables for openHAB (the endpoint and an access token) with at least one Philips Hue Color Light item.
+For this reason, the **Solid Agent** is configured to allow end users to give temporary access to a Solid resource.<br>
+More information on how to run the agent yourself and how it's built can be found [here](./documentation/ucp).
 
-```javascript
-const {DemoSolidAgent, SubscriptionEnum} = require("solid-agent")
+### The Solid RDF Resource Synchronisation Use Case
 
-// openHAB information
-const openHABURL = process.env.OPENHAB_URL + '/'
-const openHABToken = process.env.OPENHAB_API_TOKEN
-
-const demo = new DemoSolidAgent({
-  openhab: {
-    openHABResources: ['Bureau_rechts_Color', 'Bureau_links_Color'], // hue light Color items
-    openHABToken: openHABToken,
-    openHABURL: openHABURL
-  },
-  solid: {
-    solidResources: ['http://localhost:3000/state'], // solid state resource
-    subscriptionType: {type: SubscriptionEnum.PUSH}
-  }
-})
-demo.start()
-```
-
-### Internal operations: How does the agent work now?
-
-When the agent is setup for this task,
-the Solid/OpenHAB Actor send [Activity Streams 2.0](https://www.w3.org/TR/activitystreams-core/) (AS2) announcements to the Orchestration Actor.
-
-The Orchestrator Agent, receives this announcement and processes it as follows:
-1. It reasons over the announcement using the configured n3 rules
-2. The reasoning result is passed to the policy executor which
-   1. extracts all the policies
-   2. executes the policies based on the plugins and function definitions
-
-This flow is executed with [Koreografeye](https://github.com/eyereasoner/Koreografeye).
-
-#### Example flow: OpenHAB light its colored was changed using the openhab platform
-
-The openHAB actor sends an AS announcement to the Orchestration agent because its color has changed to purple:
-
-```turtle
-<#uuid> a as:Announce;
-    as:actor <openHAB>;
-    as:object <Bureau_rechts_Color> .
-
-<Bureau_rechts_Color> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://saref.etsi.org/core/OffState> .
-<Bureau_rechts_Color> <http://dbpedia.org/resource/Hue> 272 .
-<Bureau_rechts_Color> <http://dbpedia.org/resource/Colorfulness> 60 .
-<Bureau_rechts_Color> <http://dbpedia.org/resource/Brightness> 21 .
-```
-
-The Orchestration actor has the following rules in its engine:
-* [openHABChangedRule.n3](./rules/openHABChangedRule.n3)
-* [orchestratorToOpenHAB.n3](./rules/orchestratorToOpenHAB.n3)
-* [orchestratorToSolid.n3](./rules/orchestratorToSolid.n3)
-* [solidChangedRule.n3](./rules/solidChangedRule.n3)
-
-In the reasoning step, only the following rule openHABChangedRule.n3 its premises match the announcement fact.
-So the conclusion, i.e. the result of the reasoning over all rules, is the following:
-
-```turtle
-<75e14f61-2f3f-414f-80c8-a6371c00a431> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://www.w3.org/ns/activitystreams#Announce> .
-<75e14f61-2f3f-414f-80c8-a6371c00a431> <https://www.w3.org/ns/activitystreams#actor> <openHAB> .
-<75e14f61-2f3f-414f-80c8-a6371c00a431> <https://www.w3.org/ns/activitystreams#object> <Bureau_rechts_Color> .
-<Bureau_rechts_Color> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://saref.etsi.org/core/OnState> .
-<Bureau_rechts_Color> <http://dbpedia.org/resource/Hue> 272 .
-<Bureau_rechts_Color> <http://dbpedia.org/resource/Colorfulness> 60 .
-<Bureau_rechts_Color> <http://dbpedia.org/resource/Brightness> 21 .
-_:b2_sk_0 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://w3id.org/function/ontology#Execution> .
-_:b2_sk_0 <https://w3id.org/function/ontology#executes> <http://example.org/hasStateChanged> .
-_:b2_sk_0 <http://example.org/param1> <solid> .
-_:b2_sk_0 <http://example.org/param2> <http://localhost:3000/state> .
-_:b2_sk_0 <http://example.org/body> <75e14f61-2f3f-414f-80c8-a6371c00a431> .
-<http://example.org/MyDemoPolicy> <https://www.example.org/ns/policy#policy> _:b2_sk_0 .
-```
-
-As mentioned executing the policies is two-fold.
-First, the policy is extracted from the above output.
-
-This is the policy with following function `ex:hasStateChanged`. 
-The function *fnoHasStateChanged* is then called internally, which does the following:
-> Checks whether the data from the event is isomorphic with internal state.
-> When it is not isomorphic, the data has changed, so a notification is added to stream with an announcement to update an actor.
-The updating of the actor is based on the policy.
-
-This function is then executed
-This means the following announcement is sent from the orchestrator actor to itself:
-```turtle
-@prefix as: <https://www.w3.org/ns/activitystreams#>.
-<21586d1f-75e8-421a-a42b-4ec306db1d38> a as:Announce;
-    as:actor <orchestrator> ;
-    as:target <solid>;
-    as:to <http://localhost:3000/state>.
-<Bureau_rechts_Color> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://saref.etsi.org/core/OnState> .
-<Bureau_rechts_Color> <http://dbpedia.org/resource/Hue> 272 .
-<Bureau_rechts_Color> <http://dbpedia.org/resource/Colorfulness> 60 .
-<Bureau_rechts_Color> <http://dbpedia.org/resource/Brightness> 12 .
-```
-
-This triggers another round of the Koreografeye:
-
-The only rule now that its premises matches the above fact is the [orchestratorToSolid.n3](./rules/orchestratorToSolid.n3).
-Its conclusion is the following:
-
-```turtle
-<21586d1f-75e8-421a-a42b-4ec306db1d38> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://www.w3.org/ns/activitystreams#Announce> .
-<21586d1f-75e8-421a-a42b-4ec306db1d38> <https://www.w3.org/ns/activitystreams#actor> <orchestrator> .
-<21586d1f-75e8-421a-a42b-4ec306db1d38> <https://www.w3.org/ns/activitystreams#target> <solid> .
-<21586d1f-75e8-421a-a42b-4ec306db1d38> <https://www.w3.org/ns/activitystreams#to> <http://localhost:3000/state> .
-<Bureau_rechts_Color> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://saref.etsi.org/core/OffState> .
-<Bureau_rechts_Color> <http://dbpedia.org/resource/Hue> 272 .
-<Bureau_rechts_Color> <http://dbpedia.org/resource/Colorfulness> 60 .
-<Bureau_rechts_Color> <http://dbpedia.org/resource/Brightness> 12 .
-_:b3_sk_0 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://w3id.org/function/ontology#Execution> .
-_:b3_sk_0 <https://www.w3.org/ns/activitystreams#target> <solid> .
-_:b3_sk_0 <https://www.w3.org/ns/activitystreams#to> <http://localhost:3000/state> .
-_:b3_sk_0 <https://w3id.org/function/ontology#executes> <http://example.org/updateSolidState> .
-_:b3_sk_0 <http://example.org/body> <21586d1f-75e8-421a-a42b-4ec306db1d38> .
-<http://example.org/MyDemoPolicy> <https://www.example.org/ns/policy#policy> _:b3_sk_0 .
-
-```
-And now, the policy with function `ex:updateSolidState` is extracted, resulting in *fnoUpdateSolidState* to be executed.
-
-This function does the following:
-
-> Updates the state of the orchestration agent with the data of the event
-> Sends an action to the solid actor to the items based on the state.
-
-So an event is sent to the inbox of a Solid Actor with webid <solid> with as target to update the resource with this state.
-
-So this whole flow results into the ldp:resource with url `http://localhost:3000/state` 
-to be synchronised with the state of the philips hue light controlled by the openhab platform.
+The Solid Agent configured to copy the contents of an RDF resource to another RDF resource. <br>
+See [DemoSyncAgent](./src/demo/DemoSyncAgent.ts) for more information.
 
 ## Feedback and questions
 

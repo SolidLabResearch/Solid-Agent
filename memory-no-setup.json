@@ -39,6 +39,17 @@
         "A Solid server that stores its resources on memory and uses WAC for authorization.",
         "No setup is required and the root container is initialized to allow full access for everyone so make sure to change this."
       ]
+    },
+    {
+      "comment": "Converts many RDF serialization to Quad objects.",
+      "@id": "urn:solid-server:default:RdfToQuadConverter",
+      "@type": "RdfToQuadConverter",
+      "contexts": [
+        {
+          "RdfToQuadConverter:_contexts_key": "https://www.w3.org/ns/activitystreams",
+          "RdfToQuadConverter:_contexts_value": "./data/as-context.jsonld"
+        }
+      ]
     }
   ]
 }
