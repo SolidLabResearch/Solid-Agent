@@ -1,8 +1,8 @@
 # Solid Agent
 
-The Solid Agentis rule-based intelligent software agent.
+The Solid Agent is a rule-based intelligent software agent.
 It consists of a network of different actors working together.
-Each actor is (part of) a component of the **hybrid web agent architecture** proposed in [Intelligent software web agents: A gap analysis](https://www.sciencedirect.com/science/article/pii/S1570826821000342) by Sabrina Kirrane.
+Each actor is (part/combination of) a component of the **hybrid web agent architecture** proposed in [Intelligent software web agents: A gap analysis](https://www.sciencedirect.com/science/article/pii/S1570826821000342) by Sabrina Kirrane.
 The five components proposed in that architecture are the following:
 * **Interface component**: This component communicates with the environment. It can both _sense_ and _actuate_. The basis communication protocol is HTTP as it is a web agent.
 * **Reactive component**: This component consists of Condition-Action-Rules. As input it uses a Condition and it retuns an Action based on the set of rules.
