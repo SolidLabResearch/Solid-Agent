@@ -73,7 +73,7 @@ To demonstrate this configuration of the Solid Agent, the following steps must b
 
 The following screencast shows how it works when the lights are updated via either the solid state resource or the openhab lights.
 
-[![Screencast](./Philips-hue%20demo.gif)](https://raw.githubusercontent.com/SolidLabResearch/Solid-Agent/docs/readme-philips-hue/documentation/iot/Philips-hue%20demo.mp4)
+[![Screencast](./Philips-hue%20demo.gif)](https://raw.githubusercontent.com/SolidLabResearch/Solid-Agent/main/documentation/iot/Philips-hue%20demo.mp4)
 
 In this screencast, you see four windows:
 * On the top left, there is a terminal used to run the `DemoSolidAgent.ts`.
