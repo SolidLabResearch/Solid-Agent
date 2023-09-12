@@ -48,7 +48,7 @@ Currently, the following actors are implemented:
 
 A complete overview of the current Solid Agent Architecture can be seen in the following figure.
 
-![Agent Architecture](./img/23-07-04_Philips-hue-solid(Architecture).png)
+![Agent Architecture](./img/23-09-12_Philips-hue-solid(Architecture).png)
 
 The agent consists of different components that each can stand on their own.
 This is done to improve modularity and for future research into **Multi-Agent Systems** (MAS). 
