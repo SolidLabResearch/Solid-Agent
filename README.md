@@ -1,5 +1,8 @@
 # Solid Agent
 
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.8338025.svg)](https://doi.org/10.5281/zenodo.8338025)
+
+
 The Solid Agent is a rule-based intelligent software agent.
 It consists of a network of different actors working together.
 Each actor is (part/combination of) a component of the **hybrid web agent architecture** proposed in [Intelligent software web agents: A gap analysis](https://www.sciencedirect.com/science/article/pii/S1570826821000342) by Sabrina Kirrane.
