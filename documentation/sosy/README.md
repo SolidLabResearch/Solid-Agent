@@ -1,4 +1,11 @@
-# Usage Control Policy (UCP) demo
+# Enforcing Usage Control Policies in Solid Using a Rule-Based Software Agent
+
+This document complements the paper "Enforcing Usage Control Policies in Solid Using a Rule-Based Software Agent"
+
+It contains the following:
+- the ODRL duration policy
+- how to run it yourself
+- a screencast with detailed instruction (both high and low level)
 
 ## Use case: Temporal Usage Control Policy execution for Solid Resources
 
