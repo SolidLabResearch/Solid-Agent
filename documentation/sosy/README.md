@@ -2,34 +2,12 @@
 
 ## Use case: Temporal Usage Control Policy execution for Solid Resources
 
-The [International Data Space Association (IDSA)](https://internationaldataspaces.org/) defines several [IDS Usage Control Policies](https://international-data-spaces-association.github.io/DataspaceConnector/Documentation/v6/UsageControl).
 **The Duration-restricted Data Usage policy** is a temporal UCP which allows data usage for a specified period.
 
 Below is an example of such a policy.
 
 ```ttl
 @prefix dct: <http://purl.org/dc/terms/> .
-@prefix odrl: <http://www.w3.org/ns/odrl/2/> .
-@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
-
-<https://example.com/offer> a odrl:Offer ;
-   dct:description "Restrict the data usage to 30 seconds" ;
-   odrl:uid <https://example.com/offer> ;
-   odrl:permission [
-       odrl:assigner <https://example.com/solid-agent> ;
-       odrl:action odrl:use ;
-       odrl:target <http://localhost:3000/ldes> ;
-       odrl:constraint [
-           odrl:leftOperand odrl:elapsedTime ;
-           odrl:operator odrl:eq ;
-           odrl:rightOperand "PT30S"^^xsd:duration 
-       ] 
-   ] .
-  
-@prefix : <http://example.org/socrates#>.
-@prefix acl: <http://www.w3.org/ns/auth/acl#>.
-@prefix ids: <https://w3id.org/idsa/core/> .
-@prefix idsc: <https://w3id.org/idsa/code/> .
 @prefix odrl: <http://www.w3.org/ns/odrl/2/> .
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
 
@@ -48,7 +26,7 @@ Below is an example of such a policy.
 
 This policy states that an assignee (`https://woslabbi.pod.knows.idlab.ugent.be/profile/card#me`) has at time t<sub>1</sub> (t<sub>1</sub>=time at which this policy is active) till t<sub>1</sub> + a period (30 seconds) access to target resource (`http://localhost:3000/ldes`).
 
-At the time of writing, however, no implementations exist that allow you to use an IDSA UCP to define access control over [Solid](https://solidproject.org/TR/protocol) resources.
+At the time of writing, however, no implementations exist that allow you to use an ODRL policy to define access control over [Solid](https://solidproject.org/TR/protocol) resources.
 
 To enforce Usage Control Policies, two plugins ([AclPlugin](../../src/plugins/AclPlugin.ts) and [CronPlugin](../../src/plugins/CronPlugin.ts)) were implemented and an example rule ([CronRule](../../rules/usage-control/CronRule.n3)) was crafted for the [Solid Agent](../../README.md).
 [DemoUCPAgent.ts](../../src/demo/DemoUCPAgent.ts) contains a class **DemoUCPAgent** which configures the Solid Agent with these plugins and this rule.
@@ -112,7 +90,7 @@ To demonstrate this configuration of the Solid Agent, the following steps must b
 
 The following screencast shows how it works when we send a policy.
 
-[![Screencast](./demo-Duration-UCP.gif)](https://raw.githubusercontent.com/woutslabbinck/Solid-Agent/58da48d3bf0cadf113a26911f5304456288e4441/documentation/ucp/demo-Duration-UCP.mp4)
+[![Screencast](../ucp/demo-Duration-UCP.gif)](https://raw.githubusercontent.com/woutslabbinck/Solid-Agent/58da48d3bf0cadf113a26911f5304456288e4441/documentation/ucp/demo-Duration-UCP.mp4)
 
 In this screencast, you see three windows:
 
@@ -209,11 +187,11 @@ They are listed below with some explanation:
   * Additionally, we can then assume that the KG of UCPs is valid. 
     The agent does not check whether the complete set of UCPs is valid or not, it will only execute them. 
     Any conflicts in the UCP KG thus are the fault of the end user, not of the agent.
-* For each target resource (`ids:target`), the agent MUST have `acl:Control` permission.
+* For each target resource (`odrl:target`), the agent MUST have `acl:Control` permission.
 * The [Solid Protocol](https://solidproject.org/TR/protocol) defines two options for Authorization (§11): **Web Access Control (WAC)** and **Access Control Policy (ACP)**.
   * The agent assumes that the Solid server hosting the target resources support WAC (and therefore Access Control List (ACL) resources).
 * The N3 rules contain built-ins that do work with the [EYE reasoner](https://github.com/eyereasoner/eye), though no guarantees can be made with other N3 reasoners.
-* As of 20/06/2023, only the *Duration-restricted Data Usage* from [IDS Usage Control Policies](https://international-data-spaces-association.github.io/DataspaceConnector/Documentation/v6/UsageControl#ids-usage-control-policies) has been implemented and tested as N3 Rule.
+* As of 20/06/2023, only a *Duration-restricted Data Usage* ODRL policy has been implemented and tested as N3 Rule.
   * Due to how [Koreografeye](https://github.com/eyereasoner/Koreografeye) extracts policies from the Reasoning Result, the cardinality of target resources and assignees can only be 1.
     A [feature request](https://github.com/eyereasoner/Koreografeye/issues/10) has been made to solve this problem at its root.
   * The triple `<permissionIdentifier> <odrl:assignee> <WebID> .` was added to the UCP to make sure we have a WebID to which we can give access (though this was not described in the [Pattern examples](https://international-data-spaces-association.github.io/DataspaceConnector/Documentation/v6/UsageControl#duration-usage-2)).
