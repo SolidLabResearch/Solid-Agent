@@ -1,0 +1,29 @@
+cff-version: 1.2.0
+message: "If you use this software, please cite it as below."
+authors:
+- family-names: "Slabbinck"
+  given-names: "Wout"
+title: "Solid Agent"
+version: 0.0.0
+doi: 10.5281/zenodo.8338025
+date-released: 2023-09-12
+url: "https://github.com/SolidLabResearch/Solid-Agent"
+preferred-citation:
+  type: conference-paper
+    authors:
+    - family-names: "Slabbinck"
+      given-names: "Wout"
+    - family-names: "Dedecker"
+      given-names: "Ruben"
+    - family-names: "Rojas Mel\'endez"
+      given-names: "Juli\'an Andr\'es"
+    - family-names: "Verborgh"
+      given-names: "Ruben"
+    collection-title: "Proceedings of the 22nd International Semantic Web Conference: Posters, Demos, and Industry Tracks"
+    collection-type: proceedings
+    publisher:
+      name: "CEUR Workshop Proceedings"
+    month: 11
+    title: "A Rule-Based Software Agent on Top of Personal Data Stores"
+    year: 2023
+    url: https://ceur-ws.org/Vol-3632/ISWC2023_paper_406.pdf

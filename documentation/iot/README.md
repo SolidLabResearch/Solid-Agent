@@ -109,38 +109,22 @@ This flow is executed with [Koreografeye](https://github.com/eyereasoner/Koreogr
 To be more specific, here is the flow of one update to the state of the Solid Pod of the End user elaborated:
 
 1.  The **End user** updates the state resource on its **Solid pod** by sending an HTTP PUT request with an [RDF body](../../data/lights_on.ttl) describing how the lights must be actuated in the physical world.
-    <!-- ```turtle
-    @prefix saref: <https://saref.etsi.org/core/>.
-    @prefix dbpedia: <http://dbpedia.org/resource/>.
-
-    # The left light configured as orange color
-    <urn:openhab:Bureau_links_Color> a saref:OnState ;
-      dbpedia:Brightness 10 ;
-      dbpedia:Colorfulness 50 ;
-      dbpedia:Hue 0 .
-
-    # The righ light configured as purple color
-    <urn:openhab:Bureau_rechts_Color> a saref:OnState ;
-      dbpedia:Brightness 10 ;
-      dbpedia:Colorfulness 60 ;
-      dbpedia:Hue 272 .
-    ``` -->
 2.  A notification is sent to the **Solid Agent** by the **Solid Pod of the End User** via a [Notification Channel](https://solidproject.org/TR/notifications-protocol#notification-channel).
     * More specifically the Notification Channel used is the [WebSocketChannel2023](https://solid.github.io/notifications/websocket-channel-2023).
 3.  The **Solid Agent** fetches the state resource.
-4.  The state resource is returned. Its RDF is passed as entry point to Koreografeye in the forms of an [ActivityStreams2 (AS2)](https://www.w3.org/TR/activitystreams-core/) `Announce` message. <!-- TODO: maybe add example? -->
+4.  The state resource is returned. Its RDF is passed as entry point to Koreografeye in the forms of an [ActivityStreams2 (AS2)](https://www.w3.org/TR/activitystreams-core/) `Announce` message. 
 5.  In the Solid Agent, a [Notation3 (N3)](https://w3c.github.io/N3/spec/) reasoner ([EyeJs](https://github.com/eyereasoner/eye-js)) is run with as input the AS2 message and the rules (defined in N3).
     * The rules used for the current configuration are `openHABChangedRule.n3`, `solidChangedRule.n3`, `orchestratorToOpenHAB.n3` and `orchestratorToSolid.n3` (which can be found in the [rules](../../rules/) directory).
 6.  As a conclusion of this reasoning task, we get one Koreografeye Policy: a *hasStateChanged* policy.
     * In this case, it was the `solidChangedRule.n3` that got its premises matched.
 7.  The *hasStateChanged* Plugin is executed. It compares the state retrieved from the **Solid Pod of the End User** with the state of the **Solid Agent**.
-    * In this comparison, the subgraphs for each subject are compared. When a subgraph is not isomorph, a new AS2 `Announce` message is passed to the entry of Koreografeye. <!-- TODO: maybe add example? -->
+    * In this comparison, the subgraphs for each subject are compared. When a subgraph is not isomorph, a new AS2 `Announce` message is passed to the entry of Koreografeye. 
 8.  Again, the N3 reasoner is run with as input the AS2 message and the rules.
 9.  This time we get the *updateOpenHABState* policy as a conclusion since it was the `orchestratorToOpenHAB.n3` rule that got its premises matched.
 10. The *updateOpenHABState* Plugin is executed, which consists of two tasks
     *  Translate the RDF representation of the light to an openHAB item (done in this step).
     *  Send an authenticated POST request to the openHAB endpoint.
-11. The **Solid Agent** sends the request to the openHAB endpoint to change the state of the item. <!-- TODO: maybe add example? -->
+11. The **Solid Agent** sends the request to the openHAB endpoint to change the state of the item. 
 
 These steps are also visualised in the following UML sequence diagram:
 
@@ -152,21 +136,7 @@ This section explains the initialisation of the [DemoSolidAgent.ts](../../src/de
 Furthermore, an in-depth execution flow is given. This will make it clear that the execution *Condition Action* rules are implemented through [Koreografeye](https://github.com/eyereasoner/Koreografeye).
 
 
-<!-- TODO: elaborate? -->
 ![low level UML diagram](../../img/23-07-04_Philips-hue-solid(UML-low-level).png)
-
-<!-- Office checklist:
-
-* openhab running
-  ```sh
-  # start openhab service local
-  sudo systemctl start openhab.service
-  ```
-* wifi connected to knows_lights
-* CSS set up
-* solid agent running -->
-
-<!-- TODO: should this remain? Maybe to show the messages?
 
 ### Example flow: OpenHAB light its color was changed using the openhab platform
 

@@ -17,20 +17,6 @@ The five components proposed in that architecture are the following:
 The Solid Agent consists of multiple independent actors that each implement one or more of these components to form a Minimum Viable Product of a configurable **hybrid web agent**.
 Currently, the following actors are implemented:
 
-<!--
-* The **Orchestration Actor**:
-  * _Controller component_: Each time an event comes in, through one of the sensing actors, the event is passed to the reactive component.
-    When there is a conclusion, it will be executed by the **Policy Executer**
-  * _Reactive component_: condition-action rules are defined in the set of **n3 Rules**. 
-    Each time an event comes in, the **reasoning engine** is run using both the given event, the set of rules.
-    An action would be the conclusion, which in Koreografeye would be a policy to be executed.
-  * _Interface component_
-* The **openHAB Actor**:
-  * _Interface component_
-* The **Solid Actor**:
-  * _Interface component_
-!-->
-
 * The **Orchestration Actor**:
   * _Controller component_: A component that passes events to the _reactive component_.
     When a conclusion (action to be taken) is retrieved from the _reactive component_, 
@@ -60,9 +46,13 @@ Multiple combinations and configurations allow for a multitude of use cases to b
 
 Currently, three use cases have been worked out and configured:
 
-* [Synchronising the state Smart Home with a personal data store](#synchronising-the-state-smart-home-with-a-personal-data-store)
-* [Temporal Usage Control Policy execution for Solid Resources](#temporal-usage-control-policy-execution-for-solid-resources)
-* [The Solid RDF Resource Synchronisation Use Case](#the-solid-rdf-resource-synchronisation-use-case)
+- [Solid Agent](#solid-agent)
+  - [Use cases](#use-cases)
+    - [Synchronising the state Smart Home with a personal data store](#synchronising-the-state-smart-home-with-a-personal-data-store)
+    - [Temporal Usage Control Policy execution for Solid Resources](#temporal-usage-control-policy-execution-for-solid-resources)
+    - [The Solid RDF Resource Synchronisation Use Case](#the-solid-rdf-resource-synchronisation-use-case)
+  - [Cite](#cite)
+  - [Feedback and questions](#feedback-and-questions)
 
 ### Synchronising the state Smart Home with a personal data store
 
@@ -91,6 +81,22 @@ More information on how to run the agent yourself and how it's built can be foun
 
 The Solid Agent is configured to copy the contents of an RDF resource to another RDF resource. <br>
 See [DemoSyncAgent](./src/demo/DemoSyncAgent.ts) for more information.
+
+
+## Cite
+
+If you are using or extending the Solid Agent as part of a scientific publication,
+we would appreciate a citation of our [article](https://ceur-ws.org/Vol-3632/ISWC2023_paper_406.pdf).
+
+```bibtex
+@inproceedings{slabbinck_iswc_demo_2023,
+  author = {Slabbinck, Wout and Dedecker, Ruben and Rojas Mel\'endez, Juli\'an Andr\'es and Verborgh, Ruben},
+  title = {A Rule-Based Software Agent on Top of Personal Data Stores},
+  booktitle = {Proceedings of the 22nd International Semantic Web Conference: Posters, Demos, and Industry Tracks},
+  year = 2023,
+  month = nov,
+}
+```
 
 ## Feedback and questions
 
